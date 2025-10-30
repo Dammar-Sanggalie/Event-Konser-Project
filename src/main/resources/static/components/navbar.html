@@ -1,0 +1,39 @@
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto max-w-7xl px-4">
+        <div class="flex justify-between items-center h-16">
+            
+            <a href="/" class="flex-shrink-0 flex items-center gap-2">
+                <span class="text-2xl font-bold text-primary-600">EventKonser</span>
+            </a>
+            
+            <div class="hidden md:flex md:items-center md:space-x-6">
+                <a href="/" class="nav-link" data-page="home">Home</a>
+                <a href="/events.html" class="nav-link" data-page="events">Events</a>
+                
+                <div id="nav-links-desktop" class="flex items-center space-x-6"></div>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-4" id="nav-actions-desktop">
+                </div>
+
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg absolute top-16 left-0 right-0 z-40">
+        <div class="px-4 pt-2 pb-4 space-y-2">
+            <a href="/" class="nav-link-mobile" data-page="home">Home</a>
+            <a href="/events.html" class="nav-link-mobile" data-page="events">Events</a>
+            
+            <div id="nav-links-mobile" class="flex flex-col space-y-2"></div>
+            
+            <div class="border-t border-gray-200 pt-4" id="nav-actions-mobile">
+                </div>
+        </div>
+    </div>
+</nav>

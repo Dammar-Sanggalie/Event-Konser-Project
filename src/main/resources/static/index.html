@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9', // Biru langit yang soft
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563', // Abu-abu netral
+                        accent: '#ec4899' // Pink untuk highlight
+                    },
+                    fontFamily: {
+                        // Font modern dan clean
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased" data-page="home">
+    
+    <header id="navbar-placeholder"></header>
+    
+   <main id="main-content">
+    
+    <section class="relative bg-gradient-to-br from-primary-500 via-primary-600 to-accent/80 text-white overflow-hidden">
+        <div class="container mx-auto max-w-7xl px-4 py-24 md:py-32 text-center">
+            <div class="inline-flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-fade-in-up">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                <span class="text-sm font-medium">Find Your Next Live Music Experience</span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in-up animation-delay-200">
+                Discover Amazing <br class="hidden sm:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300">
+                    Concert Events
+                </span>
+            </h1>
+            
+            <p class="text-lg lg:text-xl text-white/90 mb-10 max-w-2xl mx-auto animate-fade-in-up animation-delay-400">
+                Book tickets for the hottest concerts, festivals, and live performances. 
+                Your unforgettable music experience starts here.
+            </p>
+            
+            <div class="mb-8 max-w-2xl mx-auto relative animate-fade-in-up animation-delay-600">
+                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                 </span>
+                 <input type="text" id="home-search-input" placeholder="Search by artist, event, or venue..."
+                        class="w-full pl-12 pr-4 py-4 border-2 border-transparent bg-white/90 text-gray-900 placeholder-gray-500 rounded-xl focus:outline-none focus:border-primary-300 shadow-lg transition">
+            </div>
+        </div>
+        <div class="absolute inset-0 overflow-hidden -z-10">
+            <div class="absolute -top-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50 animate-pulse-slow"></div>
+            <div class="absolute -bottom-1/4 -right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 animate-pulse-slow animation-delay-1000"></div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white">
+        <div class="container mx-auto max-w-7xl px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">Browse by Category</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Find the perfect event for your music taste</p>
+            </div>
+            
+            <div id="category-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+                <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
+                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
+                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 </div>
+                 <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
+                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
+                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 </div>
+                 <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
+                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
+                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 </div>
+                 <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
+                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
+                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto max-w-7xl px-4">
+            <div class="flex items-center justify-between mb-10">
+                <div>
+                    <div class="flex items-center space-x-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Popular Events</h2>
+                    </div>
+                    <p class="text-gray-600">Most booked events this month</p>
+                </div>
+                <a href="/events.html?filter=popular" class="hidden sm:inline-block px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All</a>
+            </div>
+            
+            <div id="popular-event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+            </div>
+            
+            <div class="text-center mt-8 sm:hidden">
+                 <a href="/events.html?filter=popular" class="inline-block w-full px-5 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All Popular Events</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 bg-white">
+        <div class="container mx-auto max-w-7xl px-4">
+            <div class="flex items-center justify-between mb-10">
+                <div>
+                    <div class="flex items-center space-x-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Upcoming Events</h2>
+                    </div>
+                    <p class="text-gray-600">Don't miss these amazing events</p>
+                </div>
+                 <a href="/events.html?filter=upcoming" class="hidden sm:inline-block px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All</a>
+            </div>
+            
+            <div id="upcoming-event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                 <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                 <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                 <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+            </div>
+            
+             <div class="text-center mt-8 sm:hidden">
+                 <a href="/events.html?filter=upcoming" class="inline-block w-full px-5 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All Upcoming Events</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-16 lg:py-24 bg-gradient-to-r from-primary-600 to-accent/80">
+        <div class="container mx-auto max-w-3xl px-4 text-center">
+             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Ready for Your Next Adventure?</h2>
+             <p class="text-lg text-white/90 mb-8">
+                 Join thousands of music lovers and book your tickets today. 
+                 Create unforgettable memories at the best live events.
+             </p>
+             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                 <a href="/events.html" class="w-full sm:w-auto px-8 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition shadow-md">
+                    Explore All Events
+                 </a>
+                 <a href="/register.html" class="w-full sm:w-auto px-8 py-3 bg-white/20 backdrop-blur-sm text-white border border-white/30 rounded-lg font-semibold hover:bg-white/30 transition">
+                     Sign Up Free
+                 </a>
+             </div>
+        </div>
+    </section>
+    
+</main>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <script src="/js/api.js"></script>
+    
+    <script src="/js/auth.js"></script>
+    
+    <script src="/js/app.js"></script>
+</body>
+</html>
