@@ -14,6 +14,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     // Find by user
     @Query("SELECT w FROM Wishlist w " +
            "LEFT JOIN FETCH w.event e " +
+           "LEFT JOIN FETCH e.kategori " +
            "LEFT JOIN FETCH e.venue " +
            "WHERE w.user.idPengguna = :userId " +
            "ORDER BY w.createdAt DESC")

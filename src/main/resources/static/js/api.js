@@ -1,5 +1,6 @@
 // Base URL backend Anda
 const API_BASE_URL = 'http://localhost:8081/api';
+window.API_BASE_URL = 'http://localhost:8081/api'; // Export to window for use in other files
 
 /**
  * Fungsi helper untuk melakukan fetch request.

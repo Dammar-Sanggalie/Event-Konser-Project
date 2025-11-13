@@ -532,6 +532,13 @@ async function initializeEventDetailPage() {
     const eventDetailContainer = document.getElementById('event-detail-container');
     const template = document.getElementById('event-detail-template');
     
+    // Check if template exists (old implementation), if not, skip this initialization
+    // because event-detail.html now has its own implementation
+    if (!template) {
+        console.log("Event detail template not found - using inline implementation");
+        return;
+    }
+    
     // 1. Ambil ID event dari URL parameter (?id=...)
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('id');

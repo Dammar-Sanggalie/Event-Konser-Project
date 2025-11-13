@@ -336,7 +336,7 @@
             
             try {
                 const userId = window.auth.getUserId();
-                const response = await fetch(`${window.API_BASE_URL}/api/wishlist/user/${userId}`);
+                const response = await fetch(`${window.API_BASE_URL}/wishlist/user/${userId}`);
                 const result = await response.json();
                 
                 loadingState.classList.add('hidden');
@@ -368,10 +368,10 @@
         // Update statistics
         function updateStats() {
             const now = new Date();
-            const upcoming = wishlistData.filter(item => new Date(item.event.eventDateTime) > now);
-            const available = wishlistData.filter(item => item.event.eventStatus === 'SCHEDULED');
+            const upcoming = wishlistData.filter(item => new Date(item.event.tanggalMulai) > now);
+            const available = wishlistData.filter(item => !item.event.status || item.event.status === 'UPCOMING' || item.event.status === 'ONGOING');
             const expiringSoon = wishlistData.filter(item => {
-                const eventDate = new Date(item.event.eventDateTime);
+                const eventDate = new Date(item.event.tanggalMulai);
                 const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
                 return daysUntil > 0 && daysUntil <= 7;
             });
@@ -403,10 +403,10 @@
                     wishlistData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
                     break;
                 case 'event-date-asc':
-                    wishlistData.sort((a, b) => new Date(a.event.eventDateTime) - new Date(b.event.eventDateTime));
+                    wishlistData.sort((a, b) => new Date(a.event.tanggalMulai) - new Date(b.event.tanggalMulai));
                     break;
                 case 'event-date-desc':
-                    wishlistData.sort((a, b) => new Date(b.event.eventDateTime) - new Date(a.event.eventDateTime));
+                    wishlistData.sort((a, b) => new Date(b.event.tanggalMulai) - new Date(a.event.tanggalMulai));
                     break;
                 case 'name-asc':
                     wishlistData.sort((a, b) => a.event.eventName.localeCompare(b.event.eventName));
@@ -445,7 +445,7 @@
             card.className = 'wishlist-card bg-white rounded-xl shadow-md overflow-hidden slide-in-right gradient-border';
             card.style.animationDelay = `${index * 50}ms`;
             
-            const eventDate = new Date(item.event.eventDateTime);
+            const eventDate = new Date(item.event.tanggalMulai);
             const now = new Date();
             const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
             const isExpiringSoon = daysUntil > 0 && daysUntil <= 7;
@@ -467,26 +467,26 @@
                     </button>
                 </div>
                 <div class="p-4">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">${item.event.eventName}</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">${item.event.namaEvent}</h3>
                     <div class="space-y-2 text-sm text-gray-600 mb-4">
                         <div class="flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span>${formatDateTime(item.event.eventDateTime)}</span>
+                            <span>${formatDateTime(item.event.tanggalMulai)}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            <span class="line-clamp-1">${item.event.venue?.venueName || 'TBA'}</span>
+                            <span class="line-clamp-1">${item.event.venue?.namaVenue || 'TBA'}</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span class="font-semibold text-primary-600">${formatCurrency(item.event.ticketPrice)}</span>
+                            <span class="font-semibold text-primary-600">${formatCurrency(getLowestTicketPrice(item.event))}</span>
                         </div>
                     </div>
                     <div class="flex gap-2">
@@ -511,7 +511,7 @@
             listItem.className = 'bg-white rounded-xl shadow-md overflow-hidden slide-in-right gradient-border';
             listItem.style.animationDelay = `${index * 50}ms`;
             
-            const eventDate = new Date(item.event.eventDateTime);
+            const eventDate = new Date(item.event.tanggalMulai);
             const now = new Date();
             const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
             const isExpiringSoon = daysUntil > 0 && daysUntil <= 7;
@@ -530,7 +530,7 @@
                     <div class="flex-1 p-6">
                         <div class="flex items-start justify-between mb-3">
                             <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-1">${item.event.eventName}</h3>
+                                <h3 class="text-xl font-bold text-gray-900 mb-1">${item.event.namaEvent}</h3>
                                 <p class="text-sm text-gray-500">Added ${formatRelativeTime(item.createdAt)}</p>
                             </div>
                             <button onclick="removeFromWishlist(${item.event.idEvent}, ${index})" 
@@ -545,26 +545,26 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span>${formatDateTime(item.event.eventDateTime)}</span>
+                                <span>${formatDateTime(item.event.tanggalMulai)}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                <span>${item.event.venue?.venueName || 'TBA'}</span>
+                                <span>${item.event.venue?.namaVenue || 'TBA'}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span class="font-semibold text-primary-600">${formatCurrency(item.event.ticketPrice)}</span>
+                                <span class="font-semibold text-primary-600">${formatCurrency(getLowestTicketPrice(item.event))}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                 </svg>
-                                <span>${item.event.category?.categoryName || 'Uncategorized'}</span>
+                                <span>${item.event.kategori?.namaKategori || 'Uncategorized'}</span>
                             </div>
                         </div>
                         <div class="flex gap-2">
@@ -589,7 +589,7 @@
             setTimeout(async () => {
                 try {
                     const userId = window.auth.getUserId();
-                    const response = await fetch(`${window.API_BASE_URL}/api/wishlist?userId=${userId}&eventId=${eventId}`, {
+                    const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, {
                         method: 'DELETE'
                     });
                     
@@ -719,6 +719,13 @@
             if (seconds < 2592000) return `${Math.floor(seconds / 604800)} weeks ago`;
             if (seconds < 31536000) return `${Math.floor(seconds / 2592000)} months ago`;
             return `${Math.floor(seconds / 31536000)} years ago`;
+        }
+        
+        // Get lowest ticket price from event
+        function getLowestTicketPrice(event) {
+            if (!event.tickets || event.tickets.length === 0) return 0;
+            const prices = event.tickets.map(t => t.harga || 0).filter(p => p > 0);
+            return prices.length > 0 ? Math.min(...prices) : 0;
         }
     </script>
 </body>

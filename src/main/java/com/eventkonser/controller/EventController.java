@@ -56,6 +56,15 @@ public class EventController {
     }
     
     /**
+     * GET /api/events/{id}/details - Get event by ID with all details (alias)
+     */
+    @GetMapping("/{id}/details")
+    public ResponseEntity<ApiResponse<Event>> getEventDetails(@PathVariable Long id) {
+        Event event = eventService.getEventWithDetails(id);
+        return ResponseEntity.ok(ApiResponse.success("Success", event));
+    }
+    
+    /**
      * GET /api/events/search?q=keyword - Search events
      */
     @GetMapping("/search")

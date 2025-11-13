@@ -53,13 +53,19 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                @Param("endDate") LocalDate endDate);
     
     // Get event with all relationships (optimize query)
+    // Split into two queries to avoid MultipleBagFetchException
     @Query("SELECT DISTINCT e FROM Event e " +
            "LEFT JOIN FETCH e.kategori " +
            "LEFT JOIN FETCH e.venue " +
-           "LEFT JOIN FETCH e.tickets " +
            "LEFT JOIN FETCH e.artists " +
            "WHERE e.idEvent = :eventId")
     Optional<Event> findByIdWithDetails(@Param("eventId") Long eventId);
+    
+    // Separate query for tickets to avoid MultipleBagFetchException
+    @Query("SELECT DISTINCT e FROM Event e " +
+           "LEFT JOIN FETCH e.tickets " +
+           "WHERE e.idEvent = :eventId")
+    Optional<Event> findByIdWithTickets(@Param("eventId") Long eventId);
 
     /**
      * TAMBAHKAN METHOD INI:

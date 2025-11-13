@@ -34,8 +34,16 @@ public class EventService {
     
     @Transactional(readOnly = true)
     public Event getEventWithDetails(Long id) {
-        return eventRepository.findByIdWithDetails(id)
+        // First, fetch event with artists, category, and venue
+        Event event = eventRepository.findByIdWithDetails(id)
             .orElseThrow(() -> new ResourceNotFoundException("Event tidak ditemukan dengan ID: " + id));
+        
+        // Then, fetch tickets separately to avoid MultipleBagFetchException
+        eventRepository.findByIdWithTickets(id).ifPresent(e -> {
+            event.setTickets(e.getTickets());
+        });
+        
+        return event;
     }
     
     @Transactional(readOnly = true)
