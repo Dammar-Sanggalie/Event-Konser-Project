@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .heart-beat {
+            animation: heartBeat 0.6s ease-in-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px) scale(0.8);
+            }
+        }
+        
+        .fade-out-right {
+            animation: fadeOutRight 0.4s ease-in forwards;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        .wishlist-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .wishlist-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .gradient-border {
+            position: relative;
+            background: white;
+            border-radius: 1rem;
+        }
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            padding: 2px;
+            background: linear-gradient(135deg, #0ea5e9, #ec4899);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .wishlist-card:hover .gradient-border::before {
+            opacity: 1;
+        }
+        
+        .badge-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 via-primary-50/30 to-accent-50/20 font-sans antialiased min-h-screen" data-page="wishlist">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main id="main-content" class="pb-16">
+        
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-primary-500 via-primary-600 to-accent/80 text-white overflow-hidden py-16">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="flex items-center justify-between">
+                    <div class="animate-fade-in-up">
+                        <div class="inline-flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span class="text-sm font-medium">Your Favorite Events</span>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold mb-3 animate-fade-in-up animation-delay-200">My Wishlist</h1>
+                        <p class="text-lg text-white/90 animate-fade-in-up animation-delay-400">Save your favorite events and never miss out!</p>
+                    </div>
+                    
+                    <div class="hidden lg:block floating">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-white/20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="absolute inset-0 overflow-hidden -z-10">
+                <div class="absolute -top-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50 animate-pulse-slow"></div>
+                <div class="absolute -bottom-1/4 -right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 animate-pulse-slow animation-delay-1000"></div>
+            </div>
+        </section>
+        
+        <!-- Stats Section -->
+        <section class="py-8 bg-white shadow-sm">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary-600" id="total-wishlist">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Total Events</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-accent" id="upcoming-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Upcoming</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="available-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Available</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-600" id="expiring-soon-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Expiring Soon</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Filter & Sort -->
+        <section class="py-6 bg-white border-b">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                        <select id="sort-select" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white">
+                            <option value="newest">Newest Added</option>
+                            <option value="oldest">Oldest Added</option>
+                            <option value="event-date-asc">Event Date (Nearest)</option>
+                            <option value="event-date-desc">Event Date (Farthest)</option>
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="name-desc">Name (Z-A)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button id="view-grid" class="p-2 rounded-lg bg-primary-100 text-primary-600 hover:bg-primary-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                        </button>
+                        <button id="view-list" class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Wishlist Content -->
+        <section class="py-12">
+            <div class="container mx-auto max-w-7xl px-4">
+                
+                <!-- Loading State -->
+                <div id="loading-state" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-4 rounded-xl shadow-md">
+                        <div class="h-48 shimmer rounded-lg mb-4"></div>
+                        <div class="h-6 shimmer rounded w-3/4 mb-2"></div>
+                        <div class="h-4 shimmer rounded w-1/2 mb-4"></div>
+                        <div class="h-4 shimmer rounded w-2/3"></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-md">
+                        <div class="h-48 shimmer rounded-lg mb-4"></div>
+                        <div class="h-6 shimmer rounded w-3/4 mb-2"></div>
+                        <div class="h-4 shimmer rounded w-1/2 mb-4"></div>
+                        <div class="h-4 shimmer rounded w-2/3"></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-md">
+                        <div class="h-48 shimmer rounded-lg mb-4"></div>
+                        <div class="h-6 shimmer rounded w-3/4 mb-2"></div>
+                        <div class="h-4 shimmer rounded w-1/2 mb-4"></div>
+                        <div class="h-4 shimmer rounded w-2/3"></div>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16">
+                    <div class="inline-block p-8 bg-gradient-to-br from-primary-50 to-accent-50 rounded-full mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Your wishlist is empty</h3>
+                    <p class="text-gray-600 mb-8 max-w-md mx-auto">Start adding your favorite events to your wishlist and never miss an amazing concert!</p>
+                    <a href="/events.html" class="inline-block px-8 py-3 bg-gradient-to-r from-primary-600 to-accent text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
+                        Explore Events
+                    </a>
+                </div>
+                
+                <!-- Wishlist Grid -->
+                <div id="wishlist-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards will be dynamically inserted here -->
+                </div>
+                
+                <!-- Wishlist List View -->
+                <div id="wishlist-list" class="hidden space-y-4">
+                    <!-- List items will be dynamically inserted here -->
+                </div>
+                
+            </div>
+        </section>
+        
+    </main>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="hidden fixed bottom-6 right-6 bg-white rounded-lg shadow-2xl p-4 max-w-sm z-50 slide-in-right">
+        <div class="flex items-center gap-3">
+            <div id="toast-icon" class="flex-shrink-0">
+                <!-- Icon will be inserted here -->
+            </div>
+            <div class="flex-1">
+                <p id="toast-message" class="text-sm font-medium text-gray-900"></p>
+            </div>
+            <button id="toast-close" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        let wishlistData = [];
+        let currentView = 'grid';
+        let currentSort = 'newest';
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=/wishlist.html';
+                return;
+            }
+            
+            await loadWishlist();
+            initializeEventListeners();
+        });
+        
+        // Load wishlist data
+        async function loadWishlist() {
+            const loadingState = document.getElementById('loading-state');
+            const emptyState = document.getElementById('empty-state');
+            const wishlistGrid = document.getElementById('wishlist-grid');
+            const wishlistList = document.getElementById('wishlist-list');
+            
+            try {
+                const userId = window.auth.getUserId();
+                const response = await fetch(`${window.API_BASE_URL}/api/wishlist/user/${userId}`);
+                const result = await response.json();
+                
+                loadingState.classList.add('hidden');
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    wishlistData = result.data;
+                    updateStats();
+                    renderWishlist();
+                    emptyState.classList.add('hidden');
+                    if (currentView === 'grid') {
+                        wishlistGrid.classList.remove('hidden');
+                        wishlistList.classList.add('hidden');
+                    } else {
+                        wishlistList.classList.remove('hidden');
+                        wishlistGrid.classList.add('hidden');
+                    }
+                } else {
+                    emptyState.classList.remove('hidden');
+                    wishlistGrid.classList.add('hidden');
+                    wishlistList.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading wishlist:', error);
+                loadingState.classList.add('hidden');
+                showToast('Failed to load wishlist', 'error');
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const now = new Date();
+            const upcoming = wishlistData.filter(item => new Date(item.event.eventDateTime) > now);
+            const available = wishlistData.filter(item => item.event.eventStatus === 'SCHEDULED');
+            const expiringSoon = wishlistData.filter(item => {
+                const eventDate = new Date(item.event.eventDateTime);
+                const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
+                return daysUntil > 0 && daysUntil <= 7;
+            });
+            
+            document.getElementById('total-wishlist').textContent = wishlistData.length;
+            document.getElementById('upcoming-count').textContent = upcoming.length;
+            document.getElementById('available-count').textContent = available.length;
+            document.getElementById('expiring-soon-count').textContent = expiringSoon.length;
+        }
+        
+        // Render wishlist based on current view
+        function renderWishlist() {
+            sortWishlist();
+            
+            if (currentView === 'grid') {
+                renderGridView();
+            } else {
+                renderListView();
+            }
+        }
+        
+        // Sort wishlist
+        function sortWishlist() {
+            switch(currentSort) {
+                case 'newest':
+                    wishlistData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'oldest':
+                    wishlistData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                    break;
+                case 'event-date-asc':
+                    wishlistData.sort((a, b) => new Date(a.event.eventDateTime) - new Date(b.event.eventDateTime));
+                    break;
+                case 'event-date-desc':
+                    wishlistData.sort((a, b) => new Date(b.event.eventDateTime) - new Date(a.event.eventDateTime));
+                    break;
+                case 'name-asc':
+                    wishlistData.sort((a, b) => a.event.eventName.localeCompare(b.event.eventName));
+                    break;
+                case 'name-desc':
+                    wishlistData.sort((a, b) => b.event.eventName.localeCompare(a.event.eventName));
+                    break;
+            }
+        }
+        
+        // Render grid view
+        function renderGridView() {
+            const grid = document.getElementById('wishlist-grid');
+            grid.innerHTML = '';
+            
+            wishlistData.forEach((item, index) => {
+                const card = createWishlistCard(item, index);
+                grid.appendChild(card);
+            });
+        }
+        
+        // Render list view
+        function renderListView() {
+            const list = document.getElementById('wishlist-list');
+            list.innerHTML = '';
+            
+            wishlistData.forEach((item, index) => {
+                const listItem = createWishlistListItem(item, index);
+                list.appendChild(listItem);
+            });
+        }
+        
+        // Create wishlist card (grid view)
+        function createWishlistCard(item, index) {
+            const card = document.createElement('div');
+            card.className = 'wishlist-card bg-white rounded-xl shadow-md overflow-hidden slide-in-right gradient-border';
+            card.style.animationDelay = `${index * 50}ms`;
+            
+            const eventDate = new Date(item.event.eventDateTime);
+            const now = new Date();
+            const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
+            const isExpiringSoon = daysUntil > 0 && daysUntil <= 7;
+            const isPast = eventDate < now;
+            
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${item.event.posterUrl || '/assets/images/placeholder-event.jpg'}" 
+                         alt="${item.event.eventName}" 
+                         class="w-full h-48 object-cover"
+                         onerror="this.src='/assets/images/placeholder-event.jpg'">
+                    ${isExpiringSoon ? '<div class="absolute top-3 left-3 px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full badge-pulse">Expiring Soon!</div>' : ''}
+                    ${isPast ? '<div class="absolute top-3 left-3 px-3 py-1 bg-gray-500 text-white text-xs font-bold rounded-full">Past Event</div>' : ''}
+                    <button onclick="removeFromWishlist(${item.event.idEvent}, ${index})" 
+                            class="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500 group-hover:scale-110 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 line-clamp-1">${item.event.eventName}</h3>
+                    <div class="space-y-2 text-sm text-gray-600 mb-4">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>${formatDateTime(item.event.eventDateTime)}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="line-clamp-1">${item.event.venue?.venueName || 'TBA'}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="font-semibold text-primary-600">${formatCurrency(item.event.ticketPrice)}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="/event-detail.html?id=${item.event.idEvent}" 
+                           class="flex-1 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-center rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105">
+                            View Details
+                        </a>
+                        ${!isPast ? `<button onclick="bookNow(${item.event.idEvent})" class="px-4 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition">Book</button>` : ''}
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                        Added ${formatRelativeTime(item.createdAt)}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Create wishlist list item (list view)
+        function createWishlistListItem(item, index) {
+            const listItem = document.createElement('div');
+            listItem.className = 'bg-white rounded-xl shadow-md overflow-hidden slide-in-right gradient-border';
+            listItem.style.animationDelay = `${index * 50}ms`;
+            
+            const eventDate = new Date(item.event.eventDateTime);
+            const now = new Date();
+            const daysUntil = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
+            const isExpiringSoon = daysUntil > 0 && daysUntil <= 7;
+            const isPast = eventDate < now;
+            
+            listItem.innerHTML = `
+                <div class="flex flex-col sm:flex-row">
+                    <div class="relative sm:w-64 h-48 sm:h-auto flex-shrink-0">
+                        <img src="${item.event.posterUrl || '/assets/images/placeholder-event.jpg'}" 
+                             alt="${item.event.eventName}" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='/assets/images/placeholder-event.jpg'">
+                        ${isExpiringSoon ? '<div class="absolute top-3 left-3 px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full badge-pulse">Expiring Soon!</div>' : ''}
+                        ${isPast ? '<div class="absolute top-3 left-3 px-3 py-1 bg-gray-500 text-white text-xs font-bold rounded-full">Past Event</div>' : ''}
+                    </div>
+                    <div class="flex-1 p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-1">${item.event.eventName}</h3>
+                                <p class="text-sm text-gray-500">Added ${formatRelativeTime(item.createdAt)}</p>
+                            </div>
+                            <button onclick="removeFromWishlist(${item.event.idEvent}, ${index})" 
+                                    class="p-2 bg-red-50 rounded-full hover:bg-red-100 transition group">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500 group-hover:scale-110 transition" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-3 text-sm text-gray-600 mb-4">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>${formatDateTime(item.event.eventDateTime)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>${item.event.venue?.venueName || 'TBA'}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="font-semibold text-primary-600">${formatCurrency(item.event.ticketPrice)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                                <span>${item.event.category?.categoryName || 'Uncategorized'}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="/event-detail.html?id=${item.event.idEvent}" 
+                               class="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105">
+                                View Details
+                            </a>
+                            ${!isPast ? `<button onclick="bookNow(${item.event.idEvent})" class="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition">Book Now</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return listItem;
+        }
+        
+        // Remove from wishlist
+        async function removeFromWishlist(eventId, index) {
+            const card = document.querySelectorAll('.wishlist-card, .wishlist-list > div')[index];
+            card.classList.add('fade-out-right');
+            
+            setTimeout(async () => {
+                try {
+                    const userId = window.auth.getUserId();
+                    const response = await fetch(`${window.API_BASE_URL}/api/wishlist?userId=${userId}&eventId=${eventId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        wishlistData = wishlistData.filter(item => item.event.idEvent !== eventId);
+                        
+                        if (wishlistData.length === 0) {
+                            document.getElementById('wishlist-grid').classList.add('hidden');
+                            document.getElementById('wishlist-list').classList.add('hidden');
+                            document.getElementById('empty-state').classList.remove('hidden');
+                        } else {
+                            updateStats();
+                            renderWishlist();
+                        }
+                        
+                        showToast('Removed from wishlist', 'success');
+                    } else {
+                        showToast('Failed to remove from wishlist', 'error');
+                        renderWishlist();
+                    }
+                } catch (error) {
+                    console.error('Error removing from wishlist:', error);
+                    showToast('An error occurred', 'error');
+                    renderWishlist();
+                }
+            }, 400);
+        }
+        
+        // Book event
+        function bookNow(eventId) {
+            window.location.href = `/event-detail.html?id=${eventId}`;
+        }
+        
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // Sort dropdown
+            document.getElementById('sort-select').addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                renderWishlist();
+            });
+            
+            // View toggle
+            document.getElementById('view-grid').addEventListener('click', () => {
+                currentView = 'grid';
+                document.getElementById('view-grid').classList.remove('bg-gray-100', 'text-gray-600');
+                document.getElementById('view-grid').classList.add('bg-primary-100', 'text-primary-600');
+                document.getElementById('view-list').classList.remove('bg-primary-100', 'text-primary-600');
+                document.getElementById('view-list').classList.add('bg-gray-100', 'text-gray-600');
+                document.getElementById('wishlist-grid').classList.remove('hidden');
+                document.getElementById('wishlist-list').classList.add('hidden');
+                renderWishlist();
+            });
+            
+            document.getElementById('view-list').addEventListener('click', () => {
+                currentView = 'list';
+                document.getElementById('view-list').classList.remove('bg-gray-100', 'text-gray-600');
+                document.getElementById('view-list').classList.add('bg-primary-100', 'text-primary-600');
+                document.getElementById('view-grid').classList.remove('bg-primary-100', 'text-primary-600');
+                document.getElementById('view-grid').classList.add('bg-gray-100', 'text-gray-600');
+                document.getElementById('wishlist-list').classList.remove('hidden');
+                document.getElementById('wishlist-grid').classList.add('hidden');
+                renderWishlist();
+            });
+            
+            // Toast close button
+            document.getElementById('toast-close').addEventListener('click', () => {
+                document.getElementById('toast-notification').classList.add('hidden');
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast-notification');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastMessage = document.getElementById('toast-message');
+            
+            const icons = {
+                success: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+                error: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+                info: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
+            };
+            
+            toastIcon.innerHTML = icons[type] || icons.info;
+            toastMessage.textContent = message;
+            
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        // Format date time
+        function formatDateTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return new Intl.DateTimeFormat('id-ID', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+        
+        // Format relative time
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+            if (seconds < 2592000) return `${Math.floor(seconds / 604800)} weeks ago`;
+            if (seconds < 31536000) return `${Math.floor(seconds / 2592000)} months ago`;
+            return `${Math.floor(seconds / 31536000)} years ago`;
+        }
+    </script>
+</body>
+</html>
