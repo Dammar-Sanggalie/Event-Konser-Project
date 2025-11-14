@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        .order-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .order-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .status-paid {
+            background-color: rgb(220, 252, 231);
+            color: rgb(5, 122, 85);
+        }
+        
+        .status-pending {
+            background-color: rgb(254, 243, 199);
+            color: rgb(113, 63, 18);
+        }
+        
+        .status-failed {
+            background-color: rgb(254, 226, 226);
+            color: rgb(127, 29, 29);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 via-primary-50/30 to-accent-50/20 font-sans antialiased min-h-screen" data-page="my-orders">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main id="main-content" class="pb-16">
+        
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-primary-500 via-primary-600 to-accent/80 text-white overflow-hidden py-16">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="flex items-center justify-between">
+                    <div class="animate-fade-in-up">
+                        <div class="inline-flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                            </svg>
+                            <span class="text-sm font-medium">Your Concert Tickets</span>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold mb-3 animate-fade-in-up animation-delay-200">My Orders</h1>
+                        <p class="text-lg text-white/90 animate-fade-in-up animation-delay-400">Track and manage your ticket purchases</p>
+                    </div>
+                    
+                    <div class="hidden lg:block">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-white/20 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="absolute inset-0 overflow-hidden -z-10">
+                <div class="absolute -top-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+                <div class="absolute -bottom-1/4 -right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 animate-pulse animation-delay-1000"></div>
+            </div>
+        </section>
+        
+        <!-- Stats Section -->
+        <section class="py-8 bg-white shadow-sm">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary-600" id="total-orders">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Total Orders</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="paid-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Paid</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-600" id="pending-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Pending</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-red-600" id="failed-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Failed/Other</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Filter & Sort -->
+        <section class="py-6 bg-white border-b">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+                        <label class="text-sm font-medium text-gray-700">Filter by:</label>
+                        <div class="flex gap-2 flex-wrap">
+                            <button id="filter-all" class="px-4 py-2 rounded-lg font-medium transition bg-primary-100 text-primary-600 hover:bg-primary-200">
+                                All Orders
+                            </button>
+                            <button id="filter-paid" class="px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-600 hover:bg-gray-200">
+                                Paid ✓
+                            </button>
+                            <button id="filter-unpaid" class="px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-600 hover:bg-gray-200">
+                                Unpaid
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <label class="text-sm font-medium text-gray-700">Sort:</label>
+                        <select id="sort-select" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="price-high">Price (High to Low)</option>
+                            <option value="price-low">Price (Low to High)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Orders Content -->
+        <section class="py-12">
+            <div class="container mx-auto max-w-7xl px-4">
+                
+                <!-- Loading State -->
+                <div id="loading-state" class="space-y-4">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex gap-4">
+                            <div class="h-32 w-32 shimmer rounded-lg flex-shrink-0"></div>
+                            <div class="flex-1 space-y-3">
+                                <div class="h-6 shimmer rounded w-3/4"></div>
+                                <div class="h-4 shimmer rounded w-1/2"></div>
+                                <div class="h-4 shimmer rounded w-2/3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16">
+                    <div class="inline-block p-8 bg-gradient-to-br from-primary-50 to-accent-50 rounded-full mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">No Orders Yet</h3>
+                    <p class="text-gray-600 mb-8 max-w-md mx-auto">You haven't purchased any concert tickets yet. Browse our events and get your tickets now!</p>
+                    <a href="/events.html" class="inline-block px-8 py-3 bg-gradient-to-r from-primary-600 to-accent text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
+                        Browse Events
+                    </a>
+                </div>
+                
+                <!-- Orders List -->
+                <div id="orders-list" class="hidden space-y-4">
+                    <!-- Order cards will be dynamically inserted here -->
+                </div>
+                
+            </div>
+        </section>
+        
+    </main>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="hidden fixed bottom-6 right-6 bg-white rounded-lg shadow-2xl p-4 max-w-sm z-50 slide-in-right">
+        <div class="flex items-center gap-3">
+            <div id="toast-icon" class="flex-shrink-0">
+                <!-- Icon will be inserted here -->
+            </div>
+            <div class="flex-1">
+                <p id="toast-message" class="text-sm font-medium text-gray-900"></p>
+            </div>
+            <button id="toast-close" class="flex-shrink-0 text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        let ordersData = [];
+        let currentFilter = 'all';
+        let currentSort = 'newest';
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=/my-orders.html';
+                return;
+            }
+            
+            await loadOrders();
+            initializeEventListeners();
+        });
+        
+        async function loadOrders() {
+            const loadingState = document.getElementById('loading-state');
+            const emptyState = document.getElementById('empty-state');
+            const ordersList = document.getElementById('orders-list');
+            
+            try {
+                const userId = window.auth.getUserId();
+                
+                const paidResponse = await fetch(`${window.API_BASE_URL}/pembelian-tiket/user/${userId}?status=PAID`);
+                const paidResult = await paidResponse.json();
+                
+                const unpaidResponse = await fetch(`${window.API_BASE_URL}/pembelian-tiket/user/${userId}?status=PENDING`);
+                const unpaidResult = await unpaidResponse.json();
+                
+                loadingState.classList.add('hidden');
+                
+                const paidOrders = (paidResult.success && Array.isArray(paidResult.data)) ? paidResult.data : [];
+                const unpaidOrders = (unpaidResult.success && Array.isArray(unpaidResult.data)) ? unpaidResult.data : [];
+                
+                ordersData = [...paidOrders, ...unpaidOrders];
+                
+                if (ordersData.length > 0) {
+                    updateStats();
+                    renderOrders();
+                    emptyState.classList.add('hidden');
+                    ordersList.classList.remove('hidden');
+                } else {
+                    emptyState.classList.remove('hidden');
+                    ordersList.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                loadingState.classList.add('hidden');
+                showToast('Failed to load orders. Please try again.', 'error');
+            }
+        }
+        
+        function updateStats() {
+            const paidOrders = ordersData.filter(order => order.status === 'PAID' || (order.pembayaran && order.pembayaran.statusPembayaran === 'SUCCESS'));
+            const pendingOrders = ordersData.filter(order => order.status === 'PENDING' || (order.pembayaran && order.pembayaran.statusPembayaran === 'PENDING'));
+            const failedOrders = ordersData.filter(order => 
+                order.status === 'FAILED' || 
+                order.status === 'EXPIRED' || 
+                order.status === 'REFUNDED' ||
+                (order.pembayaran && (order.pembayaran.statusPembayaran === 'FAILED' || order.pembayaran.statusPembayaran === 'EXPIRED'))
+            );
+            
+            document.getElementById('total-orders').textContent = ordersData.length;
+            document.getElementById('paid-count').textContent = paidOrders.length;
+            document.getElementById('pending-count').textContent = pendingOrders.length;
+            document.getElementById('failed-count').textContent = failedOrders.length;
+        }
+        
+        function renderOrders() {
+            let filteredOrders = ordersData;
+            
+            if (currentFilter === 'paid') {
+                filteredOrders = ordersData.filter(order => order.status === 'PAID' || (order.pembayaran && order.pembayaran.statusPembayaran === 'SUCCESS'));
+            } else if (currentFilter === 'unpaid') {
+                filteredOrders = ordersData.filter(order => order.status === 'PENDING' || (order.pembayaran && order.pembayaran.statusPembayaran === 'PENDING'));
+            }
+            
+            sortOrders(filteredOrders);
+            renderOrderCards(filteredOrders);
+        }
+        
+        function sortOrders(orders) {
+            switch(currentSort) {
+                case 'newest':
+                    orders.sort((a, b) => new Date(b.tanggalPembelian) - new Date(a.tanggalPembelian));
+                    break;
+                case 'oldest':
+                    orders.sort((a, b) => new Date(a.tanggalPembelian) - new Date(b.tanggalPembelian));
+                    break;
+                case 'price-high':
+                    orders.sort((a, b) => parseFloat(b.totalHarga) - parseFloat(a.totalHarga));
+                    break;
+                case 'price-low':
+                    orders.sort((a, b) => parseFloat(a.totalHarga) - parseFloat(b.totalHarga));
+                    break;
+            }
+        }
+        
+        function renderOrderCards(orders) {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '';
+            
+            if (orders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-gray-600">No orders found matching your filter.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            orders.forEach((order, index) => {
+                const card = createOrderCard(order, index);
+                ordersList.appendChild(card);
+            });
+        }
+        
+        function createOrderCard(order, index) {
+            const card = document.createElement('div');
+            card.className = 'order-card bg-white rounded-xl shadow-md overflow-hidden slide-in-right';
+            card.style.animationDelay = `${index * 50}ms`;
+            
+            const paymentStatus = order.pembayaran?.statusPembayaran || order.status;
+            const isPaid = paymentStatus === 'SUCCESS' || order.status === 'PAID';
+            
+            let statusClass = 'status-pending';
+            let statusText = 'Pending Payment';
+            let statusIcon = '⏳';
+            
+            if (isPaid) {
+                statusClass = 'status-paid';
+                statusText = 'Paid';
+                statusIcon = '✓';
+            } else if (paymentStatus === 'FAILED' || paymentStatus === 'EXPIRED') {
+                statusClass = 'status-failed';
+                statusText = paymentStatus === 'FAILED' ? 'Payment Failed' : 'Expired';
+                statusIcon = '✕';
+            }
+            
+            card.innerHTML = `
+                <div class="flex flex-col sm:flex-row gap-6 p-6">
+                    <div class="sm:w-40 h-40 flex-shrink-0 bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="/assets/images/placeholder-event.jpg" 
+                             alt="${order.eventName}" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='/assets/images/placeholder-event.jpg'">
+                    </div>
+                    
+                    <div class="flex-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-1">${order.eventName || 'Concert Event'}</h3>
+                                <p class="text-sm text-gray-600">Order ID: <span class="font-mono text-primary-600">#${order.idPembelian}</span></p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusIcon} ${statusText}</span>
+                        </div>
+                        
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">Ticket Type</p>
+                                <p class="text-sm font-semibold text-gray-900">${order.ticketType || 'Standard'}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">Quantity</p>
+                                <p class="text-sm font-semibold text-gray-900">${order.jumlah} ${order.jumlah > 1 ? 'tickets' : 'ticket'}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">Purchase Date</p>
+                                <p class="text-sm font-semibold text-gray-900">${formatDateTime(order.tanggalPembelian)}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">Event Date</p>
+                                <p class="text-sm font-semibold text-gray-900">${order.eventDate ? formatDate(order.eventDate) : 'TBA'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-2 text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span class="text-sm">${order.venueName || 'Location TBA'}</span>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500 font-medium">Total Price</p>
+                                <p class="text-2xl font-bold text-primary-600">${formatCurrency(order.totalHarga)}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+                            <a href="/event-detail.html?id=${order.idTiket}" 
+                               class="flex-1 px-4 py-2 bg-primary-100 text-primary-600 text-center rounded-lg font-medium hover:bg-primary-200 transition">
+                                View Event
+                            </a>
+                            ${!isPaid && paymentStatus === 'PENDING' ? `
+                            <button onclick="proceedPayment(${order.idPembelian})" 
+                                    class="px-4 py-2 bg-gradient-to-r from-accent to-pink-600 text-white rounded-lg font-medium hover:shadow-lg transition">
+                                Pay Now
+                            </button>
+                            ` : ''}
+                            ${isPaid ? `
+                            <button onclick="downloadTicket(${order.idPembelian})" 
+                                    class="px-4 py-2 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200 transition">
+                                Download Ticket
+                            </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function initializeEventListeners() {
+            document.getElementById('filter-all').addEventListener('click', () => {
+                currentFilter = 'all';
+                updateFilterButtons();
+                renderOrders();
+            });
+            
+            document.getElementById('filter-paid').addEventListener('click', () => {
+                currentFilter = 'paid';
+                updateFilterButtons();
+                renderOrders();
+            });
+            
+            document.getElementById('filter-unpaid').addEventListener('click', () => {
+                currentFilter = 'unpaid';
+                updateFilterButtons();
+                renderOrders();
+            });
+            
+            document.getElementById('sort-select').addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                renderOrders();
+            });
+            
+            document.getElementById('toast-close').addEventListener('click', () => {
+                document.getElementById('toast-notification').classList.add('hidden');
+            });
+        }
+        
+        function updateFilterButtons() {
+            const buttons = {
+                all: document.getElementById('filter-all'),
+                paid: document.getElementById('filter-paid'),
+                unpaid: document.getElementById('filter-unpaid')
+            };
+            
+            Object.values(buttons).forEach(btn => {
+                btn.classList.remove('bg-primary-100', 'text-primary-600');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            
+            buttons[currentFilter].classList.remove('bg-gray-100', 'text-gray-600');
+            buttons[currentFilter].classList.add('bg-primary-100', 'text-primary-600');
+        }
+        
+        function proceedPayment(orderId) {
+            alert(`Redirecting to payment for Order #${orderId}...`);
+        }
+        
+        function downloadTicket(orderId) {
+            showToast(`Downloading ticket for Order #${orderId}...`, 'info');
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast-notification');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastMessage = document.getElementById('toast-message');
+            
+            const icons = {
+                success: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>',
+                error: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>',
+                info: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
+            };
+            
+            toastIcon.innerHTML = icons[type] || icons.info;
+            toastMessage.textContent = message;
+            
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(date);
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+    </script>
+</body>
+</html>
