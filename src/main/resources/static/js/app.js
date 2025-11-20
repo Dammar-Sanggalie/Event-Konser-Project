@@ -77,12 +77,22 @@ function updateNavbarAuthState() {
 
     if (isAuthenticated) {
         // TAMPILAN JIKA SUDAH LOGIN
+        const user = window.auth.getUser();
+        const isAdmin = user && user.role === 'ADMIN';
         
         // Links (Desktop)
-        desktopLinks.innerHTML = `
+        let desktopLinksHtml = `
+            <a href="/promo.html" class="nav-link" data-page="promo">Promo</a>
             <a href="/orders.html" class="nav-link" data-page="orders">My Orders</a>
             <a href="/wishlist.html" class="nav-link" data-page="wishlist">Wishlist</a>
         `;
+        if (isAdmin) {
+            desktopLinksHtml = `
+                <a href="/admin-dashboard.html" class="nav-link" data-page="admin">Admin Dashboard</a>
+                <a href="/promo.html" class="nav-link" data-page="promo">Promo</a>
+            `;
+        }
+        desktopLinks.innerHTML = desktopLinksHtml;
         
         // Actions (Desktop)
         desktopActions.innerHTML = `
@@ -95,11 +105,20 @@ function updateNavbarAuthState() {
         `;
         
         // Links (Mobile)
-        mobileLinks.innerHTML = `
+        let mobileLinksHtml = `
             <a href="/profile.html" class="nav-link-mobile" data-page="profile">My Profile</a>
+            <a href="/promo.html" class="nav-link-mobile" data-page="promo">Promo</a>
             <a href="/orders.html" class="nav-link-mobile" data-page="orders">My Orders</a>
             <a href="/wishlist.html" class="nav-link-mobile" data-page="wishlist">Wishlist</a>
         `;
+        if (isAdmin) {
+            mobileLinksHtml = `
+                <a href="/admin-dashboard.html" class="nav-link-mobile" data-page="admin">Admin Dashboard</a>
+                <a href="/profile.html" class="nav-link-mobile" data-page="profile">My Profile</a>
+                <a href="/promo.html" class="nav-link-mobile" data-page="promo">Promo</a>
+            `;
+        }
+        mobileLinks.innerHTML = mobileLinksHtml;
         
         // Actions (Mobile)
         mobileActions.innerHTML = `
