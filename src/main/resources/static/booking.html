@@ -149,7 +149,7 @@
             }
             
             const urlParams = new URLSearchParams(window.location.search);
-            const eventId = urlParams.get('event');
+            const eventId = urlParams.get('eventId') || urlParams.get('event');
             
             if (!eventId) {
                 window.location.href = '/events.html';

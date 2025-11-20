@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Detail - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased" data-page="order-detail">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main class="min-h-screen bg-gray-50 pb-16">
+        <div class="container mx-auto max-w-4xl px-4 py-8">
+            
+            <!-- Header Section -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Order Detail</h1>
+                        <p class="text-gray-600 mt-1">View your booking and download tickets</p>
+                    </div>
+                    <button onclick="window.history.back()" class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition">
+                        ← Back
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Status Card -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Order ID</p>
+                                <p id="order-id" class="text-lg font-mono font-semibold text-gray-900">#-</p>
+                            </div>
+                            <div id="status-badge" class="px-4 py-2 rounded-full text-sm font-semibold">
+                                Loading...
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 pt-4 border-t">
+                            <div>
+                                <p class="text-xs text-gray-600 uppercase tracking-wide">Order Date</p>
+                                <p id="order-date" class="font-semibold text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 uppercase tracking-wide">Status</p>
+                                <p id="order-status-text" class="font-semibold text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 uppercase tracking-wide">Total Amount</p>
+                                <p id="order-total" class="font-semibold text-gray-900 mt-1">Rp0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Event Information -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Event Information</h2>
+                        
+                        <div class="flex gap-4">
+                            <img id="event-image" src="" alt="Event" class="w-24 h-24 rounded-lg object-cover">
+                            <div class="flex-1">
+                                <h3 id="event-name" class="text-lg font-semibold text-gray-900">-</h3>
+                                <div class="space-y-2 mt-2 text-sm text-gray-600">
+                                    <p>📅 <span id="event-date">-</span></p>
+                                    <p>⏰ <span id="event-time">-</span></p>
+                                    <p>📍 <span id="event-venue">-</span></p>
+                                    <p>🎤 <span id="event-artist">-</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tickets -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Ticket Details</h2>
+                        
+                        <div id="tickets-list" class="space-y-3">
+                            <!-- Tickets populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Download Tickets -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Download Tickets</h2>
+                        
+                        <div id="tickets-download" class="space-y-2">
+                            <!-- Download buttons populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Buyer Information -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Buyer Information</h2>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Full Name</p>
+                                <p id="buyer-name" class="font-semibold text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Email</p>
+                                <p id="buyer-email" class="font-semibold text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Phone</p>
+                                <p id="buyer-phone" class="font-semibold text-gray-900 mt-1">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">ID Card</p>
+                                <p id="buyer-idcard" class="font-semibold text-gray-900 mt-1">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping Address -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Shipping Address</h2>
+                        
+                        <div class="space-y-2 text-sm">
+                            <p id="shipping-street" class="text-gray-900 font-semibold">-</p>
+                            <p id="shipping-city" class="text-gray-600">-</p>
+                            <p id="shipping-state" class="text-gray-600">-</p>
+                            <p id="shipping-zipcode" class="text-gray-600">-</p>
+                            <p id="shipping-country" class="text-gray-600">-</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Timeline -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Order Timeline</h2>
+                        
+                        <div id="timeline" class="space-y-6">
+                            <!-- Timeline items populated by JS -->
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6 sticky top-24">
+                        <h3 class="font-semibold text-gray-900 mb-4">Actions</h3>
+                        
+                        <div class="space-y-2">
+                            <button onclick="downloadAllTickets()" class="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium text-sm">
+                                📥 Download All Tickets
+                            </button>
+                            
+                            <button onclick="shareOrder()" class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm">
+                                🔗 Share Order
+                            </button>
+                            
+                            <button onclick="printOrder()" class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-sm">
+                                🖨️ Print Order
+                            </button>
+                            
+                            <button id="cancel-btn" onclick="showCancelModal()" class="w-full px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition font-medium text-sm">
+                                ❌ Cancel Order
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Summary -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="font-semibold text-gray-900 mb-4">Payment Summary</h3>
+                        
+                        <div class="space-y-2 text-sm mb-4 pb-4 border-b">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span id="pay-subtotal" class="font-medium">Rp0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Discount</span>
+                                <span id="pay-discount" class="font-medium text-green-600">-Rp0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Admin Fee</span>
+                                <span class="font-medium">Rp15,000</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-4">
+                            <span class="font-semibold text-gray-900">Total Paid</span>
+                            <span id="total-paid" class="text-xl font-bold text-primary-600">Rp0</span>
+                        </div>
+                        
+                        <div class="pt-4 border-t">
+                            <p class="text-xs text-gray-600">Payment Method</p>
+                            <p id="payment-method" class="font-semibold text-gray-900 mt-1">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Cancel Order Modal -->
+    <div id="cancel-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Cancel Order?</h2>
+            <p class="text-gray-600 mb-6">
+                Are you sure you want to cancel this order? You will receive a refund to your original payment method within 5-7 business days.
+            </p>
+            
+            <div class="space-y-2">
+                <input type="text" id="cancel-reason" placeholder="Please tell us why you're canceling (optional)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeCancelModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">
+                    Keep Order
+                </button>
+                <button onclick="confirmCancel()" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                    Cancel Order
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        let orderData = null;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            // Get order ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+            
+            if (!orderId) {
+                window.location.href = '/orders.html';
+                return;
+            }
+            
+            try {
+                await loadOrderDetail(orderId);
+            } catch (e) {
+                console.error('Error loading order:', e);
+                showToast('Failed to load order details', 'error');
+            }
+        });
+        
+        async function loadOrderDetail(orderId) {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/orders/${orderId}`, {
+                    headers: { 'Authorization': 'Bearer ' + window.auth.getToken() }
+                });
+                
+                if (!response.ok) throw new Error('Failed to fetch order');
+                
+                orderData = await response.json();
+                renderOrderDetail();
+                updateStatusBadge();
+                updateActionButtons();
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error loading order details', 'error');
+                setTimeout(() => window.location.href = '/orders.html', 2000);
+            }
+        }
+        
+        function renderOrderDetail() {
+            const order = orderData.data || orderData;
+            
+            // Order ID & Date
+            document.getElementById('order-id').textContent = '#' + (order.idPembelian || order.id).toString().padStart(6, '0');
+            document.getElementById('order-date').textContent = formatDate(order.tanggalPembelian || order.createdAt);
+            document.getElementById('order-status-text').textContent = getStatusLabel(order.status);
+            document.getElementById('order-total').textContent = formatCurrency(order.totalHarga);
+            
+            // Event Information
+            if (order.tiket) {
+                const event = order.tiket.acara;
+                document.getElementById('event-name').textContent = event.namaAcara || event.name;
+                document.getElementById('event-image').src = event.fotoCover || '/assets/images/placeholder.jpg';
+                document.getElementById('event-date').textContent = formatDate(event.tanggalAcara);
+                document.getElementById('event-time').textContent = event.jamMulai || '-';
+                document.getElementById('event-venue').textContent = event.tempatAcara || '-';
+                document.getElementById('event-artist').textContent = event.artisUtama || '-';
+            }
+            
+            // Tickets List
+            renderTickets(order);
+            
+            // Buyer Information
+            const buyer = order.pengguna;
+            document.getElementById('buyer-name').textContent = buyer.namaLengkap || '-';
+            document.getElementById('buyer-email').textContent = buyer.email || '-';
+            document.getElementById('buyer-phone').textContent = buyer.noTelepon || '-';
+            document.getElementById('buyer-idcard').textContent = buyer.nomorIdentitas || '-';
+            
+            // Shipping Address
+            const addr = order.alamatPengiriman;
+            if (addr) {
+                document.getElementById('shipping-street').textContent = addr.jalan || '-';
+                document.getElementById('shipping-city').textContent = addr.kota || '-';
+                document.getElementById('shipping-state').textContent = addr.provinsi || '-';
+                document.getElementById('shipping-zipcode').textContent = addr.kodePOS || '-';
+                document.getElementById('shipping-country').textContent = addr.negara || 'Indonesia';
+            }
+            
+            // Payment Summary
+            const discount = order.diskon || 0;
+            document.getElementById('pay-subtotal').textContent = formatCurrency(order.totalHarga - discount);
+            document.getElementById('pay-discount').textContent = '-' + formatCurrency(discount);
+            document.getElementById('total-paid').textContent = formatCurrency(order.totalHarga);
+            document.getElementById('payment-method').textContent = order.metodePembayaran || '-';
+            
+            // Timeline
+            renderTimeline(order);
+        }
+        
+        function renderTickets(order) {
+            const container = document.getElementById('tickets-list');
+            const downloadContainer = document.getElementById('tickets-download');
+            
+            if (!order.detailPembelian || order.detailPembelian.length === 0) {
+                container.innerHTML = '<p class="text-gray-600">No tickets found</p>';
+                downloadContainer.innerHTML = '<p class="text-gray-600">No tickets to download</p>';
+                return;
+            }
+            
+            container.innerHTML = order.detailPembelian.map((detail, idx) => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <p class="font-semibold text-gray-900">${detail.tiket.jenisTiket}</p>
+                        <p class="text-sm text-gray-600">Quantity: ${detail.jumlah}</p>
+                        <p class="text-sm text-gray-600">Price: ${formatCurrency(detail.tiket.harga)}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-semibold text-gray-900">${formatCurrency(detail.tiket.harga * detail.jumlah)}</p>
+                        <p class="text-xs text-gray-500 mt-1">Qty: ${detail.jumlah}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            downloadContainer.innerHTML = order.detailPembelian.map((detail, idx) => `
+                <button onclick="downloadTicket(${idx})" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
+                    📄 Download ${detail.tiket.jenisTiket} (${detail.jumlah} pcs)
+                </button>
+            `).join('');
+        }
+        
+        function renderTimeline(order) {
+            const timeline = document.getElementById('timeline');
+            const events = [
+                { status: 'CREATED', label: 'Order Created', date: order.tanggalPembelian },
+                { status: 'PAID', label: 'Payment Confirmed', date: order.tanggalPembayaran },
+                { status: 'CONFIRMED', label: 'Order Confirmed', date: order.tanggalKonfirmasi },
+                { status: 'COMPLETED', label: 'Event Completed', date: order.tanggalSelesai }
+            ];
+            
+            timeline.innerHTML = events.map(event => {
+                const isCompleted = isStatusCompleted(order.status, event.status);
+                return `
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-4 h-4 rounded-full ${isCompleted ? 'bg-green-600' : 'bg-gray-300'}"></div>
+                            ${event !== events[events.length - 1] ? '<div class="w-0.5 h-12 bg-gray-200"></div>' : ''}
+                        </div>
+                        <div class="pb-6">
+                            <p class="font-semibold text-gray-900">${event.label}</p>
+                            <p class="text-sm text-gray-600">${event.date ? formatDate(event.date) : 'Pending'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateStatusBadge() {
+            const badge = document.getElementById('status-badge');
+            const status = orderData.data?.status || orderData.status;
+            
+            const statusConfig = {
+                'PENDING': { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pending Payment' },
+                'PAID': { bg: 'bg-blue-100', text: 'text-blue-800', label: 'Paid' },
+                'CONFIRMED': { bg: 'bg-green-100', text: 'text-green-800', label: 'Confirmed' },
+                'COMPLETED': { bg: 'bg-gray-100', text: 'text-gray-800', label: 'Completed' },
+                'CANCELLED': { bg: 'bg-red-100', text: 'text-red-800', label: 'Cancelled' }
+            };
+            
+            const config = statusConfig[status] || statusConfig['PENDING'];
+            badge.className = `px-4 py-2 rounded-full text-sm font-semibold ${config.bg} ${config.text}`;
+            badge.textContent = config.label;
+        }
+        
+        function updateActionButtons() {
+            const status = orderData.data?.status || orderData.status;
+            const cancelBtn = document.getElementById('cancel-btn');
+            
+            if (['COMPLETED', 'CANCELLED'].includes(status)) {
+                cancelBtn.disabled = true;
+                cancelBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+        
+        function downloadTicket(index) {
+            const order = orderData.data || orderData;
+            const detail = order.detailPembelian[index];
+            showToast(`Downloading ${detail.tiket.jenisTiket} ticket...`, 'info');
+            // In real app, generate and download PDF ticket
+            setTimeout(() => showToast('Ticket downloaded successfully!', 'success'), 1000);
+        }
+        
+        function downloadAllTickets() {
+            showToast('Preparing all tickets for download...', 'info');
+            // In real app, generate ZIP with all tickets
+            setTimeout(() => showToast('All tickets downloaded!', 'success'), 2000);
+        }
+        
+        function shareOrder() {
+            const orderId = (orderData.data?.idPembelian || orderData.idPembelian).toString().padStart(6, '0');
+            const shareUrl = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Event Konser Order',
+                    text: `Check out my order #${orderId}`,
+                    url: shareUrl
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(shareUrl);
+                showToast('Order link copied to clipboard!', 'success');
+            }
+        }
+        
+        function printOrder() {
+            window.print();
+        }
+        
+        function showCancelModal() {
+            document.getElementById('cancel-modal').classList.remove('hidden');
+        }
+        
+        function closeCancelModal() {
+            document.getElementById('cancel-modal').classList.add('hidden');
+            document.getElementById('cancel-reason').value = '';
+        }
+        
+        async function confirmCancel() {
+            const orderId = orderData.data?.idPembelian || orderData.idPembelian;
+            const reason = document.getElementById('cancel-reason').value;
+            
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/orders/${orderId}/cancel`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + window.auth.getToken()
+                    },
+                    body: JSON.stringify({ reason })
+                });
+                
+                if (response.ok) {
+                    showToast('Order cancelled successfully', 'success');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showToast('Failed to cancel order', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            }
+            
+            closeCancelModal();
+        }
+        
+        function getStatusLabel(status) {
+            const labels = {
+                'PENDING': 'Pending',
+                'PAID': 'Paid',
+                'CONFIRMED': 'Confirmed',
+                'COMPLETED': 'Completed',
+                'CANCELLED': 'Cancelled'
+            };
+            return labels[status] || status;
+        }
+        
+        function isStatusCompleted(currentStatus, checkStatus) {
+            const order = ['CREATED', 'PAID', 'CONFIRMED', 'COMPLETED'];
+            const cancelledIdx = order.indexOf('CANCELLED');
+            const currentIdx = order.indexOf(currentStatus);
+            const checkIdx = order.indexOf(checkStatus);
+            
+            return checkIdx <= currentIdx;
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount || 0);
+        }
+        
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

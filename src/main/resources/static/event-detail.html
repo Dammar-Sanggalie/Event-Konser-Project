@@ -382,7 +382,17 @@
         }
         
         function bookTicket() {
-            alert('Booking feature will be implemented soon!');
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const eventId = new URLSearchParams(window.location.search).get('id');
+            if (eventId) {
+                window.location.href = `/booking.html?eventId=${eventId}`;
+            } else {
+                alert('Event ID not found');
+            }
         }
         
         function showError(message) {
