@@ -262,9 +262,9 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="font-medium text-gray-900">${item.jenisTiket}</p>
-                            <p class="text-xs text-gray-600">x${item.quantity}</p>
+                            <p class="text-xs text-gray-600">x${item.jumlah}</p>
                         </div>
-                        <p class="font-medium text-gray-900">${formatCurrency(item.price * item.quantity)}</p>
+                        <p class="font-medium text-gray-900">${formatCurrency(item.harga * item.jumlah)}</p>
                     </div>
                 `).join('');
             }
@@ -275,7 +275,7 @@
         function calculatePaymentTotal() {
             let subtotal = 0;
             if (orderData.items) {
-                subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                subtotal = orderData.items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0);
             }
             
             const discount = orderData.discount || 0;
@@ -381,10 +381,10 @@
                 // First create the order
                 const orderPayload = {
                     idPengguna: userId,
-                    totalHarga: orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) - (orderData.discount || 0) + ADMIN_FEE,
+                    totalHarga: orderData.items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0) - (orderData.discount || 0) + ADMIN_FEE,
                     items: orderData.items.map(item => ({
-                        idTiket: item.ticketId,
-                        jumlah: item.quantity
+                        idTiket: item.idTiket,
+                        jumlah: item.jumlah
                     }))
                 };
                 
@@ -430,7 +430,8 @@
                 }
             } catch (error) {
                 console.error('Error processing payment:', error);
-                showToast('An error occurred', 'error');
+                console.error('Error stack:', error.stack);
+                showToast('An error occurred: ' + error.message, 'error');
             }
         }
         

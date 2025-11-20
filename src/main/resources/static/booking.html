@@ -218,7 +218,7 @@
                 const isOutOfStock = ticket.stok <= 0;
                 
                 return `
-                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary-400 transition ${isOutOfStock ? 'opacity-50' : ''}">
+                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary-400 transition ${isOutOfStock ? 'opacity-50' : ''}" data-ticket-id="${ticket.id}" data-ticket-price="${ticket.harga}" data-ticket-name="${ticket.jenisTiket}">
                         <div class="flex items-center justify-between">
                             <div class="flex-1">
                                 <p class="font-medium text-gray-900">${ticket.jenisTiket}</p>
@@ -229,7 +229,7 @@
                             </div>
                             
                             <div class="text-right ml-4">
-                                <p class="text-lg font-bold text-primary-600 mb-3">${formatCurrency(ticket.harga)}</p>
+                                <p class="text-lg font-bold text-primary-600 mb-3" data-price="${ticket.harga}">${formatCurrency(ticket.harga)}</p>
                                 
                                 <div class="flex items-center space-x-2">
                                     <button onclick="decreaseQuantity(${ticket.id})" class="p-1 border border-gray-300 rounded hover:bg-gray-100" ${isOutOfStock ? 'disabled' : ''}>
@@ -283,10 +283,12 @@
                 const qty = parseInt(input.value) || 0;
                 
                 if (qty > 0) {
-                    const ticketElement = input.closest('[class*="border-gray"]');
-                    const ticketName = ticketElement.querySelector('p.font-medium').textContent;
-                    const priceText = ticketElement.querySelector('.text-primary-600').textContent;
-                    const price = parseFloat(priceText.replace(/\D/g, '')) || 0;
+                    // Find the ticket container using data attribute
+                    const ticketContainer = document.querySelector(`[data-ticket-id="${ticketId}"]`);
+                    if (!ticketContainer) return;
+                    
+                    const ticketName = ticketContainer.getAttribute('data-ticket-name');
+                    const price = parseFloat(ticketContainer.getAttribute('data-ticket-price')) || 0;
                     
                     const itemTotal = price * qty;
                     subtotal += itemTotal;
@@ -322,34 +324,46 @@
                 return;
             }
             
-            // Prepare booking data
+            // Prepare booking data using data attributes
             const items = [];
             document.querySelectorAll('[id^="qty-"]').forEach(input => {
                 const qty = parseInt(input.value) || 0;
                 if (qty > 0) {
                     const ticketId = input.id.replace('qty-', '');
-                    const ticketElement = input.closest('[class*="border-gray"]');
-                    const ticketName = ticketElement.querySelector('p.font-medium').textContent;
-                    const priceText = ticketElement.querySelector('.text-primary-600').textContent;
-                    const price = parseFloat(priceText.replace(/\D/g, '')) || 0;
+                    const ticketContainer = document.querySelector(`[data-ticket-id="${ticketId}"]`);
+                    
+                    if (!ticketContainer) {
+                        console.warn(`Ticket container not found for ID: ${ticketId}`);
+                        return;
+                    }
+                    
+                    const ticketName = ticketContainer.getAttribute('data-ticket-name');
+                    const price = parseFloat(ticketContainer.getAttribute('data-ticket-price')) || 0;
                     
                     items.push({
-                        ticketId: parseInt(ticketId),
+                        idTiket: parseInt(ticketId),
                         jenisTiket: ticketName,
                         eventName: eventData.namaEvent,
-                        quantity: qty,
-                        price: price
+                        jumlah: qty,
+                        harga: price
                     });
                 }
             });
             
+            if (items.length === 0) {
+                showToast('Please select at least one ticket', 'error');
+                return;
+            }
+            
             const orderData = {
-                eventId: eventData.idEvent,
+                idEvent: eventData.idEvent,
+                namaEvent: eventData.namaEvent,
                 items: items,
-                subtotal: items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                subtotal: items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0),
                 discount: 0
             };
             
+            console.log('Checkout order:', orderData);
             sessionStorage.setItem('checkout_order', JSON.stringify(orderData));
             window.location.href = '/checkout.html';
         }

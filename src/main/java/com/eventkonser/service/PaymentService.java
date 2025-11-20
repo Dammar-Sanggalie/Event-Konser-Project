@@ -30,12 +30,27 @@ public class PaymentService {
     
     @Transactional
     public Payment processPayment(Long orderId, String paymentMethod) {
-        Payment payment = getPaymentByOrderId(orderId);
-        Order order = payment.getOrder();
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("Order tidak ditemukan dengan ID: " + orderId));
         
         if (order.getStatus() != OrderStatus.PENDING) {
-            throw new InvalidRequestException("Order tidak dapat diproses");
+            throw new InvalidRequestException("Order tidak dapat diproses. Status: " + order.getStatus());
         }
+        
+        // Get or create payment (in case it wasn't created during booking)
+        Payment payment = paymentRepository.findByOrder_IdPembelian(orderId)
+            .orElseGet(() -> {
+                Payment newPayment = new Payment();
+                newPayment.setOrder(order);
+                newPayment.setJumlahBayar(order.getTotalHarga());
+                newPayment.setStatusPembayaran(PaymentStatus.PENDING);
+                newPayment.setExpiredAt(LocalDateTime.now().plusMinutes(15));
+                return newPayment;
+            });
+        
+        // Simulasi payment gateway processing
+        // In production: redirect to Midtrans/Xendit, handle callback, update status
+        // For now: Mark as SUCCESS after validation
         
         // Update payment
         payment.setMetodePembayaran(paymentMethod);

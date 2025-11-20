@@ -225,8 +225,8 @@
                             <p class="text-sm text-gray-600">${item.eventName}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-medium text-gray-900">x${item.quantity}</p>
-                            <p class="text-sm text-primary-600">${formatCurrency(item.price * item.quantity)}</p>
+                            <p class="font-medium text-gray-900">x${item.jumlah}</p>
+                            <p class="text-sm text-primary-600">${formatCurrency(item.harga * item.jumlah)}</p>
                         </div>
                     </div>
                 `).join('');
@@ -238,7 +238,7 @@
         function calculateTotal() {
             let subtotal = 0;
             if (orderData.items) {
-                subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                subtotal = orderData.items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0);
             }
             
             const discount = orderData.discount || 0;

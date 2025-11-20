@@ -18,16 +18,22 @@ public class OrderController {
     private final OrderService orderService;
     
     /**
-     * POST /api/orders/book - Book ticket (CRITICAL ENDPOINT)
+     * POST /api/orders/book - Book tickets (CRITICAL ENDPOINT)
+     * Frontend sends: { idPengguna, totalHarga, items: [{idTiket, jumlah}] }
      */
     @PostMapping("/book")
     public ResponseEntity<ApiResponse<Order>> bookTicket(@RequestBody BookingRequest request) {
-        Order order = orderService.bookTicket(
-            request.getUserId(),
-            request.getTicketId(),
-            request.getQuantity()
-        );
-        return ResponseEntity.ok(ApiResponse.success("Booking berhasil! Silakan selesaikan pembayaran dalam 15 menit.", order));
+        // For now, create order with first ticket as primary
+        // TODO: Upgrade to support multiple tickets per order
+        if (request.getItems() != null && !request.getItems().isEmpty()) {
+            Order order = orderService.bookTicket(
+                request.getIdPengguna(),
+                request.getItems().get(0).getIdTiket(),
+                request.getItems().get(0).getJumlah()
+            );
+            return ResponseEntity.ok(ApiResponse.success("Booking berhasil! Silakan selesaikan pembayaran dalam 15 menit.", order));
+        }
+        return ResponseEntity.badRequest().body(ApiResponse.error("Items tidak boleh kosong"));
     }
     
     /**
