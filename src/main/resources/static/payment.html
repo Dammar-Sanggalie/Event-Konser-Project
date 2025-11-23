@@ -221,6 +221,9 @@
     
     <footer id="footer-placeholder"></footer>
     
+    <!-- Midtrans Snap Script -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-CLLMWHWGQ_JriByX"></script>
+    
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/app.js"></script>
@@ -229,6 +232,7 @@
         let orderData = null;
         const ADMIN_FEE = 15000;
         const PAYMENT_TIMEOUT_MINUTES = 15;
+        const MIDTRANS_CLIENT_KEY = 'Mid-client-CLLMWHWGQ_JriByX';
         
         document.addEventListener('DOMContentLoaded', async () => {
             if (!window.auth.isAuthenticated()) {
@@ -378,6 +382,11 @@
             const userId = window.auth.getUserId();
             
             try {
+                // Show loading
+                const payButton = document.getElementById('pay-button');
+                payButton.disabled = true;
+                payButton.innerHTML = '<span class="animate-spin">⏳</span> Processing...';
+                
                 // First create the order
                 const orderPayload = {
                     idPengguna: userId,
@@ -398,40 +407,63 @@
                 
                 if (!orderResult.success) {
                     showToast('Failed to create order', 'error');
+                    payButton.disabled = false;
+                    payButton.innerHTML = 'Complete Payment';
                     return;
                 }
                 
                 const orderId = orderResult.data.idPembelian || orderResult.data.id;
                 
-                // Then process payment
-                const paymentPayload = {
-                    orderId: orderId,
-                    paymentMethod: selectedMethod
-                };
-                
-                const paymentResponse = await fetch(`${window.API_BASE_URL}/payments/process`, {
+                // Create Snap Token dari Midtrans
+                console.log('Creating Snap token for order:', orderId);
+                const snapResponse = await fetch(`${window.API_BASE_URL}/payments/create-snap-token?orderId=${orderId}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(paymentPayload)
+                    headers: { 'Content-Type': 'application/json' }
                 });
                 
-                const paymentResult = await paymentResponse.json();
+                const snapResult = await snapResponse.json();
                 
-                if (paymentResult.success) {
-                    // Clear session and redirect to success page
-                    sessionStorage.removeItem('checkout_order');
-                    showToast('Payment successful!', 'success');
-                    
-                    setTimeout(() => {
-                        window.location.href = `/orders.html?payment=success&orderId=${orderId}`;
-                    }, 1500);
-                } else {
-                    showToast(paymentResult.message || 'Payment failed', 'error');
+                if (!snapResult.success || !snapResult.data.snap_token) {
+                    showToast('Failed to create payment token', 'error');
+                    payButton.disabled = false;
+                    payButton.innerHTML = 'Complete Payment';
+                    return;
                 }
+                
+                // Trigger Midtrans Snap modal
+                snap.pay(snapResult.data.snap_token, {
+                    onSuccess: function(result) {
+                        console.log('Payment success:', result);
+                        sessionStorage.removeItem('checkout_order');
+                        showToast('Payment successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = `/orders.html?payment=success&orderId=${orderId}`;
+                        }, 1500);
+                    },
+                    onPending: function(result) {
+                        console.log('Payment pending:', result);
+                        showToast('Payment pending. Please wait for confirmation...', 'info');
+                    },
+                    onError: function(result) {
+                        console.error('Payment error:', result);
+                        showToast('Payment failed or cancelled', 'error');
+                        payButton.disabled = false;
+                        payButton.innerHTML = 'Complete Payment';
+                    },
+                    onClose: function() {
+                        console.log('Snap modal closed');
+                        payButton.disabled = false;
+                        payButton.innerHTML = 'Complete Payment';
+                    }
+                });
+                
             } catch (error) {
                 console.error('Error processing payment:', error);
                 console.error('Error stack:', error.stack);
                 showToast('An error occurred: ' + error.message, 'error');
+                const payButton = document.getElementById('pay-button');
+                payButton.disabled = false;
+                payButton.innerHTML = 'Complete Payment';
             }
         }
         

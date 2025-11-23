@@ -30,6 +30,19 @@
 		<java.version>21</java.version>
 		<start-class>com.eventkonser.EventKonserBackendApplication</start-class>
 	</properties>
+
+	<!-- Additional repositories for Midtrans -->
+	<repositories>
+		<repository>
+			<id>jcenter</id>
+			<url>https://jcenter.bintray.com</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2</url>
+		</repository>
+	</repositories>
+	
 	<dependencies>
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -77,6 +90,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<!-- Midtrans Payment Gateway - Using HTTP Client -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
 		</dependency>
 	</dependencies>
 

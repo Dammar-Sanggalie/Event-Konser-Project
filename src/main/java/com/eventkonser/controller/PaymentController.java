@@ -7,6 +7,7 @@ import com.eventkonser.dto.PaymentRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -26,7 +27,37 @@ public class PaymentController {
     }
     
     /**
-     * POST /api/payments/process - Process payment
+     * POST /api/payments/create-snap-token - Create Midtrans Snap token
+     * Frontend call this to get snap token for Midtrans Snap UI
+     */
+    @PostMapping("/create-snap-token")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> createSnapToken(@RequestParam Long orderId) {
+        try {
+            Map<String, Object> snapData = paymentService.createSnapToken(orderId);
+            return ResponseEntity.ok(ApiResponse.success("Snap token created successfully", snapData));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                ApiResponse.error("Failed to create snap token: " + e.getMessage())
+            );
+        }
+    }
+    
+    /**
+     * POST /api/payments/callback - Midtrans notification callback
+     * Midtrans kirim webhook ke endpoint ini untuk notify payment status
+     */
+    @PostMapping("/callback")
+    public ResponseEntity<String> handleMidtransCallback(@RequestBody Map<String, Object> notification) {
+        try {
+            paymentService.handleMidtransCallback(notification);
+            return ResponseEntity.ok("OK");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error processing callback");
+        }
+    }
+    
+    /**
+     * POST /api/payments/process - Process payment (fallback untuk simulasi/testing)
      */
     @PostMapping("/process")
     public ResponseEntity<ApiResponse<Payment>> processPayment(@RequestBody PaymentRequest request) {
@@ -38,12 +69,16 @@ public class PaymentController {
     }
     
     /**
-     * POST /api/payments/callback - Payment gateway callback
-     * (Untuk integrasi dengan Midtrans/Xendit)
+     * POST /api/payments/callback - Midtrans notification callback
+     * Midtrans kirim webhook ke endpoint ini untuk notify payment status
      */
     @PostMapping("/callback")
-    public ResponseEntity<ApiResponse<String>> paymentCallback(@RequestBody String payload) {
-        // TODO: Implement payment gateway callback handler
-        return ResponseEntity.ok(ApiResponse.success("Callback received", "OK"));
+    public ResponseEntity<String> handleMidtransCallback(@RequestBody Map<String, Object> notification) {
+        try {
+            paymentService.handleMidtransCallback(notification);
+            return ResponseEntity.ok("OK");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error processing callback");
+        }
     }
 }
