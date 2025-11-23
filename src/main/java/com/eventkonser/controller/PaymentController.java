@@ -67,18 +67,4 @@ public class PaymentController {
         );
         return ResponseEntity.ok(ApiResponse.success("Pembayaran berhasil!", payment));
     }
-    
-    /**
-     * POST /api/payments/callback - Midtrans notification callback
-     * Midtrans kirim webhook ke endpoint ini untuk notify payment status
-     */
-    @PostMapping("/callback")
-    public ResponseEntity<String> handleMidtransCallback(@RequestBody Map<String, Object> notification) {
-        try {
-            paymentService.handleMidtransCallback(notification);
-            return ResponseEntity.ok("OK");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error processing callback");
-        }
-    }
 }

@@ -92,7 +92,7 @@ public class PaymentService {
             Map<String, String> customerDetails = new HashMap<>();
             customerDetails.put("first_name", order.getUser().getNama());
             customerDetails.put("email", order.getUser().getEmail());
-            customerDetails.put("phone", order.getUser().getNomorTelepon() != null ? order.getUser().getNomorTelepon() : "62");
+            customerDetails.put("phone", order.getUser().getNoHp() != null ? order.getUser().getNoHp() : "62");
             
             // Build item details
             Map<String, Object> item = new HashMap<>();
@@ -132,9 +132,9 @@ public class PaymentService {
                 String snapToken = (String) response.getBody().get("token");
                 String redirectUrl = (String) response.getBody().get("redirect_url");
                 
-                // Save transaction ID for callback verification
+                // Save gateway ID for callback verification
                 if (snapToken != null) {
-                    payment.setTransactionId(snapToken);
+                    payment.setPaymentGatewayId(snapToken);
                     paymentRepository.save(payment);
                 }
                 
@@ -211,134 +211,5 @@ public class PaymentService {
     public Double getSuccessRate() {
         Double rate = paymentRepository.getSuccessRate();
         return rate != null ? rate : 0.0;
-    }
-    
-    /**
-     * Create Snap Token untuk Midtrans payment gateway menggunakan REST API
-     */
-    @Transactional
-    public Map<String, Object> createSnapToken(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Order tidak ditemukan dengan ID: " + orderId));
-        
-        Payment payment = paymentRepository.findByOrder_IdPembelian(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Payment tidak ditemukan untuk Order ID: " + orderId));
-        
-        try {
-            // Build unique order ID
-            String uniqueOrderId = "ORDER-" + orderId + "-" + System.currentTimeMillis();
-            
-            // Build transaction details
-            Map<String, Object> transactionDetails = new HashMap<>();
-            transactionDetails.put("order_id", uniqueOrderId);
-            transactionDetails.put("gross_amount", payment.getJumlahBayar().longValue());
-            
-            // Build customer details
-            Map<String, String> customerDetails = new HashMap<>();
-            customerDetails.put("first_name", order.getUser().getNama());
-            customerDetails.put("email", order.getUser().getEmail());
-            customerDetails.put("phone", order.getUser().getNomorTelepon() != null ? order.getUser().getNomorTelepon() : "62");
-            
-            // Build item details
-            Map<String, Object> item = new HashMap<>();
-            item.put("id", "ITEM-" + orderId);
-            item.put("price", payment.getJumlahBayar().longValue());
-            item.put("quantity", 1);
-            item.put("name", order.getEventName() + " - " + order.getTicketType());
-            
-            List<Map<String, Object>> itemDetails = new java.util.ArrayList<>();
-            itemDetails.add(item);
-            
-            // Build request body
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("transaction_details", transactionDetails);
-            requestBody.put("customer_details", customerDetails);
-            requestBody.put("item_details", itemDetails);
-            
-            // Create HTTP request to Midtrans
-            String auth = Base64.getEncoder().encodeToString(
-                (midtransConfig.getServerKey() + ":").getBytes()
-            );
-            
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Basic " + auth);
-            
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
-            RestTemplate restTemplate = new RestTemplate();
-            
-            String midtransUrl = midtransConfig.isProduction() 
-                ? "https://app.midtrans.com/snap/v1/transactions"
-                : "https://app.sandbox.midtrans.com/snap/v1/transactions";
-            
-            ResponseEntity<Map> response = restTemplate.postForEntity(midtransUrl, request, Map.class);
-            
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                String snapToken = (String) response.getBody().get("token");
-                String redirectUrl = (String) response.getBody().get("redirect_url");
-                
-                // Save transaction ID for callback verification
-                if (snapToken != null) {
-                    payment.setTransactionId(snapToken);
-                    paymentRepository.save(payment);
-                }
-                
-                Map<String, Object> result = new HashMap<>();
-                result.put("snap_token", snapToken);
-                result.put("redirect_url", redirectUrl);
-                return result;
-            }
-            
-            throw new RuntimeException("Failed to create Midtrans token: " + response.getStatusCode());
-            
-        } catch (Exception e) {
-            throw new RuntimeException("Error creating Midtrans token: " + e.getMessage(), e);
-        }
-    }
-    
-    /**
-     * Handle Midtrans notification callback
-     */
-    @Transactional
-    public void handleMidtransCallback(Map<String, Object> notification) {
-        String orderId = (String) notification.get("order_id");
-        String transactionId = (String) notification.get("transaction_id");
-        String transactionStatus = (String) notification.get("transaction_status");
-        
-        if (orderId == null || transactionStatus == null) {
-            throw new InvalidRequestException("Invalid notification payload");
-        }
-        
-        // Parse order ID dari format "ORDER-{idPembelian}-{timestamp}"
-        String[] parts = orderId.split("-");
-        if (parts.length < 2) {
-            throw new InvalidRequestException("Invalid order ID format: " + orderId);
-        }
-        
-        try {
-            Long paymentId = Long.parseLong(parts[1]);
-            Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment tidak ditemukan dengan ID: " + paymentId));
-            
-            Order order = payment.getOrder();
-            
-            // Update payment status based on transaction status
-            if ("capture".equals(transactionStatus) || "settlement".equals(transactionStatus)) {
-                payment.setStatusPembayaran(PaymentStatus.SUCCESS);
-                order.setStatus(OrderStatus.PAID);
-            } else if ("pending".equals(transactionStatus)) {
-                payment.setStatusPembayaran(PaymentStatus.PENDING);
-            } else if ("deny".equals(transactionStatus) || "cancel".equals(transactionStatus) || "expire".equals(transactionStatus)) {
-                payment.setStatusPembayaran(PaymentStatus.FAILED);
-                order.setStatus(OrderStatus.PENDING);
-            }
-            
-            payment.setTanggalBayar(LocalDateTime.now());
-            paymentRepository.save(payment);
-            orderRepository.save(order);
-            
-        } catch (NumberFormatException e) {
-            throw new InvalidRequestException("Invalid order ID format");
-        }
     }
 }
