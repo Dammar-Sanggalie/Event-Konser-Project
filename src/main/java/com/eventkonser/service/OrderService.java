@@ -73,9 +73,10 @@ public class OrderService {
         }
         
         // 5. Validasi max pembelian
-        if (quantity > ticket.getMaxPembelian()) {
+        Integer maxPembelian = ticket.getMaxPembelian();
+        if (maxPembelian != null && quantity > maxPembelian) {
             throw new InvalidRequestException(
-                "Maksimal pembelian " + ticket.getMaxPembelian() + " tiket per transaksi"
+                "Maksimal pembelian " + maxPembelian + " tiket per transaksi"
             );
         }
         
@@ -92,9 +93,21 @@ public class OrderService {
         order.setStatus(OrderStatus.PENDING);
         
         // Snapshot info untuk history
-        order.setEventName(ticket.getEvent().getNamaEvent());
-        order.setEventDate(ticket.getEvent().getTanggalMulai().toString());
-        order.setVenueName(ticket.getEvent().getVenue().getNamaVenue());
+        try {
+            Event event = ticket.getEvent();
+            if (event != null) {
+                order.setEventName(event.getNamaEvent());
+                order.setEventDate(event.getTanggalMulai() != null ? event.getTanggalMulai().toString() : "");
+                if (event.getVenue() != null) {
+                    order.setVenueName(event.getVenue().getNamaVenue());
+                }
+            }
+        } catch (Exception e) {
+            // If event/venue data is corrupted, just use ticket info
+            order.setEventName("Event Information Unavailable");
+            order.setEventDate("");
+            order.setVenueName("Venue Information Unavailable");
+        }
         order.setTicketType(ticket.getJenisTiket());
         
         // 8. Kurangi stok

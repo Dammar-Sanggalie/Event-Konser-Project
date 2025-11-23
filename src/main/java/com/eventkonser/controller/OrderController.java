@@ -23,17 +23,28 @@ public class OrderController {
      */
     @PostMapping("/book")
     public ResponseEntity<ApiResponse<Order>> bookTicket(@RequestBody BookingRequest request) {
-        // For now, create order with first ticket as primary
-        // TODO: Upgrade to support multiple tickets per order
-        if (request.getItems() != null && !request.getItems().isEmpty()) {
-            Order order = orderService.bookTicket(
-                request.getIdPengguna(),
-                request.getItems().get(0).getIdTiket(),
-                request.getItems().get(0).getJumlah()
-            );
-            return ResponseEntity.ok(ApiResponse.success("Booking berhasil! Silakan selesaikan pembayaran dalam 15 menit.", order));
+        try {
+            System.out.println("📌 BookingRequest received: " + request);
+            System.out.println("   idPengguna: " + request.getIdPengguna());
+            System.out.println("   items: " + request.getItems());
+            
+            // For now, create order with first ticket as primary
+            // TODO: Upgrade to support multiple tickets per order
+            if (request.getItems() != null && !request.getItems().isEmpty()) {
+                System.out.println("✅ Processing first item...");
+                Order order = orderService.bookTicket(
+                    request.getIdPengguna(),
+                    request.getItems().get(0).getIdTiket(),
+                    request.getItems().get(0).getJumlah()
+                );
+                return ResponseEntity.ok(ApiResponse.success("Booking berhasil! Silakan selesaikan pembayaran dalam 15 menit.", order));
+            }
+            return ResponseEntity.badRequest().body(ApiResponse.error("Items tidak boleh kosong"));
+        } catch (Exception e) {
+            System.out.println("❌ Error in bookTicket: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
-        return ResponseEntity.badRequest().body(ApiResponse.error("Items tidak boleh kosong"));
     }
     
     /**
