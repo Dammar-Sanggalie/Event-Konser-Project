@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased">
+    <header id="navbar-placeholder"></header>
+
+    <main class="container mx-auto max-w-7xl px-4 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
+            <p class="text-gray-600 mt-1">Monitoring penjualan, revenue, dan statistik event</p>
+        </div>
+
+        <!-- Date Range Filter -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div class="flex gap-4 flex-wrap">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <input type="date" id="filter-start-date" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <input type="date" id="filter-end-date" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                </div>
+                <div class="flex items-end">
+                    <button id="btn-filter" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">Apply Filter</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-primary-500">
+                <p class="text-gray-600 text-sm">Total Revenue</p>
+                <p id="kpi-revenue" class="text-3xl font-bold text-gray-900 mt-2">Rp 0</p>
+                <p id="kpi-revenue-change" class="text-xs text-gray-500 mt-2">vs last period</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                <p class="text-gray-600 text-sm">Total Orders</p>
+                <p id="kpi-orders" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p id="kpi-orders-change" class="text-xs text-gray-500 mt-2">vs last period</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                <p class="text-gray-600 text-sm">Tickets Sold</p>
+                <p id="kpi-tickets" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p id="kpi-tickets-change" class="text-xs text-gray-500 mt-2">vs last period</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
+                <p class="text-gray-600 text-sm">Conversion Rate</p>
+                <p id="kpi-conversion" class="text-3xl font-bold text-gray-900 mt-2">0%</p>
+                <p id="kpi-conversion-change" class="text-xs text-gray-500 mt-2">vs last period</p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Revenue Trend Chart -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Revenue Trend</h3>
+                <div class="chart-container">
+                    <canvas id="revenue-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Orders Chart -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Orders by Status</h3>
+                <div class="chart-container">
+                    <canvas id="orders-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Events & Payment Methods -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Top Events -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Top 5 Events</h3>
+                <div id="top-events-container" class="space-y-3">
+                    <div class="animate-pulse">
+                        <div class="h-12 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Methods</h3>
+                <div class="chart-container">
+                    <canvas id="payment-methods-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tickets by Category -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Tickets by Category</h3>
+            <div class="chart-container">
+                <canvas id="category-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Orders</h3>
+            </div>
+            <table class="w-full">
+                <thead class="bg-gray-100 border-b">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Order ID</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Event</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Amount</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-orders-body" class="divide-y">
+                    <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer id="footer-placeholder"></footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+
+    <script>
+        let analyticsData = {
+            orders: [],
+            payments: [],
+            tickets: []
+        };
+
+        let charts = {
+            revenue: null,
+            orders: null,
+            paymentMethods: null,
+            category: null
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated() || !window.auth.isAdmin()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            await loadAnalyticsData();
+            initializeCharts();
+            initializeEventListeners();
+        });
+
+        // Load analytics data
+        async function loadAnalyticsData() {
+            try {
+                const [ordersRes, paymentsRes, ticketsRes] = await Promise.all([
+                    fetch(`${window.API_BASE_URL}/pembelian-tiket`),
+                    fetch(`${window.API_BASE_URL}/pembayaran`),
+                    fetch(`${window.API_BASE_URL}/ticket`)
+                ]);
+
+                const ordersData = await ordersRes.json();
+                const paymentsData = await paymentsRes.json();
+                const ticketsData = await ticketsRes.json();
+
+                if (ordersData.success) analyticsData.orders = ordersData.data || [];
+                if (paymentsData.success) analyticsData.payments = paymentsData.data || [];
+                if (ticketsData.success) analyticsData.tickets = ticketsData.data || [];
+
+                updateKPIs();
+                updateCharts();
+                updateTopEvents();
+                updateRecentOrders();
+            } catch (error) {
+                console.error('Error loading analytics data:', error);
+            }
+        }
+
+        // Update KPIs
+        function updateKPIs() {
+            const orders = analyticsData.orders;
+            const payments = analyticsData.payments;
+
+            const totalRevenue = payments
+                .filter(p => p.statusPembayaran === 'SUCCESS')
+                .reduce((sum, p) => sum + (p.jumlahPembayaran || 0), 0);
+
+            const totalOrders = orders.length;
+
+            const totalTickets = orders.reduce((sum, o) => {
+                const items = o.detailPembelian || [];
+                return sum + items.reduce((s, item) => s + (item.jumlahTiket || 0), 0);
+            }, 0);
+
+            const conversionRate = orders.length > 0 
+                ? ((payments.filter(p => p.statusPembayaran === 'SUCCESS').length / orders.length) * 100).toFixed(1)
+                : 0;
+
+            document.getElementById('kpi-revenue').textContent = `Rp ${totalRevenue.toLocaleString('id-ID')}`;
+            document.getElementById('kpi-orders').textContent = totalOrders;
+            document.getElementById('kpi-tickets').textContent = totalTickets;
+            document.getElementById('kpi-conversion').textContent = `${conversionRate}%`;
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Revenue Trend
+            const revenueCtx = document.getElementById('revenue-chart').getContext('2d');
+            charts.revenue = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Daily Revenue',
+                        data: [],
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true }
+                    }
+                }
+            });
+
+            // Orders Chart
+            const ordersCtx = document.getElementById('orders-chart').getContext('2d');
+            charts.orders = new Chart(ordersCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending', 'Cancelled'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Payment Methods Chart
+            const paymentCtx = document.getElementById('payment-methods-chart').getContext('2d');
+            charts.paymentMethods = new Chart(paymentCtx, {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#0284c7', '#06b6d4', '#f59e0b', '#ec4899'],
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Category Chart
+            const categoryCtx = document.getElementById('category-chart').getContext('2d');
+            charts.category = new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Tickets Sold',
+                        data: [],
+                        backgroundColor: '#0284c7',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Update charts
+        function updateCharts() {
+            // Revenue by date
+            const revenueByDate = {};
+            analyticsData.payments
+                .filter(p => p.statusPembayaran === 'SUCCESS')
+                .forEach(p => {
+                    const date = new Date(p.tanggalPembayaran).toLocaleDateString('id-ID');
+                    revenueByDate[date] = (revenueByDate[date] || 0) + (p.jumlahPembayaran || 0);
+                });
+
+            const sortedDates = Object.keys(revenueByDate).sort();
+            charts.revenue.data.labels = sortedDates.slice(-7);
+            charts.revenue.data.datasets[0].data = sortedDates.slice(-7).map(d => revenueByDate[d]);
+            charts.revenue.update();
+
+            // Orders by status
+            const completedOrders = analyticsData.orders.filter(o => o.statusPembelian === 'COMPLETED').length;
+            const pendingOrders = analyticsData.orders.filter(o => o.statusPembelian === 'PENDING').length;
+            const cancelledOrders = analyticsData.orders.filter(o => o.statusPembelian === 'CANCELLED').length;
+
+            charts.orders.data.datasets[0].data = [completedOrders, pendingOrders, cancelledOrders];
+            charts.orders.update();
+
+            // Payment methods
+            const paymentMethods = {};
+            analyticsData.payments.forEach(p => {
+                const method = p.metodePembayaran || 'Unknown';
+                paymentMethods[method] = (paymentMethods[method] || 0) + 1;
+            });
+
+            charts.paymentMethods.data.labels = Object.keys(paymentMethods);
+            charts.paymentMethods.data.datasets[0].data = Object.values(paymentMethods);
+            charts.paymentMethods.update();
+
+            // Category chart
+            const ticketsByCategory = {};
+            analyticsData.orders.forEach(o => {
+                const items = o.detailPembelian || [];
+                items.forEach(item => {
+                    const category = item.ticket?.kategori?.namaKategori || 'Unknown';
+                    const qty = item.jumlahTiket || 0;
+                    ticketsByCategory[category] = (ticketsByCategory[category] || 0) + qty;
+                });
+            });
+
+            charts.category.data.labels = Object.keys(ticketsByCategory).slice(0, 10);
+            charts.category.data.datasets[0].data = Object.values(ticketsByCategory).slice(0, 10);
+            charts.category.update();
+        }
+
+        // Update top events
+        function updateTopEvents() {
+            const eventCount = {};
+            analyticsData.orders.forEach(o => {
+                const items = o.detailPembelian || [];
+                items.forEach(item => {
+                    const eventName = item.ticket?.event?.namaEvent || 'Unknown';
+                    const qty = item.jumlahTiket || 0;
+                    eventCount[eventName] = (eventCount[eventName] || 0) + qty;
+                });
+            });
+
+            const topEvents = Object.entries(eventCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const container = document.getElementById('top-events-container');
+            container.innerHTML = topEvents.map((event, index) => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold">${index + 1}</span>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">${event[0]}</p>
+                            <p class="text-xs text-gray-500">${event[1]} tickets</p>
+                        </div>
+                    </div>
+                    <p class="text-sm font-semibold text-primary-600">${event[1]}</p>
+                </div>
+            `).join('');
+        }
+
+        // Update recent orders
+        function updateRecentOrders() {
+            const tbody = document.getElementById('recent-orders-body');
+            const recentOrders = analyticsData.orders.slice(-5).reverse();
+
+            tbody.innerHTML = recentOrders.map(order => {
+                const payment = analyticsData.payments.find(p => p.pembelianTiket?.idPembelian === order.idPembelian);
+                const amount = payment?.jumlahPembayaran || 0;
+                const status = order.statusPembelian;
+
+                const eventName = (order.detailPembelian?.[0]?.ticket?.event?.namaEvent) || 'N/A';
+                const date = new Date(order.tanggalPembelian).toLocaleDateString('id-ID');
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-medium text-primary-600">#${order.idPembelian}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">${eventName}</td>
+                        <td class="px-6 py-4 text-sm font-semibold">Rp ${amount.toLocaleString('id-ID')}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(status)}">
+                                ${status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">${date}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'COMPLETED': 'bg-green-100 text-green-800',
+                'PENDING': 'bg-yellow-100 text-yellow-800',
+                'CANCELLED': 'bg-red-100 text-red-800'
+            };
+            return badges[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            document.getElementById('btn-filter').addEventListener('click', () => {
+                // Filter logic would be implemented here
+                console.log('Filter applied');
+            });
+        }
+    </script>
+</body>
+</html>
