@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased">
+    <header id="navbar-placeholder"></header>
+
+    <main class="container mx-auto max-w-7xl px-4 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Category Management</h1>
+                <p class="text-gray-600 mt-1">Kelola kategori event</p>
+            </div>
+            <button id="btn-add-category" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold hover:shadow-lg transition">
+                + Add Category
+            </button>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div class="flex gap-4">
+                <input type="text" id="search-category" placeholder="Search category by name..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <button class="px-6 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition">Search</button>
+            </div>
+        </div>
+
+        <!-- Categories Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-100 border-b">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">ID</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Nama Kategori</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Deskripsi</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Total Events</th>
+                        <th class="px-6 py-3 text-center text-sm font-semibold text-gray-900">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categories-table-body" class="divide-y">
+                    <!-- Data akan diisi dari API -->
+                    <tr class="hover:bg-gray-50">
+                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                            <div class="flex justify-center">
+                                <svg class="w-8 h-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="category-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Add Category</h2>
+                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="category-form" class="p-6 space-y-4">
+                <input type="hidden" id="category-id">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kategori *</label>
+                    <input type="text" id="input-nama-kategori" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                    <textarea id="input-deskripsi" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" id="btn-cancel" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer id="footer-placeholder"></footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+
+    <script>
+        let categoriesData = [];
+        let isEditMode = false;
+        let currentCategoryId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated() || !window.auth.isAdmin()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            await loadCategories();
+            initializeEventListeners();
+        });
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/kategori`);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    categoriesData = result.data;
+                    renderTable();
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                showToast('Failed to load categories', 'error');
+            }
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('categories-table-body');
+            tbody.innerHTML = '';
+
+            if (categoriesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No categories found</td></tr>';
+                return;
+            }
+
+            categoriesData.forEach(category => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-sm text-gray-900">${category.idKategori}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900 font-medium">${category.namaKategori}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${category.deskripsi || '-'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">${category.totalEvents || 0}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="editCategory(${category.idKategori})" class="text-primary-600 hover:text-primary-800 mr-3">Edit</button>
+                        <button onclick="deleteCategory(${category.idKategori})" class="text-red-600 hover:text-red-800">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Edit category
+        function editCategory(categoryId) {
+            const category = categoriesData.find(c => c.idKategori === categoryId);
+            if (!category) return;
+
+            isEditMode = true;
+            currentCategoryId = categoryId;
+
+            document.getElementById('modal-title').textContent = 'Edit Category';
+            document.getElementById('category-id').value = category.idKategori;
+            document.getElementById('input-nama-kategori').value = category.namaKategori;
+            document.getElementById('input-deskripsi').value = category.deskripsi || '';
+
+            document.getElementById('category-modal').classList.remove('hidden');
+        }
+
+        // Delete category
+        async function deleteCategory(categoryId) {
+            if (!confirm('Are you sure you want to delete this category?')) return;
+
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/kategori/${categoryId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Category deleted successfully', 'success');
+                    await loadCategories();
+                } else {
+                    showToast(result.message || 'Failed to delete category', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            document.getElementById('btn-add-category').addEventListener('click', () => {
+                isEditMode = false;
+                document.getElementById('modal-title').textContent = 'Add Category';
+                document.getElementById('category-form').reset();
+                document.getElementById('category-id').value = '';
+                document.getElementById('category-modal').classList.remove('hidden');
+            });
+
+            document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+            document.getElementById('btn-cancel').addEventListener('click', closeModal);
+
+            document.getElementById('category-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await saveCategory();
+            });
+
+            document.getElementById('search-category').addEventListener('keyup', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = categoriesData.filter(c => c.namaKategori.toLowerCase().includes(query));
+                const temp = categoriesData;
+                categoriesData = filtered;
+                renderTable();
+                categoriesData = temp;
+            });
+        }
+
+        // Save category
+        async function saveCategory() {
+            const formData = {
+                namaKategori: document.getElementById('input-nama-kategori').value,
+                deskripsi: document.getElementById('input-deskripsi').value
+            };
+
+            try {
+                let response;
+                if (isEditMode) {
+                    response = await fetch(`${window.API_BASE_URL}/kategori/${currentCategoryId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    response = await fetch(`${window.API_BASE_URL}/kategori`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast(isEditMode ? 'Category updated successfully' : 'Category added successfully', 'success');
+                    closeModal();
+                    await loadCategories();
+                } else {
+                    showToast(result.message || 'Failed to save category', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving category:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('category-modal').classList.add('hidden');
+            isEditMode = false;
+            currentCategoryId = null;
+        }
+
+        function showToast(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            alert(message);
+        }
+    </script>
+</body>
+</html>
