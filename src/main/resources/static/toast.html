@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Notification Component</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Toast Notification Component</h1>
+
+        <!-- Demo Buttons -->
+        <div class="space-y-3">
+            <button id="btn-success-toast" class="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                Show Success Toast
+            </button>
+            <button id="btn-error-toast" class="w-full px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                Show Error Toast
+            </button>
+            <button id="btn-warning-toast" class="w-full px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
+                Show Warning Toast
+            </button>
+            <button id="btn-info-toast" class="w-full px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                Show Info Toast
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 space-y-2 pointer-events-none max-w-sm z-50"></div>
+
+    <script>
+        class Toast {
+            static container = document.getElementById('toast-container');
+            static queue = [];
+
+            static show(message, type = 'info', duration = 4000) {
+                const toast = this.create(message, type);
+                this.container.appendChild(toast);
+
+                // Trigger animation
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-x-96', 'opacity-0');
+                });
+
+                if (duration > 0) {
+                    setTimeout(() => this.remove(toast), duration);
+                }
+
+                return toast;
+            }
+
+            static create(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = 'transform translate-x-96 opacity-0 transition-all duration-300 pointer-events-auto';
+
+                const icons = {
+                    success: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>',
+                    error: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>',
+                    warning: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>',
+                    info: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>'
+                };
+
+                const colors = {
+                    success: 'bg-green-50 border-green-200 text-green-800',
+                    error: 'bg-red-50 border-red-200 text-red-800',
+                    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+                    info: 'bg-blue-50 border-blue-200 text-blue-800'
+                };
+
+                const iconColors = {
+                    success: 'text-green-600',
+                    error: 'text-red-600',
+                    warning: 'text-yellow-600',
+                    info: 'text-blue-600'
+                };
+
+                toast.innerHTML = `
+                    <div class="flex items-start p-4 border rounded-lg shadow-lg ${colors[type]}">
+                        <div class="${iconColors[type]} mr-3 mt-0.5 flex-shrink-0">
+                            ${icons[type]}
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">${message}</p>
+                        </div>
+                        <button class="close-toast ml-3 text-gray-400 hover:text-gray-600 transition flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+
+                toast.querySelector('.close-toast').addEventListener('click', () => {
+                    Toast.remove(toast);
+                });
+
+                return toast;
+            }
+
+            static remove(toast) {
+                toast.classList.add('translate-x-96', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+
+            // Convenience methods
+            static success(message, duration = 4000) {
+                return this.show(message, 'success', duration);
+            }
+
+            static error(message, duration = 5000) {
+                return this.show(message, 'error', duration);
+            }
+
+            static warning(message, duration = 4000) {
+                return this.show(message, 'warning', duration);
+            }
+
+            static info(message, duration = 4000) {
+                return this.show(message, 'info', duration);
+            }
+        }
+
+        // Demo event listeners
+        document.getElementById('btn-success-toast').addEventListener('click', () => {
+            Toast.success('✓ Operation completed successfully!');
+        });
+
+        document.getElementById('btn-error-toast').addEventListener('click', () => {
+            Toast.error('✗ An error occurred while processing your request');
+        });
+
+        document.getElementById('btn-warning-toast').addEventListener('click', () => {
+            Toast.warning('⚠ Please verify your information before proceeding');
+        });
+
+        document.getElementById('btn-info-toast').addEventListener('click', () => {
+            Toast.info('ℹ New updates are available');
+        });
+
+        // Example: Show multiple toasts
+        // Toast.success('Success message');
+        // Toast.error('Error message');
+        // Toast.warning('Warning message');
+        // Toast.info('Info message');
+    </script>
+</body>
+</html>

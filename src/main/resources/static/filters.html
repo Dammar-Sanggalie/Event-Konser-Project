@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filters Component</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50">
+    <div class="max-w-4xl mx-auto p-4">
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Filter Sidebar -->
+            <div class="col-span-1 bg-white rounded-lg shadow-md p-4 h-fit">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
+
+                <!-- Category Filter -->
+                <div class="mb-6">
+                    <p class="font-medium text-gray-900 mb-2">Category</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="category" value="music" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Music</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="category" value="sport" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Sport</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="category" value="conference" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Conference</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="mb-6">
+                    <p class="font-medium text-gray-900 mb-2">Price Range</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="price" value="0-100000" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Rp 0 - 100K</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="price" value="100000-500000" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Rp 100K - 500K</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="price" value="500000+" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Rp 500K+</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Date Filter -->
+                <div class="mb-6">
+                    <p class="font-medium text-gray-900 mb-2">Date</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="date" value="today" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">Today</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="date" value="this-week" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">This Week</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="date" value="this-month" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">This Month</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Rating Filter -->
+                <div class="mb-6">
+                    <p class="font-medium text-gray-900 mb-2">Rating</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="rating" value="4+" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">★★★★+ (4+)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="rating" value="3+" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">★★★+ (3+)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="filter-checkbox" data-filter="rating" value="2+" class="w-4 h-4">
+                            <span class="ml-2 text-sm text-gray-700">★★+ (2+)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Active Filters -->
+                <div id="active-filters" class="mb-4 hidden">
+                    <p class="text-xs font-semibold text-gray-600 mb-2">ACTIVE FILTERS</p>
+                    <div id="filters-list" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <!-- Clear Filters -->
+                <button id="clear-filters" class="w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition hidden">Clear All</button>
+            </div>
+
+            <!-- Results Area -->
+            <div class="col-span-2 bg-white rounded-lg shadow-md p-4">
+                <p class="text-gray-600">Results will appear here based on applied filters</p>
+                <div id="results" class="mt-4 space-y-2">
+                    <!-- Results populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FilterComponent {
+            constructor(options = {}) {
+                this.filters = {};
+                this.filterElements = document.querySelectorAll('.filter-checkbox');
+                this.activeFiltersContainer = document.getElementById('active-filters');
+                this.filtersList = document.getElementById('filters-list');
+                this.clearButton = document.getElementById('clear-filters');
+                this.resultsContainer = document.getElementById('results');
+                this.onFilterChange = options.onFilterChange || null;
+
+                this.init();
+            }
+
+            init() {
+                this.filterElements.forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => this.handleFilterChange(e));
+                });
+
+                this.clearButton.addEventListener('click', () => this.clearAllFilters());
+            }
+
+            handleFilterChange(e) {
+                const filterType = e.target.dataset.filter;
+                const value = e.target.value;
+
+                if (!this.filters[filterType]) {
+                    this.filters[filterType] = [];
+                }
+
+                if (e.target.checked) {
+                    this.filters[filterType].push(value);
+                } else {
+                    this.filters[filterType] = this.filters[filterType].filter(v => v !== value);
+                }
+
+                this.updateUI();
+                if (this.onFilterChange) {
+                    this.onFilterChange(this.filters);
+                }
+            }
+
+            updateUI() {
+                const hasFilters = Object.values(this.filters).some(arr => arr.length > 0);
+
+                if (hasFilters) {
+                    this.activeFiltersContainer.classList.remove('hidden');
+                    this.clearButton.classList.remove('hidden');
+                    this.renderActiveFilters();
+                } else {
+                    this.activeFiltersContainer.classList.add('hidden');
+                    this.clearButton.classList.add('hidden');
+                }
+            }
+
+            renderActiveFilters() {
+                this.filtersList.innerHTML = '';
+
+                Object.entries(this.filters).forEach(([type, values]) => {
+                    values.forEach(value => {
+                        const tag = document.createElement('span');
+                        tag.className = 'px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded flex items-center gap-1';
+                        tag.innerHTML = `
+                            ${value}
+                            <button class="hover:text-primary-600 font-bold" data-filter-type="${type}" data-filter-value="${value}">×</button>
+                        `;
+                        tag.querySelector('button').addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.removeFilter(type, value);
+                        });
+                        this.filtersList.appendChild(tag);
+                    });
+                });
+            }
+
+            removeFilter(type, value) {
+                const checkbox = Array.from(this.filterElements).find(
+                    el => el.dataset.filter === type && el.value === value
+                );
+                if (checkbox) {
+                    checkbox.checked = false;
+                    this.handleFilterChange({ target: checkbox });
+                }
+            }
+
+            clearAllFilters() {
+                this.filterElements.forEach(checkbox => checkbox.checked = false);
+                this.filters = {};
+                this.updateUI();
+                if (this.onFilterChange) {
+                    this.onFilterChange(this.filters);
+                }
+            }
+
+            getFilters() {
+                return this.filters;
+            }
+        }
+
+        // Example usage
+        const filterComponent = new FilterComponent({
+            onFilterChange: (filters) => {
+                console.log('Filters changed:', filters);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination Component</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Pagination Component</h1>
+
+        <!-- Sample Data Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <table class="w-full">
+                <thead class="bg-gray-100 border-b">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">ID</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Item</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="divide-y">
+                    <!-- Items will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="pagination-container" class="flex justify-center">
+            <!-- Pagination will be rendered here -->
+        </div>
+    </div>
+
+    <script>
+        class Pagination {
+            constructor(options = {}) {
+                this.options = {
+                    currentPage: options.currentPage || 1,
+                    totalItems: options.totalItems || 100,
+                    itemsPerPage: options.itemsPerPage || 10,
+                    maxButtons: options.maxButtons || 5,
+                    onPageChange: options.onPageChange,
+                    ...options
+                };
+
+                this.container = options.container || document.getElementById('pagination-container');
+                this.render();
+            }
+
+            get totalPages() {
+                return Math.ceil(this.options.totalItems / this.options.itemsPerPage);
+            }
+
+            render() {
+                this.container.innerHTML = '';
+
+                const nav = document.createElement('nav');
+                nav.className = 'flex items-center justify-center gap-1';
+
+                // Previous button
+                const prevBtn = this.createButton(
+                    this.options.currentPage > 1 ? this.options.currentPage - 1 : null,
+                    '← Previous',
+                    this.options.currentPage === 1
+                );
+                nav.appendChild(prevBtn);
+
+                // Page number buttons
+                const pageButtons = this.getPageButtons();
+                pageButtons.forEach(pageNum => {
+                    if (pageNum === '...') {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.className = 'px-3 py-2 text-gray-500';
+                        ellipsis.textContent = '...';
+                        nav.appendChild(ellipsis);
+                    } else {
+                        const btn = this.createButton(
+                            pageNum,
+                            pageNum,
+                            false,
+                            pageNum === this.options.currentPage
+                        );
+                        nav.appendChild(btn);
+                    }
+                });
+
+                // Next button
+                const nextBtn = this.createButton(
+                    this.options.currentPage < this.totalPages ? this.options.currentPage + 1 : null,
+                    'Next →',
+                    this.options.currentPage === this.totalPages
+                );
+                nav.appendChild(nextBtn);
+
+                // Info text
+                const info = document.createElement('div');
+                info.className = 'text-sm text-gray-600 ml-4';
+                const start = (this.options.currentPage - 1) * this.options.itemsPerPage + 1;
+                const end = Math.min(this.options.currentPage * this.options.itemsPerPage, this.options.totalItems);
+                info.textContent = `Showing ${start}-${end} of ${this.options.totalItems}`;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex items-center justify-center gap-4';
+                wrapper.appendChild(nav);
+                wrapper.appendChild(info);
+
+                this.container.appendChild(wrapper);
+            }
+
+            getPageButtons() {
+                const buttons = [];
+                const { maxButtons } = this.options;
+                const { currentPage } = this.options;
+                const { totalPages } = this;
+
+                if (totalPages <= maxButtons) {
+                    // Show all pages if total is less than max
+                    for (let i = 1; i <= totalPages; i++) {
+                        buttons.push(i);
+                    }
+                } else {
+                    // Calculate start and end
+                    const halfMax = Math.floor(maxButtons / 2);
+                    let start = Math.max(1, currentPage - halfMax);
+                    let end = Math.min(totalPages, currentPage + halfMax);
+
+                    if (currentPage <= halfMax) {
+                        end = maxButtons;
+                    } else if (currentPage >= totalPages - halfMax) {
+                        start = totalPages - maxButtons + 1;
+                    }
+
+                    // Add first page if needed
+                    if (start > 1) {
+                        buttons.push(1);
+                        if (start > 2) buttons.push('...');
+                    }
+
+                    // Add middle pages
+                    for (let i = start; i <= end; i++) {
+                        buttons.push(i);
+                    }
+
+                    // Add last page if needed
+                    if (end < totalPages) {
+                        if (end < totalPages - 1) buttons.push('...');
+                        buttons.push(totalPages);
+                    }
+                }
+
+                return buttons;
+            }
+
+            createButton(pageNum, text, disabled = false, active = false) {
+                const button = document.createElement('button');
+                button.textContent = text;
+                button.className = `px-3 py-2 rounded transition`;
+
+                if (disabled) {
+                    button.className += ' bg-gray-100 text-gray-400 cursor-not-allowed';
+                    button.disabled = true;
+                } else if (active) {
+                    button.className += ' bg-primary-600 text-white font-semibold';
+                    button.disabled = true;
+                } else {
+                    button.className += ' border border-gray-300 text-gray-700 hover:bg-gray-50';
+                    button.addEventListener('click', () => this.goToPage(pageNum));
+                }
+
+                return button;
+            }
+
+            goToPage(pageNum) {
+                if (pageNum < 1 || pageNum > this.totalPages) return;
+                this.options.currentPage = pageNum;
+                this.render();
+                if (this.options.onPageChange) {
+                    this.options.onPageChange(pageNum);
+                }
+            }
+
+            setTotalItems(total) {
+                this.options.totalItems = total;
+                if (this.options.currentPage > this.totalPages) {
+                    this.options.currentPage = this.totalPages;
+                }
+                this.render();
+            }
+        }
+
+        // Example usage
+        const mockData = Array.from({ length: 87 }, (_, i) => ({
+            id: i + 1,
+            item: `Item ${i + 1}`,
+            status: ['Active', 'Inactive', 'Pending'][Math.floor(Math.random() * 3)]
+        }));
+
+        const pagination = new Pagination({
+            totalItems: mockData.length,
+            itemsPerPage: 10,
+            maxButtons: 5,
+            currentPage: 1,
+            container: document.getElementById('pagination-container'),
+            onPageChange: (page) => {
+                updateTable(page);
+            }
+        });
+
+        function updateTable(page) {
+            const itemsPerPage = 10;
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const items = mockData.slice(start, end);
+
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = items.map(item => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.id}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">${item.item}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${
+                            item.status === 'Active' ? 'bg-green-100 text-green-800' :
+                            item.status === 'Inactive' ? 'bg-gray-100 text-gray-800' :
+                            'bg-yellow-100 text-yellow-800'
+                        }">
+                            ${item.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize table with first page
+        updateTable(1);
+    </script>
+</body>
+</html>
