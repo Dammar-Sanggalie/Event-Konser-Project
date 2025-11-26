@@ -336,13 +336,26 @@
             
             try {
                 const userId = window.auth.getUserId();
+                console.log('Loading wishlist for user:', userId);
+                
+                if (!userId) {
+                    throw new Error('User ID not found. Please login again.');
+                }
+                
                 const response = await fetch(`${window.API_BASE_URL}/wishlist/user/${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                }
+                
                 const result = await response.json();
+                console.log('Wishlist API response:', result);
                 
                 loadingState.classList.add('hidden');
                 
-                if (result.success && result.data && result.data.length > 0) {
+                if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
                     wishlistData = result.data;
+                    console.log('Wishlist items loaded:', wishlistData.length);
                     updateStats();
                     renderWishlist();
                     emptyState.classList.add('hidden');
@@ -354,6 +367,7 @@
                         wishlistGrid.classList.add('hidden');
                     }
                 } else {
+                    console.log('No wishlist data found or result.success is false');
                     emptyState.classList.remove('hidden');
                     wishlistGrid.classList.add('hidden');
                     wishlistList.classList.add('hidden');
@@ -361,7 +375,7 @@
             } catch (error) {
                 console.error('Error loading wishlist:', error);
                 loadingState.classList.add('hidden');
-                showToast('Failed to load wishlist', 'error');
+                showToast('Failed to load wishlist: ' + error.message, 'error');
             }
         }
         
@@ -391,6 +405,22 @@
             } else {
                 renderListView();
             }
+            
+            // Attach event listeners to all book buttons after rendering
+            setTimeout(() => {
+                console.log('Attaching book button listeners, found:', document.querySelectorAll('.book-btn').length);
+                document.querySelectorAll('.book-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const eventId = this.getAttribute('data-event-id');
+                        console.log('Book button clicked! eventId:', eventId);
+                        if (eventId) {
+                            bookNow(parseInt(eventId));
+                        }
+                    });
+                });
+            }, 50);
         }
         
         // Sort wishlist
@@ -494,7 +524,6 @@
                            class="flex-1 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-center rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105">
                             View Details
                         </a>
-                        ${!isPast ? `<button onclick="bookNow(${item.event.idEvent})" class="px-4 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition">Book</button>` : ''}
                     </div>
                     <div class="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
                         Added ${formatRelativeTime(item.createdAt)}
@@ -568,11 +597,10 @@
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <a href="/event-detail.html?id=${item.event.idEvent}" 
-                               class="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105">
+                            <a href="/event-detail.html?id=${item.event.idEvent}"
+                               class="flex-1 px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-center rounded-lg font-medium hover:shadow-lg transition transform hover:scale-105">
                                 View Details
                             </a>
-                            ${!isPast ? `<button onclick="bookNow(${item.event.idEvent})" class="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition">Book Now</button>` : ''}
                         </div>
                     </div>
                 </div>
@@ -622,6 +650,7 @@
         
         // Book event
         function bookNow(eventId) {
+            console.log('bookNow called with eventId:', eventId);
             window.location.href = `/event-detail.html?id=${eventId}`;
         }
         
@@ -659,6 +688,23 @@
             // Toast close button
             document.getElementById('toast-close').addEventListener('click', () => {
                 document.getElementById('toast-notification').classList.add('hidden');
+            });
+            
+            // Book buttons - Event delegation
+            document.addEventListener('click', (e) => {
+                // Check if clicked element or parent has book-btn class
+                let target = e.target;
+                while (target && target !== document) {
+                    if (target.classList && target.classList.contains('book-btn')) {
+                        const eventId = target.getAttribute('data-event-id');
+                        if (eventId) {
+                            console.log('Book button clicked, eventId:', eventId);
+                            bookNow(parseInt(eventId));
+                        }
+                        break;
+                    }
+                    target = target.parentElement;
+                }
             });
         }
         

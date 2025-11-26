@@ -52,11 +52,11 @@ public class Event {
     private EventStatus status = EventStatus.UPCOMING;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_kategori", nullable = false)
+    @JoinColumn(name = "id_kategori", nullable = true)
     private Category kategori;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_venue", nullable = false)
+    @JoinColumn(name = "id_venue", nullable = true)
     private Venue venue;
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)

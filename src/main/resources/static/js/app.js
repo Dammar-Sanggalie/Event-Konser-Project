@@ -792,9 +792,19 @@ async function setupWishlistButton(button, eventId) {
     // Cek status awal jika user login
     if (userId) {
         try {
-            // Kita perlu endpoint /wishlist/check (sudah ada di backend)
-            isWishlisted = await apiFetch(`/wishlist/check?userId=${userId}&eventId=${eventId}`);
-        } catch (e) { console.error("Failed to check wishlist status", e); }
+            // Call API to check wishlist status
+            const response = await fetch(`${window.API_BASE_URL}/wishlist/check?userId=${userId}&eventId=${eventId}`);
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Wishlist check response:', result);
+                // apiFetch already extracts data.data, so result.success tells if it worked
+                if (result.success) {
+                    isWishlisted = result.data;
+                }
+            }
+        } catch (e) { 
+            console.error("Failed to check wishlist status", e); 
+        }
     }
     
     // Update tampilan tombol awal
@@ -813,13 +823,21 @@ async function setupWishlistButton(button, eventId) {
         try {
             if (isWishlisted) {
                 // Hapus dari wishlist
-                await apiFetch(`/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'DELETE' });
-                alert('Removed from wishlist');
+                const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'DELETE' });
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to remove from wishlist');
+                }
+                showToast('Removed from wishlist', 'success');
                 isWishlisted = false;
             } else {
                 // Tambah ke wishlist
-                await apiFetch(`/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'POST' });
-                alert('Added to wishlist');
+                const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'POST' });
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to add to wishlist');
+                }
+                showToast('Added to wishlist', 'success');
                 isWishlisted = true;
             }
             // Update UI tombol
@@ -827,7 +845,7 @@ async function setupWishlistButton(button, eventId) {
             
         } catch (error) {
             console.error('Failed to update wishlist', error);
-            alert('Failed to update wishlist. Please try again.');
+            showToast('Failed to update wishlist: ' + error.message, 'error');
         } finally {
             button.disabled = false;
         }
@@ -872,4 +890,29 @@ function setupShareButton(button, eventData) {
              // alert('Could not share the event.'); // Opsional
          }
      });
+}
+
+// Toast notification for wishlist
+function showToast(message, type = 'info') {
+    // Create or get toast container
+    let toastContainer = document.getElementById('app-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'app-toast-container';
+        toastContainer.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999;';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg mb-3 animate-slide-in-right`;
+    toast.textContent = message;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
