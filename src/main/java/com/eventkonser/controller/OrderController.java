@@ -1,6 +1,7 @@
 package com.eventkonser.controller;
 
 import com.eventkonser.model.Order;
+import com.eventkonser.model.OrderStatus;
 import com.eventkonser.service.OrderService;
 import com.eventkonser.dto.ApiResponse;
 import com.eventkonser.dto.BookingRequest;
@@ -53,6 +54,31 @@ public class OrderController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<Order>>> getUserOrders(@PathVariable Long userId) {
         List<Order> orders = orderService.getOrdersByUserWithDetails(userId);
+        return ResponseEntity.ok(ApiResponse.success("Success", orders));
+    }
+    
+    /**
+     * GET /pembelian-tiket/user/{userId} - Get user orders (Alternative endpoint untuk compatibility)
+     * Frontend dapat menggunakan endpoint ini untuk fetch orders
+     */
+    @GetMapping(value = "/user/{userId}", params = "status")
+    public ResponseEntity<ApiResponse<List<Order>>> getUserOrdersByStatus(
+            @PathVariable Long userId,
+            @RequestParam(required = false) String status) {
+        List<Order> orders;
+        
+        if (status != null && !status.isEmpty()) {
+            try {
+                OrderStatus orderStatus = OrderStatus.valueOf(status);
+                orders = orderService.getOrdersByUserAndStatus(userId, orderStatus);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest()
+                    .body(ApiResponse.error("Invalid status. Allowed values: PENDING, PAID, CANCELLED, USED"));
+            }
+        } else {
+            orders = orderService.getOrdersByUserWithDetails(userId);
+        }
+        
         return ResponseEntity.ok(ApiResponse.success("Success", orders));
     }
     

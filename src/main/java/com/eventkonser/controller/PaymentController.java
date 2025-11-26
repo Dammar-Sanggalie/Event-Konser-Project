@@ -2,6 +2,7 @@ package com.eventkonser.controller;
 
 import com.eventkonser.model.Payment;
 import com.eventkonser.service.PaymentService;
+import com.eventkonser.service.MockPaymentService;
 import com.eventkonser.dto.ApiResponse;
 import com.eventkonser.dto.PaymentRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class PaymentController {
     
     private final PaymentService paymentService;
+    private final MockPaymentService mockPaymentService;
     
     /**
      * GET /api/payments/order/{orderId} - Get payment by order
@@ -27,37 +29,40 @@ public class PaymentController {
     }
     
     /**
-     * POST /api/payments/create-snap-token - Create Midtrans Snap token
-     * Frontend call this to get snap token for Midtrans Snap UI
+     * POST /api/payments/process-mock - Process payment menggunakan Mock Payment
+     * Frontend call ini saat user klik "Complete Payment"
+     * 
+     * Mock payment instantly mark order sebagai PAID
      */
-    @PostMapping("/create-snap-token")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> createSnapToken(@RequestParam Long orderId) {
+    @PostMapping("/process-mock")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> processMockPayment(@RequestParam Long orderId) {
         try {
-            Map<String, Object> snapData = paymentService.createSnapToken(orderId);
-            return ResponseEntity.ok(ApiResponse.success("Snap token created successfully", snapData));
+            Map<String, Object> result = paymentService.processPaymentWithMock(orderId);
+            return ResponseEntity.ok(ApiResponse.success("Payment processed successfully", result));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                ApiResponse.error("Failed to create snap token: " + e.getMessage())
+                ApiResponse.error("Failed to process payment: " + e.getMessage())
             );
         }
     }
     
     /**
-     * POST /api/payments/callback - Midtrans notification callback
-     * Midtrans kirim webhook ke endpoint ini untuk notify payment status
+     * GET /api/payments/mock-info/{orderId} - Get mock payment info (untuk debugging)
      */
-    @PostMapping("/callback")
-    public ResponseEntity<String> handleMidtransCallback(@RequestBody Map<String, Object> notification) {
+    @GetMapping("/mock-info/{orderId}")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getMockPaymentInfo(@PathVariable Long orderId) {
         try {
-            paymentService.handleMidtransCallback(notification);
-            return ResponseEntity.ok("OK");
+            Map<String, Object> info = mockPaymentService.getMockPaymentInfo(orderId);
+            return ResponseEntity.ok(ApiResponse.success("Mock payment info", info));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error processing callback");
+            return ResponseEntity.badRequest().body(
+                ApiResponse.error("Failed to get payment info: " + e.getMessage())
+            );
         }
     }
     
     /**
-     * POST /api/payments/process - Process payment (fallback untuk simulasi/testing)
+     * POST /api/payments/process - Process payment (fallback untuk compatibility)
      */
     @PostMapping("/process")
     public ResponseEntity<ApiResponse<Payment>> processPayment(@RequestBody PaymentRequest request) {

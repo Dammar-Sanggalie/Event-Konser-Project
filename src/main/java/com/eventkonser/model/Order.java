@@ -64,6 +64,12 @@ public class Order {
     @Column(name = "ticket_type")
     private String ticketType;
     
+    @Column(name = "event_image_url")
+    private String eventImageUrl;
+    
+    @Column(name = "id_event")
+    private Long idEvent;
+    
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Payment payment;

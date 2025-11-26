@@ -98,6 +98,8 @@ public class OrderService {
             if (event != null) {
                 order.setEventName(event.getNamaEvent());
                 order.setEventDate(event.getTanggalMulai() != null ? event.getTanggalMulai().toString() : "");
+                order.setEventImageUrl(event.getPosterUrl()); // Capture poster URL
+                order.setIdEvent(event.getIdEvent()); // Capture event ID
                 if (event.getVenue() != null) {
                     order.setVenueName(event.getVenue().getNamaVenue());
                 }
@@ -127,6 +129,7 @@ public class OrderService {
         payment.setOrder(savedOrder);
         payment.setJumlahBayar(totalHarga);
         payment.setStatusPembayaran(PaymentStatus.PENDING);
+        payment.setMetodePembayaran("MOCK"); // Default MOCK payment untuk development
         payment.setExpiredAt(LocalDateTime.now().plusMinutes(15));
         paymentRepository.save(payment);
         
@@ -198,5 +201,10 @@ public class OrderService {
     @Transactional(readOnly = true)
     public long countOrdersByStatus(OrderStatus status) {
         return orderRepository.countByStatus(status);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Order> getOrdersByUserAndStatus(Long userId, OrderStatus status) {
+        return orderRepository.findByUser_IdPenggunaAndStatusOrderByTanggalPembelianDesc(userId, status);
     }
 }
