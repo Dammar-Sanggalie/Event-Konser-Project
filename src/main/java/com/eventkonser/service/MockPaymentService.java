@@ -25,6 +25,7 @@ public class MockPaymentService {
     
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final NotificationService notificationService;
     
     /**
      * Proses mock payment - instantly mark sebagai SUCCESS
@@ -52,6 +53,19 @@ public class MockPaymentService {
         // Update order status
         order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
+        
+        // Send payment success notification
+        try {
+            notificationService.sendNotification(
+                order.getUser().getIdPengguna(),
+                "Pembayaran Berhasil",
+                "Pembayaran Anda untuk event " + (order.getEventName() != null ? order.getEventName() : "Event") + " telah dikonfirmasi. Tiket Anda siap digunakan!",
+                "payment",
+                "/orders/" + orderId
+            );
+        } catch (Exception e) {
+            System.err.println("⚠️ Notification failed: " + e.getMessage());
+        }
         
         // Simulasi processing delay (optional, untuk feel lebih real)
         try {
@@ -100,6 +114,7 @@ public class MockPaymentService {
         orderRepository.findById(orderId)
             .orElseThrow(() -> new ResourceNotFoundException("Order tidak ditemukan dengan ID: " + orderId));
         
+        Order order = orderRepository.findById(orderId).get();
         Payment payment = paymentRepository.findByOrder_IdPembelian(orderId)
             .orElseThrow(() -> new ResourceNotFoundException("Payment tidak ditemukan untuk Order ID: " + orderId));
         
@@ -109,6 +124,19 @@ public class MockPaymentService {
         paymentRepository.save(payment);
         
         // Order tetap PENDING (tidak berubah ke PAID)
+        
+        // Send payment failure notification
+        try {
+            notificationService.sendNotification(
+                order.getUser().getIdPengguna(),
+                "Pembayaran Gagal",
+                "Pembayaran Anda untuk event " + (order.getEventName() != null ? order.getEventName() : "Event") + " gagal. Alasan: " + reason + ". Silakan coba lagi.",
+                "payment",
+                "/orders/" + orderId
+            );
+        } catch (Exception e) {
+            System.err.println("⚠️ Notification failed: " + e.getMessage());
+        }
         
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);

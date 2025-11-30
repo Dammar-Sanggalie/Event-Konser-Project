@@ -18,6 +18,7 @@ public class OrderService {
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final NotificationService notificationService;
     
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
@@ -133,6 +134,21 @@ public class OrderService {
         payment.setExpiredAt(LocalDateTime.now().plusMinutes(15));
         paymentRepository.save(payment);
         
+        // 11. Send notification ke user
+        try {
+            String eventName = savedOrder.getEventName() != null ? savedOrder.getEventName() : "Event";
+            notificationService.sendNotification(
+                userId,
+                "Pemesanan Tiket Berhasil",
+                "Pesanan Anda untuk event " + eventName + " sebanyak " + quantity + " tiket telah dibuat. Silakan selesaikan pembayaran dalam 15 menit.",
+                "order",
+                "/orders/" + savedOrder.getIdPembelian()
+            );
+        } catch (Exception e) {
+            // Log error tapi jangan sampai bikin order failed
+            System.err.println("⚠️ Notification failed: " + e.getMessage());
+        }
+        
         return savedOrder;
         // Jika ada error, semua rollback otomatis karena @Transactional
     }
@@ -153,8 +169,22 @@ public class OrderService {
         
         // Update order status
         order.setStatus(OrderStatus.CANCELLED);
+        Order cancelledOrder = orderRepository.save(order);
         
-        return orderRepository.save(order);
+        // Send notification
+        try {
+            notificationService.sendNotification(
+                order.getUser().getIdPengguna(),
+                "Pemesanan Dibatalkan",
+                "Pesanan Anda untuk event " + (order.getEventName() != null ? order.getEventName() : "Event") + " telah dibatalkan. Stok tiket telah dikembalikan.",
+                "order",
+                "/orders/" + orderId
+            );
+        } catch (Exception e) {
+            System.err.println("⚠️ Notification failed: " + e.getMessage());
+        }
+        
+        return cancelledOrder;
     }
     
     @Transactional

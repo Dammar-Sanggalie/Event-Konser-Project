@@ -16,6 +16,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final MockPaymentService mockPaymentService;
+    private final NotificationService notificationService;
     
     @Transactional(readOnly = true)
     public Payment getPaymentById(Long id) {
