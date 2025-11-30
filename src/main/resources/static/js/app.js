@@ -173,6 +173,7 @@ function addLogoutButtonListeners() {
     
     const handleLogout = () => {
         window.auth.removeUser();
+        localStorage.removeItem('authToken');
         alert('Anda telah logout.');
         window.location.href = '/login.html'; // Arahkan ke halaman login
     };

@@ -47,6 +47,22 @@ window.auth = {
     getUserName: () => {
         const user = window.auth.getUser();
         return user ? user.nama : 'User';
+    },
+
+    /**
+     * Menyimpan token JWT ke localStorage
+     * @param {string} token - JWT token dari backend
+     */
+    setToken: (token) => {
+        localStorage.setItem('authToken', token);
+    },
+
+    /**
+     * Mengambil token JWT dari localStorage
+     * @returns {string|null} - JWT token atau null
+     */
+    getToken: () => {
+        return localStorage.getItem('authToken');
     }
 };
 
@@ -91,22 +107,32 @@ async function handleLoginSubmit(event) {
     loader.classList.remove('hidden');
 
     try {
-        // Panggil API untuk get user by email (simulasi login)
-        const user = await apiFetch(`/users/email/${emailInput.value}`);
-        
-        // Cek password (SIMULASI - TIDAK AMAN, HANYA UNTUK CONTOH)
-        // Di aplikasi nyata, backend yang akan cek password ter-hash
-        if (user && user.password === passwordInput.value) {
-            window.auth.saveUser(user);
+        // Panggil API login yang sudah ada
+        const response = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                emailOrUsername: emailInput.value,
+                password: passwordInput.value
+            })
+        });
+
+        // response sudah berisi: token, refreshToken, userId, username, email, nama, role
+        if (response && response.token) {
+            // Simpan token
+            window.auth.setToken(response.token);
+            
+            // Simpan user data
+            window.auth.saveUser({
+                idPengguna: response.userId,
+                nama: response.nama,
+                email: response.email,
+                role: response.role
+            });
+            
             alert('Login berhasil!');
             window.location.href = '/'; // Arahkan ke homepage
         } else {
-            // Password salah atau user tidak ditemukan
-            document.getElementById('email-error').textContent = 'Invalid email or password';
-            document.getElementById('email-error').classList.remove('hidden');
-            emailInput.classList.add('border-red-500');
-            passwordInput.classList.add('border-red-500');
-            throw new Error('Invalid credentials');
+            throw new Error('Invalid login response');
         }
         
     } catch (error) {
@@ -201,20 +227,37 @@ async function handleRegisterSubmit(event) {
         const userData = {
             nama: nameInput.value,
             email: emailInput.value,
-            password: passwordInput.value, // Ingat: Backend belum hash password!
-            noHp: phoneInput.value,
+            password: passwordInput.value,
+            noTelepon: phoneInput.value,
             alamat: addressInput.value,
             role: 'USER' // Default role
         };
 
-        // Panggil API register (POST /users)
-        await apiFetch('/users', {
+        // Panggil API register (POST /auth/register)
+        const response = await apiFetch('/auth/register', {
             method: 'POST',
             body: JSON.stringify(userData)
         });
 
-        alert('Registrasi berhasil! Silakan login.');
-        window.location.href = '/login.html'; // Arahkan ke halaman login
+        // response sudah berisi: token, refreshToken, userId, username, email, nama, role
+        if (response && response.token) {
+            // Simpan token
+            window.auth.setToken(response.token);
+            
+            // Simpan user data
+            window.auth.saveUser({
+                idPengguna: response.userId,
+                nama: response.nama,
+                email: response.email,
+                role: response.role
+            });
+            
+            alert('Registrasi berhasil! Anda sudah login.');
+            window.location.href = '/'; // Langsung ke homepage
+        } else {
+            alert('Registrasi berhasil! Silakan login.');
+            window.location.href = '/login.html'; // Arahkan ke halaman login
+        }
 
     } catch (error) {
         // apiFetch sudah menampilkan alert, kita hanya perlu reset UI
