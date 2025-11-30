@@ -60,6 +60,9 @@ function initializeNavbarLogic() {
     
     // 3. Logika Menandai Link Aktif
     highlightActiveNavLink();
+    
+    // 4. Setup Admin Menu Dropdown
+    setupAdminMenuDropdown();
 }
 
 /**
@@ -88,6 +91,12 @@ function updateNavbarAuthState() {
         const user = window.auth.getUser();
         const isAdmin = user && user.role === 'ADMIN';
         
+        // Show/Hide Admin Menu
+        const adminMenuDesktop = document.getElementById('admin-menu-desktop');
+        const adminMenuMobile = document.getElementById('admin-menu-mobile');
+        if (adminMenuDesktop) adminMenuDesktop.classList.toggle('hidden', !isAdmin);
+        if (adminMenuMobile) adminMenuMobile.classList.toggle('hidden', !isAdmin);
+        
         // Links (Desktop)
         let desktopLinksHtml = `
             <a href="/promo.html" class="nav-link" data-page="promo">Promo</a>
@@ -98,7 +107,6 @@ function updateNavbarAuthState() {
         if (isAdmin) {
             desktopLinksHtml = `
                 <a href="/admin-dashboard.html" class="nav-link" data-page="admin">Admin Dashboard</a>
-                <a href="/promo.html" class="nav-link" data-page="promo">Promo</a>
                 <a href="/notifications.html" class="nav-link" data-page="notifications">🔔 Notifications</a>
             `;
         }
@@ -133,7 +141,6 @@ function updateNavbarAuthState() {
                 <a href="/admin-dashboard.html" class="nav-link-mobile" data-page="admin">Admin Dashboard</a>
                 <a href="/profile.html" class="nav-link-mobile" data-page="profile">My Profile</a>
                 <a href="/edit-profile.html" class="nav-link-mobile" data-page="edit-profile">Edit Profile</a>
-                <a href="/promo.html" class="nav-link-mobile" data-page="promo">Promo</a>
                 <a href="/notifications.html" class="nav-link-mobile" data-page="notifications">Notifications</a>
             `;
         }
@@ -924,4 +931,45 @@ function showToast(message, type = 'info') {
     setTimeout(() => {
         toast.remove();
     }, 3000);
+}
+
+/**
+ * Setup Admin Menu Dropdown interactions
+ */
+function setupAdminMenuDropdown() {
+    // Desktop Admin Dropdown
+    const adminMenuTrigger = document.getElementById('admin-menu-trigger');
+    const adminDropdownMenu = document.getElementById('admin-dropdown-menu');
+    
+    if (adminMenuTrigger && adminDropdownMenu) {
+        adminMenuTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminDropdownMenu.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            adminDropdownMenu.classList.add('hidden');
+        });
+        
+        // Prevent closing when clicking inside dropdown
+        adminDropdownMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+    
+    // Mobile Admin Dropdown
+    const adminMenuTriggerMobile = document.getElementById('admin-menu-trigger-mobile');
+    const adminSubmenuMobile = document.getElementById('admin-submenu-mobile');
+    const adminMenuArrowMobile = document.getElementById('admin-menu-arrow-mobile');
+    
+    if (adminMenuTriggerMobile && adminSubmenuMobile) {
+        adminMenuTriggerMobile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminSubmenuMobile.classList.toggle('hidden');
+            if (adminMenuArrowMobile) {
+                adminMenuArrowMobile.style.transform = adminSubmenuMobile.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        });
+    }
 }
