@@ -63,6 +63,15 @@ window.auth = {
      */
     getToken: () => {
         return localStorage.getItem('authToken');
+    },
+
+    /**
+     * Cek apakah user adalah admin
+     * @returns {boolean}
+     */
+    isAdmin: () => {
+        const user = window.auth.getUser();
+        return user && user.role === 'ADMIN';
     }
 };
 
