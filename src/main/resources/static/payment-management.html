@@ -41,10 +41,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="bg-gray-50 font-sans antialiased">
-    <header id="navbar-placeholder"></header>
+<body class="bg-gray-50 font-sans antialiased" data-page="payment-management">
+    <div class="flex">
+        <div id="admin-sidebar-placeholder"></div>
+        <div class="flex-1 flex flex-col">
+            <header id="navbar-placeholder"></header>
 
-    <main class="container mx-auto max-w-7xl px-4 py-8">
+            <main class="flex-1 min-h-screen pb-16 container mx-auto max-w-7xl px-4 py-8">
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900">Payment Management</h1>
@@ -125,10 +128,10 @@
                 </tbody>
             </table>
         </div>
-    </main>
+            </main>
 
-    <!-- Payment Details Modal -->
-    <div id="payment-detail-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <!-- Payment Details Modal -->
+            <div id="payment-detail-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-gray-900">Payment Details</h2>
@@ -142,13 +145,16 @@
             <div id="detail-content" class="p-6">
                 <!-- Content akan diisi dari script -->
             </div>
+            </div>
+            </div>
+
+            <footer id="footer-placeholder"></footer>
         </div>
     </div>
 
-    <footer id="footer-placeholder"></footer>
-
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
     <script src="/js/app.js"></script>
 
     <script>
