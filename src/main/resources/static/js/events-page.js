@@ -290,28 +290,31 @@ function displayEvents(events) {
     
     // Build event cards
     eventGrid.innerHTML = events.map(event => `
-        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+        <div class="group bg-white rounded-2xl shadow-md hover:shadow-2xl overflow-hidden transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100 hover:border-primary-200"
              onclick="window.location.href='/event-detail.html?id=${event.idEvent}'">
             
-            <!-- Event Image -->
-            <div class="relative h-40 bg-gradient-to-br from-primary-400 to-primary-600 overflow-hidden">
+            <!-- Event Image Container -->
+            <div class="relative h-48 bg-gradient-to-br from-primary-400 to-primary-600 overflow-hidden">
                 ${event.posterUrl ? `
-                    <img src="${event.posterUrl}" alt="${event.namaEvent}" class="w-full h-full object-cover">
+                    <img src="${event.posterUrl}" alt="${event.namaEvent}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                 ` : `
-                    <div class="w-full h-full flex items-center justify-center bg-primary-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-500 to-primary-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-white opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                 `}
                 
+                <!-- Dark overlay on hover -->
+                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                
                 <!-- Category Badge -->
-                <div class="absolute top-3 right-3 bg-accent text-white px-3 py-1 rounded-full text-xs font-semibold">
+                <div class="absolute top-4 right-4 bg-accent text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
                     ${event.kategori?.namaKategori || 'Event'}
                 </div>
                 
                 <!-- Status Badge -->
-                <div class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold text-white ${
+                <div class="absolute top-4 left-4 px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
                     event.status === 'UPCOMING' ? 'bg-green-500' :
                     event.status === 'ONGOING' ? 'bg-blue-500' :
                     event.status === 'COMPLETED' ? 'bg-gray-500' :
@@ -322,38 +325,48 @@ function displayEvents(events) {
             </div>
             
             <!-- Event Info -->
-            <div class="p-4">
+            <div class="p-5">
                 <!-- Title -->
-                <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
+                <h3 class="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition">
                     ${event.namaEvent}
                 </h3>
                 
-                <!-- Date & Venue -->
-                <div class="space-y-1 mb-3 text-sm text-gray-600">
-                    <div class="flex items-start gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>${formatDate(event.tanggalMulai)}</span>
+                <!-- Date & Venue Info -->
+                <div class="space-y-2.5 mb-4 pb-4 border-b border-gray-100">
+                    <!-- Date -->
+                    <div class="flex items-center gap-3">
+                        <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-full bg-primary-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <span class="text-sm text-gray-700 font-medium">${formatDate(event.tanggalMulai)}</span>
                     </div>
-                    <div class="flex items-start gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span>${event.venue?.kota || 'TBA'}</span>
+                    
+                    <!-- Venue -->
+                    <div class="flex items-center gap-3">
+                        <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-full bg-primary-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <span class="text-sm text-gray-700 font-medium">${event.venue?.kota || 'TBA'}</span>
                     </div>
                 </div>
                 
                 <!-- Organizer -->
-                <p class="text-xs text-gray-500 mb-3">
-                    By ${event.penyelenggara || 'Unknown'}
+                <p class="text-xs text-gray-500 mb-4 font-medium">
+                    By <span class="text-primary-600 font-semibold">${event.penyelenggara || 'Unknown Organizer'}</span>
                 </p>
                 
                 <!-- CTA Button -->
-                <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 rounded-lg transition"
+                <button class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-2.5 rounded-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2"
                         onclick="event.stopPropagation(); window.location.href='/event-detail.html?id=${event.idEvent}'">
-                    View Details
+                    <span>Explore Event</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
                 </button>
             </div>
         </div>

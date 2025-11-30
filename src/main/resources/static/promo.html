@@ -135,8 +135,8 @@
             emptyState.classList.add('hidden');
             
             container.innerHTML = promos.map(promo => {
-                const isPercentage = promo.tipe === 'PERCENTAGE';
-                const discountValue = isPercentage ? `${promo.diskon}%` : formatCurrency(promo.diskon);
+                const isPercentage = promo.jenisDiskon === 'PERCENTAGE';
+                const discountValue = isPercentage ? `${promo.nilaiDiskon}%` : formatCurrency(promo.nilaiDiskon);
                 const validUntil = new Date(promo.tanggalSelesai);
                 const isExpiring = (validUntil - new Date()) < (7 * 24 * 60 * 60 * 1000);
                 

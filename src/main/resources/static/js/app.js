@@ -102,12 +102,12 @@ function updateNavbarAuthState() {
             <a href="/promo.html" class="nav-link" data-page="promo">Promo</a>
             <a href="/orders.html" class="nav-link" data-page="orders">My Orders</a>
             <a href="/wishlist.html" class="nav-link" data-page="wishlist">Wishlist</a>
-            <a href="/notifications.html" class="nav-link" data-page="notifications">🔔 Notifications</a>
+            <a href="/notifications.html" class="nav-link" data-page="notifications"> Notifications</a>
         `;
         if (isAdmin) {
             desktopLinksHtml = `
                 <a href="/admin-dashboard.html" class="nav-link" data-page="admin">Admin Dashboard</a>
-                <a href="/notifications.html" class="nav-link" data-page="notifications">🔔 Notifications</a>
+                <a href="/notifications.html" class="nav-link" data-page="notifications"> Notifications</a>
             `;
         }
         desktopLinks.innerHTML = desktopLinksHtml;
