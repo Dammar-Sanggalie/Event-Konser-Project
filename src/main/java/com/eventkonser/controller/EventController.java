@@ -7,6 +7,7 @@ import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -121,6 +122,7 @@ public class EventController {
     /**
      * POST /api/events - Create new event (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Event>> createEvent(@RequestBody Event event) {
         Event createdEvent = eventService.createEvent(event);
@@ -130,6 +132,7 @@ public class EventController {
     /**
      * PUT /api/events/{id} - Update event (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Event>> updateEvent(
             @PathVariable Long id,
@@ -141,6 +144,7 @@ public class EventController {
     /**
      * PATCH /api/events/{id}/status - Update event status (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<Event>> updateEventStatus(
             @PathVariable Long id,
@@ -152,6 +156,7 @@ public class EventController {
     /**
      * DELETE /api/events/{id} - Delete event (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);

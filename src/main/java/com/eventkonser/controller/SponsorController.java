@@ -5,6 +5,7 @@ import com.eventkonser.service.SponsorService;
 import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class SponsorController {
     /**
      * POST /api/sponsors - Create new sponsor (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Sponsor>> createSponsor(@RequestBody Sponsor sponsor) {
         return ResponseEntity.ok(ApiResponse.success("Sponsor berhasil ditambahkan", sponsorService.createSponsor(sponsor)));
@@ -35,6 +37,7 @@ public class SponsorController {
     /**
      * PUT /api/sponsors/{id} - Update sponsor (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Sponsor>> updateSponsor(
             @PathVariable Long id,
@@ -45,6 +48,7 @@ public class SponsorController {
     /**
      * DELETE /api/sponsors/{id} - Delete sponsor (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteSponsor(@PathVariable Long id) {
         sponsorService.deleteSponsor(id);

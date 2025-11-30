@@ -5,6 +5,7 @@ import com.eventkonser.service.ArtistService;
 import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -31,8 +32,34 @@ public class ArtistController {
         return ResponseEntity.ok(ApiResponse.success("Success", artistService.searchArtists(q)));
     }
     
+    /**
+     * POST /api/artists - Create new artist (Admin only)
+     */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Artist>> createArtist(@RequestBody Artist artist) {
         return ResponseEntity.ok(ApiResponse.success("Artis berhasil dibuat", artistService.createArtist(artist)));
+    }
+    
+    /**
+     * PUT /api/artists/{id} - Update artist (Admin only)
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Artist>> updateArtist(
+            @PathVariable Long id,
+            @RequestBody Artist artist) {
+        Artist updatedArtist = artistService.updateArtist(id, artist);
+        return ResponseEntity.ok(ApiResponse.success("Artis berhasil diupdate", updatedArtist));
+    }
+    
+    /**
+     * DELETE /api/artists/{id} - Delete artist (Admin only)
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteArtist(@PathVariable Long id) {
+        artistService.deleteArtist(id);
+        return ResponseEntity.ok(ApiResponse.success("Artis berhasil dihapus", null));
     }
 }

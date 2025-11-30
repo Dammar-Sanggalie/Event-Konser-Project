@@ -5,6 +5,7 @@ import com.eventkonser.service.ScheduleService;
 import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +37,7 @@ public class ScheduleController {
     /**
      * POST /api/schedules - Create new schedule (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Schedule>> createSchedule(@RequestBody Schedule schedule) {
         return ResponseEntity.ok(ApiResponse.success("Jadwal berhasil dibuat", scheduleService.createSchedule(schedule)));
@@ -44,6 +46,7 @@ public class ScheduleController {
     /**
      * PUT /api/schedules/{id} - Update schedule (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Schedule>> updateSchedule(
             @PathVariable Long id,
@@ -54,6 +57,7 @@ public class ScheduleController {
     /**
      * DELETE /api/schedules/{id} - Delete schedule (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);

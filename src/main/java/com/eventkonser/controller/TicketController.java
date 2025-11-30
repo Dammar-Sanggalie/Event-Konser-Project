@@ -5,6 +5,7 @@ import com.eventkonser.service.TicketService;
 import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class TicketController {
     /**
      * POST /api/tickets - Create new ticket (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Ticket>> createTicket(@RequestBody Ticket ticket) {
         Ticket createdTicket = ticketService.createTicket(ticket);
@@ -57,6 +59,7 @@ public class TicketController {
     /**
      * PUT /api/tickets/{id} - Update ticket (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Ticket>> updateTicket(
             @PathVariable Long id,
@@ -68,6 +71,7 @@ public class TicketController {
     /**
      * DELETE /api/tickets/{id} - Delete ticket (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTicket(@PathVariable Long id) {
         ticketService.deleteTicket(id);
