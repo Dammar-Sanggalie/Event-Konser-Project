@@ -3,6 +3,8 @@ package com.eventkonser.controller;
 import com.eventkonser.model.User;
 import com.eventkonser.service.UserService;
 import com.eventkonser.dto.ApiResponse;
+import com.eventkonser.dto.UserResponse;
+import com.eventkonser.dto.UpdateUserRoleRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +53,16 @@ public class UserController {
     }
     
     /**
+     * PUT /api/users/{id}/role - Update user role only (Admin only)
+     */
+    @PutMapping("/{id}/role")
+    public ResponseEntity<ApiResponse<User>> updateUserRole(
+            @PathVariable Long id,
+            @RequestBody UpdateUserRoleRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("Role user berhasil diupdate", userService.updateUserRole(id, request.getRole())));
+    }
+    
+    /**
      * DELETE /api/users/{id} - Delete user (Admin only)
      */
     @DeleteMapping("/{id}")
@@ -63,7 +75,17 @@ public class UserController {
      * GET /api/users - Get all users (Admin only)
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
-        return ResponseEntity.ok(ApiResponse.success("Success", userService.getAllUsers()));
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+        try {
+            List<UserResponse> users = userService.getAllUsersAsResponse();
+            System.out.println("✅ Found " + users.size() + " users");
+            return ResponseEntity.ok(ApiResponse.success("Success", users));
+        } catch (Exception e) {
+            System.err.println("❌ Error fetching users: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(
+                ApiResponse.error("Failed to fetch users: " + e.getMessage())
+            );
+        }
     }
 }

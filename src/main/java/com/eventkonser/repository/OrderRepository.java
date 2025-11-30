@@ -45,12 +45,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // Count orders by status
     long countByStatus(OrderStatus status);
     
-    // Get total revenue
-    @Query("SELECT SUM(o.totalHarga) FROM Order o WHERE o.status = 'PAID'")
+    // Get total revenue using native query for better performance
+    @Query(value = "SELECT COALESCE(SUM(total_harga), 0) FROM pembelian_tiket WHERE status = 'PAID'", nativeQuery = true)
     Double getTotalRevenue();
     
     // Get revenue by date range
-    @Query("SELECT SUM(o.totalHarga) FROM Order o WHERE o.status = 'PAID' AND o.tanggalPembelian BETWEEN :startDate AND :endDate")
+    @Query(value = "SELECT COALESCE(SUM(total_harga), 0) FROM pembelian_tiket WHERE status = 'PAID' AND tanggal_pembelian BETWEEN :startDate AND :endDate", nativeQuery = true)
     Double getRevenueByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
     
     // Get daily sales statistics

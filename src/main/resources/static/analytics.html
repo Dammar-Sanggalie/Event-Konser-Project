@@ -198,8 +198,19 @@
                 return;
             }
 
+            // Load data first
             await loadAnalyticsData();
+            
+            // Then initialize charts
             initializeCharts();
+            
+            // Then update with data (after charts are ready)
+            updateKPIs();
+            updateCharts();
+            updateTopEvents();
+            updateRecentOrders();
+            
+            // Setup event listeners
             initializeEventListeners();
         });
 
@@ -207,9 +218,9 @@
         async function loadAnalyticsData() {
             try {
                 const [ordersRes, paymentsRes, ticketsRes] = await Promise.all([
-                    fetch(`${window.API_BASE_URL}/pembelian-tiket`),
-                    fetch(`${window.API_BASE_URL}/pembayaran`),
-                    fetch(`${window.API_BASE_URL}/ticket`)
+                    fetch(`${window.API_BASE_URL}/orders`),
+                    fetch(`${window.API_BASE_URL}/payments`),
+                    fetch(`${window.API_BASE_URL}/tickets`)
                 ]);
 
                 const ordersData = await ordersRes.json();
@@ -219,11 +230,6 @@
                 if (ordersData.success) analyticsData.orders = ordersData.data || [];
                 if (paymentsData.success) analyticsData.payments = paymentsData.data || [];
                 if (ticketsData.success) analyticsData.tickets = ticketsData.data || [];
-
-                updateKPIs();
-                updateCharts();
-                updateTopEvents();
-                updateRecentOrders();
             } catch (error) {
                 console.error('Error loading analytics data:', error);
             }
@@ -236,13 +242,12 @@
 
             const totalRevenue = payments
                 .filter(p => p.statusPembayaran === 'SUCCESS')
-                .reduce((sum, p) => sum + (p.jumlahPembayaran || 0), 0);
+                .reduce((sum, p) => sum + (p.jumlahBayar || 0), 0);
 
             const totalOrders = orders.length;
 
             const totalTickets = orders.reduce((sum, o) => {
-                const items = o.detailPembelian || [];
-                return sum + items.reduce((s, item) => s + (item.jumlahTiket || 0), 0);
+                return sum + (o.jumlah || 0);
             }, 0);
 
             const conversionRate = orders.length > 0 
@@ -349,13 +354,19 @@
 
         // Update charts
         function updateCharts() {
+            // Safety check - make sure charts are initialized
+            if (!charts.revenue || !charts.orders || !charts.paymentMethods || !charts.category) {
+                console.warn("Charts not yet initialized");
+                return;
+            }
+
             // Revenue by date
             const revenueByDate = {};
             analyticsData.payments
-                .filter(p => p.statusPembayaran === 'SUCCESS')
+                .filter(p => p.statusPembayaran === 'SUCCESS' && p.tanggalBayar)
                 .forEach(p => {
-                    const date = new Date(p.tanggalPembayaran).toLocaleDateString('id-ID');
-                    revenueByDate[date] = (revenueByDate[date] || 0) + (p.jumlahPembayaran || 0);
+                    const date = new Date(p.tanggalBayar).toLocaleDateString('id-ID');
+                    revenueByDate[date] = (revenueByDate[date] || 0) + (p.jumlahBayar || 0);
                 });
 
             const sortedDates = Object.keys(revenueByDate).sort();
@@ -364,9 +375,9 @@
             charts.revenue.update();
 
             // Orders by status
-            const completedOrders = analyticsData.orders.filter(o => o.statusPembelian === 'COMPLETED').length;
-            const pendingOrders = analyticsData.orders.filter(o => o.statusPembelian === 'PENDING').length;
-            const cancelledOrders = analyticsData.orders.filter(o => o.statusPembelian === 'CANCELLED').length;
+            const completedOrders = analyticsData.orders.filter(o => o.status === 'PAID').length;
+            const pendingOrders = analyticsData.orders.filter(o => o.status === 'PENDING').length;
+            const cancelledOrders = analyticsData.orders.filter(o => o.status === 'CANCELLED').length;
 
             charts.orders.data.datasets[0].data = [completedOrders, pendingOrders, cancelledOrders];
             charts.orders.update();
@@ -382,19 +393,16 @@
             charts.paymentMethods.data.datasets[0].data = Object.values(paymentMethods);
             charts.paymentMethods.update();
 
-            // Category chart
-            const ticketsByCategory = {};
+            // Category chart - simplified, group by event name
+            const ticketsByEvent = {};
             analyticsData.orders.forEach(o => {
-                const items = o.detailPembelian || [];
-                items.forEach(item => {
-                    const category = item.ticket?.kategori?.namaKategori || 'Unknown';
-                    const qty = item.jumlahTiket || 0;
-                    ticketsByCategory[category] = (ticketsByCategory[category] || 0) + qty;
-                });
+                const eventName = o.eventName || 'Unknown';
+                const qty = o.jumlah || 0;
+                ticketsByEvent[eventName] = (ticketsByEvent[eventName] || 0) + qty;
             });
 
-            charts.category.data.labels = Object.keys(ticketsByCategory).slice(0, 10);
-            charts.category.data.datasets[0].data = Object.values(ticketsByCategory).slice(0, 10);
+            charts.category.data.labels = Object.keys(ticketsByEvent).slice(0, 10);
+            charts.category.data.datasets[0].data = Object.values(ticketsByEvent).slice(0, 10);
             charts.category.update();
         }
 
@@ -402,12 +410,9 @@
         function updateTopEvents() {
             const eventCount = {};
             analyticsData.orders.forEach(o => {
-                const items = o.detailPembelian || [];
-                items.forEach(item => {
-                    const eventName = item.ticket?.event?.namaEvent || 'Unknown';
-                    const qty = item.jumlahTiket || 0;
-                    eventCount[eventName] = (eventCount[eventName] || 0) + qty;
-                });
+                const eventName = o.eventName || 'Unknown';
+                const qty = o.jumlah || 0;
+                eventCount[eventName] = (eventCount[eventName] || 0) + qty;
             });
 
             const topEvents = Object.entries(eventCount)
@@ -435,12 +440,12 @@
             const recentOrders = analyticsData.orders.slice(-5).reverse();
 
             tbody.innerHTML = recentOrders.map(order => {
-                const payment = analyticsData.payments.find(p => p.pembelianTiket?.idPembelian === order.idPembelian);
-                const amount = payment?.jumlahPembayaran || 0;
-                const status = order.statusPembelian;
+                const payment = analyticsData.payments.find(p => p.idPembelian === order.idPembelian);
+                const amount = payment?.jumlahBayar || 0;
+                const status = order.status || 'UNKNOWN';
 
-                const eventName = (order.detailPembelian?.[0]?.ticket?.event?.namaEvent) || 'N/A';
-                const date = new Date(order.tanggalPembelian).toLocaleDateString('id-ID');
+                const eventName = order.eventName || 'N/A';
+                const date = order.tanggalPembelian ? new Date(order.tanggalPembelian).toLocaleDateString('id-ID') : 'N/A';
 
                 return `
                     <tr class="hover:bg-gray-50">
@@ -460,9 +465,12 @@
 
         function getStatusBadge(status) {
             const badges = {
-                'COMPLETED': 'bg-green-100 text-green-800',
+                'PAID': 'bg-green-100 text-green-800',
+                'USED': 'bg-green-100 text-green-800',
                 'PENDING': 'bg-yellow-100 text-yellow-800',
-                'CANCELLED': 'bg-red-100 text-red-800'
+                'CANCELLED': 'bg-red-100 text-red-800',
+                'EXPIRED': 'bg-red-100 text-red-800',
+                'REFUNDED': 'bg-orange-100 text-orange-800'
             };
             return badges[status] || 'bg-gray-100 text-gray-800';
         }

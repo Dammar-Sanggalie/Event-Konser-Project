@@ -204,7 +204,7 @@
         // Load orders
         async function loadOrders() {
             try {
-                const response = await fetch(`${window.API_BASE_URL}/pembelian-tiket`);
+                const response = await fetch(`${window.API_BASE_URL}/orders`);
                 const result = await response.json();
 
                 if (result.success && result.data) {
@@ -222,9 +222,9 @@
         function updateStats() {
             const stats = {
                 total: ordersData.length,
-                pending: ordersData.filter(o => o.status === 'PENDING').length,
-                completed: ordersData.filter(o => o.status === 'COMPLETED').length,
-                cancelled: ordersData.filter(o => o.status === 'CANCELLED').length
+                pending: ordersData.filter(o => o.orderStatus === 'PENDING').length,
+                completed: ordersData.filter(o => o.orderStatus === 'COMPLETED').length,
+                cancelled: ordersData.filter(o => o.orderStatus === 'CANCELLED').length
             };
 
             document.getElementById('stat-total').textContent = stats.total;
@@ -247,16 +247,16 @@
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50';
                 row.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">#${order.idPembelianTiket}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">#${order.idPembelian}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">
-                        <div>${order.user?.namaLengkap || 'N/A'}</div>
+                        <div>${order.user?.nama || 'N/A'}</div>
                         <div class="text-xs text-gray-500">${order.user?.email || 'N/A'}</div>
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${order.tiket?.event?.namaEvent || 'N/A'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${order.eventName || 'N/A'}</td>
                     <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp ${(order.totalHarga || 0).toLocaleString('id-ID')}</td>
                     <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(order.pembayaran?.statusPembayaran)}">
-                            ${order.pembayaran?.statusPembayaran || 'N/A'}
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(order.payment?.statusPembayaran)}">
+                            ${order.payment?.statusPembayaran || 'N/A'}
                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm">
@@ -266,7 +266,7 @@
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-600">${formatDate(order.tanggalPembelian)}</td>
                     <td class="px-6 py-4 text-center">
-                        <button onclick="openUpdateModal(${order.idPembelianTiket})" class="text-primary-600 hover:text-primary-800">Update</button>
+                        <button onclick="openUpdateModal(${order.idPembelian})" class="text-primary-600 hover:text-primary-800">Update</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -296,12 +296,12 @@
 
         // Open update modal
         function openUpdateModal(orderId) {
-            const order = ordersData.find(o => o.idPembelianTiket === orderId);
+            const order = ordersData.find(o => o.idPembelian === orderId);
             if (!order) return;
 
             currentOrderId = orderId;
             document.getElementById('update-order-id').value = orderId;
-            document.getElementById('input-payment-status').value = order.pembayaran?.statusPembayaran || '';
+            document.getElementById('input-payment-status').value = order.payment?.statusPembayaran || '';
             document.getElementById('input-order-status').value = order.status || '';
             document.getElementById('input-notes').value = '';
 
@@ -319,6 +319,9 @@
             });
 
             document.getElementById('btn-search').addEventListener('click', applyFilters);
+            document.getElementById('search-order').addEventListener('input', applyFilters);
+            document.getElementById('filter-status').addEventListener('change', applyFilters);
+            document.getElementById('filter-date').addEventListener('change', applyFilters);
 
             document.getElementById('search-order').addEventListener('keyup', (e) => {
                 if (e.key === 'Enter') applyFilters();
@@ -333,7 +336,7 @@
 
             filteredOrders = ordersData.filter(order => {
                 const matchesSearch = !searchQuery || 
-                    order.idPembelianTiket.toString().includes(searchQuery) ||
+                    order.idPembelian.toString().includes(searchQuery) ||
                     (order.user?.email || '').toLowerCase().includes(searchQuery);
                 
                 const matchesStatus = !statusFilter || order.status === statusFilter;
@@ -354,7 +357,7 @@
             };
 
             try {
-                const response = await fetch(`${window.API_BASE_URL}/pembelian-tiket/${currentOrderId}`, {
+                const response = await fetch(`${window.API_BASE_URL}/orders/${currentOrderId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -384,7 +387,10 @@
         function formatDate(dateString) {
             if (!dateString) return '-';
             const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function showToast(message, type = 'info') {

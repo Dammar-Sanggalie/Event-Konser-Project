@@ -248,7 +248,7 @@
 
             ticketsData.forEach(ticket => {
                 const event = eventsData.find(e => e.idEvent === ticket.event?.idEvent);
-                const remaining = (ticket.kuota || 0) - (ticket.terjual || 0);
+                const remaining = (ticket.stok || 0) - (ticket.terjual || 0);
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50';
                 row.innerHTML = `
@@ -256,7 +256,7 @@
                     <td class="px-6 py-4 text-sm text-gray-900">${event?.namaEvent || 'N/A'}</td>
                     <td class="px-6 py-4 text-sm font-medium">${ticket.jenisTiket}</td>
                     <td class="px-6 py-4 text-sm text-gray-900">Rp ${ticket.harga?.toLocaleString('id-ID') || 0}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${ticket.kuota || 0}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${ticket.stok || 0}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">${ticket.terjual || 0}</td>
                     <td class="px-6 py-4 text-sm">
                         <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(ticket.status)}">
@@ -294,7 +294,7 @@
             document.getElementById('input-event').value = ticket.event?.idEvent || '';
             document.getElementById('input-jenis').value = ticket.jenisTiket;
             document.getElementById('input-harga').value = ticket.harga;
-            document.getElementById('input-kuota').value = ticket.kuota;
+            document.getElementById('input-kuota').value = ticket.stok || ticket.kuota || 0;
             document.getElementById('input-status').value = ticket.status;
 
             document.getElementById('ticket-modal').classList.remove('hidden');
@@ -365,7 +365,7 @@
                 event: { idEvent: parseInt(document.getElementById('input-event').value) },
                 jenisTiket: document.getElementById('input-jenis').value,
                 harga: parseInt(document.getElementById('input-harga').value),
-                kuota: parseInt(document.getElementById('input-kuota').value),
+                stok: parseInt(document.getElementById('input-kuota').value),
                 status: document.getElementById('input-status').value
             };
 

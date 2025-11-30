@@ -4,6 +4,7 @@ import com.eventkonser.model.*;
 import com.eventkonser.repository.*;
 import com.eventkonser.exception.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     
     private final OrderRepository orderRepository;
@@ -23,6 +25,19 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public long countAllOrders() {
+        try {
+            // Gunakan count query yang lebih efficient
+            long count = orderRepository.count();
+            log.info("Total orders count: {}", count);
+            return count;
+        } catch (Exception e) {
+            log.error("Error counting all orders: ", e);
+            return 0L;
+        }
     }
     
     @Transactional(readOnly = true)
@@ -230,8 +245,27 @@ public class OrderService {
     
     @Transactional(readOnly = true)
     public Double getTotalRevenue() {
-        Double revenue = orderRepository.getTotalRevenue();
-        return revenue != null ? revenue : 0.0;
+        try {
+            Double revenue = orderRepository.getTotalRevenue();
+            
+            // Jika query mengembalikan null, hitung manual dari semua order PAID
+            if (revenue == null) {
+                List<Order> paidOrders = orderRepository.findByStatus(OrderStatus.PAID);
+                revenue = paidOrders.stream()
+                    .map(Order::getTotalHarga)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+                    .doubleValue();
+                System.out.println("getTotalRevenue (manual): " + revenue + " from " + paidOrders.size() + " PAID orders");
+            } else {
+                System.out.println("getTotalRevenue (query): " + revenue);
+            }
+            
+            return revenue != null ? revenue : 0.0;
+        } catch (Exception e) {
+            System.err.println("Error calculating getTotalRevenue: " + e.getMessage());
+            e.printStackTrace();
+            return 0.0;
+        }
     }
     
     @Transactional(readOnly = true)
@@ -242,5 +276,12 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<Order> getOrdersByUserAndStatus(Long userId, OrderStatus status) {
         return orderRepository.findByUser_IdPenggunaAndStatusOrderByTanggalPembelianDesc(userId, status);
+    }
+    
+    @Transactional
+    public Order updateOrderStatus(Long orderId, OrderStatus newStatus) {
+        Order order = getOrderById(orderId);
+        order.setStatus(newStatus);
+        return orderRepository.save(order);
     }
 }

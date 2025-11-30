@@ -198,7 +198,7 @@
             let pendingSettlement = 0;
 
             paymentsData.forEach(payment => {
-                const amount = payment.jumlahPembayaran || 0;
+                const amount = payment.jumlahBayar || 0;
                 
                 if (payment.statusPembayaran === 'SUCCESS') {
                     totalRevenue += amount;
@@ -231,19 +231,19 @@
                 row.className = 'hover:bg-gray-50';
                 row.innerHTML = `
                     <td class="px-6 py-4 text-sm font-medium text-gray-900">#${payment.idPembayaran}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">#${payment.pembelianTiket?.idPembelianTiket || 'N/A'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">#${payment.idPembelian || 'N/A'}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">
-                        <div>${payment.pembelianTiket?.user?.namaLengkap || 'N/A'}</div>
-                        <div class="text-xs text-gray-500">${payment.pembelianTiket?.user?.email || 'N/A'}</div>
+                        <div>${payment.userNama || 'N/A'}</div>
+                        <div class="text-xs text-gray-500">${payment.userEmail || 'N/A'}</div>
                     </td>
-                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp ${(payment.jumlahPembayaran || 0).toLocaleString('id-ID')}</td>
+                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp ${(payment.jumlahBayar || 0).toLocaleString('id-ID')}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">${payment.metodePembayaran || 'N/A'}</td>
                     <td class="px-6 py-4 text-sm">
                         <span class="px-3 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(payment.statusPembayaran)}">
                             ${payment.statusPembayaran || 'N/A'}
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${formatDate(payment.tanggalPembayaran)}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${formatDate(payment.tanggalBayar)}</td>
                     <td class="px-6 py-4 text-center">
                         <button onclick="viewPaymentDetails(${payment.idPembayaran})" class="text-primary-600 hover:text-primary-800">View</button>
                     </td>
@@ -278,16 +278,16 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-600 mb-1">Order ID</p>
-                            <p class="text-lg font-semibold">#${payment.pembelianTiket?.idPembelianTiket || 'N/A'}</p>
+                            <p class="text-lg font-semibold">#${payment.idPembelian || 'N/A'}</p>
                         </div>
                     </div>
 
                     <div class="border-t pt-4">
                         <h3 class="font-semibold mb-3">Customer Information</h3>
                         <div class="space-y-2 text-sm">
-                            <p><span class="text-gray-600">Name:</span> ${payment.pembelianTiket?.user?.namaLengkap || 'N/A'}</p>
-                            <p><span class="text-gray-600">Email:</span> ${payment.pembelianTiket?.user?.email || 'N/A'}</p>
-                            <p><span class="text-gray-600">Phone:</span> ${payment.pembelianTiket?.user?.noTelepon || 'N/A'}</p>
+                            <p><span class="text-gray-600">Name:</span> ${payment.userNama || 'N/A'}</p>
+                            <p><span class="text-gray-600">Email:</span> ${payment.userEmail || 'N/A'}</p>
+                            <p><span class="text-gray-600">Phone:</span> ${payment.userNoHp || 'N/A'}</p>
                         </div>
                     </div>
 
@@ -295,23 +295,23 @@
                         <h3 class="font-semibold mb-3">Payment Information</h3>
                         <div class="space-y-2 text-sm">
                             <p><span class="text-gray-600">Method:</span> ${payment.metodePembayaran || 'N/A'}</p>
-                            <p><span class="text-gray-600">Amount:</span> Rp ${(payment.jumlahPembayaran || 0).toLocaleString('id-ID')}</p>
+                            <p><span class="text-gray-600">Amount:</span> Rp ${(payment.jumlahBayar || 0).toLocaleString('id-ID')}</p>
                             <p><span class="text-gray-600">Status:</span> 
                                 <span class="px-2 py-1 rounded text-xs font-medium ${getPaymentStatusColor(payment.statusPembayaran)}">
                                     ${payment.statusPembayaran || 'N/A'}
                                 </span>
                             </p>
-                            <p><span class="text-gray-600">Date:</span> ${formatDateTime(payment.tanggalPembayaran)}</p>
-                            <p><span class="text-gray-600">Reference:</span> ${payment.referensiTransaksi || 'N/A'}</p>
+                            <p><span class="text-gray-600">Date:</span> ${formatDateTime(payment.tanggalBayar)}</p>
+                            <p><span class="text-gray-600">Reference:</span> ${payment.paymentGatewayId || 'N/A'}</p>
                         </div>
                     </div>
 
                     <div class="border-t pt-4">
                         <h3 class="font-semibold mb-3">Event Details</h3>
                         <div class="space-y-2 text-sm">
-                            <p><span class="text-gray-600">Event:</span> ${payment.pembelianTiket?.tiket?.event?.namaEvent || 'N/A'}</p>
-                            <p><span class="text-gray-600">Ticket Type:</span> ${payment.pembelianTiket?.tiket?.jenisTiket || 'N/A'}</p>
-                            <p><span class="text-gray-600">Quantity:</span> ${payment.pembelianTiket?.jumlahTiket || 0}</p>
+                            <p><span class="text-gray-600">Event:</span> ${payment.eventName || 'N/A'}</p>
+                            <p><span class="text-gray-600">Status:</span> ${payment.orderStatus || 'N/A'}</p>
+                            <p><span class="text-gray-600">Order Date:</span> ${formatDateTime(payment.tanggalPembelian)}</p>
                         </div>
                     </div>
                 </div>
@@ -325,9 +325,11 @@
             document.getElementById('btn-close-detail').addEventListener('click', closeDetailModal);
             document.getElementById('btn-search-payment').addEventListener('click', applyFilters);
 
-            document.getElementById('search-payment').addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') applyFilters();
-            });
+            // Real-time filtering
+            document.getElementById('search-payment').addEventListener('keyup', applyFilters);
+            document.getElementById('filter-payment-status').addEventListener('change', applyFilters);
+            document.getElementById('filter-payment-method').addEventListener('change', applyFilters);
+            document.getElementById('filter-date-payment').addEventListener('change', applyFilters);
         }
 
         // Apply filters
@@ -338,18 +340,26 @@
             const dateFilter = document.getElementById('filter-date-payment').value;
 
             filteredPayments = paymentsData.filter(payment => {
+                // Search: Order ID or Customer Email
                 const matchesSearch = !searchQuery || 
                     payment.idPembayaran.toString().includes(searchQuery) ||
-                    (payment.pembelianTiket?.user?.email || '').toLowerCase().includes(searchQuery);
+                    (payment.userEmail || '').toLowerCase().includes(searchQuery) ||
+                    (payment.userNama || '').toLowerCase().includes(searchQuery);
                 
+                // Status filter
                 const matchesStatus = !statusFilter || payment.statusPembayaran === statusFilter;
+                
+                // Method filter
                 const matchesMethod = !methodFilter || payment.metodePembayaran === methodFilter;
-                const matchesDate = !dateFilter || formatDate(payment.tanggalPembayaran) === dateFilter;
+                
+                // Date filter - compare payment date with selected date
+                const matchesDate = !dateFilter || formatDate(payment.tanggalBayar) === dateFilter;
 
                 return matchesSearch && matchesStatus && matchesMethod && matchesDate;
             });
 
             renderTable();
+            console.log(`Filtered to ${filteredPayments.length} payments from ${paymentsData.length} total`);
         }
 
         function closeDetailModal() {
@@ -359,7 +369,11 @@
         function formatDate(dateString) {
             if (!dateString) return '-';
             const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            // Format as YYYY-MM-DD to match HTML date input format
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function formatDateTime(dateString) {
