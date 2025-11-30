@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -124,7 +125,7 @@ public class EventController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ApiResponse<Event>> createEvent(@RequestBody Event event) {
+    public ResponseEntity<ApiResponse<Event>> createEvent(@Valid @RequestBody Event event) {
         Event createdEvent = eventService.createEvent(event);
         return ResponseEntity.ok(ApiResponse.success("Event berhasil dibuat", createdEvent));
     }
@@ -136,7 +137,7 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Event>> updateEvent(
             @PathVariable Long id,
-            @RequestBody Event event) {
+            @Valid @RequestBody Event event) {
         Event updatedEvent = eventService.updateEvent(id, event);
         return ResponseEntity.ok(ApiResponse.success("Event berhasil diupdate", updatedEvent));
     }
