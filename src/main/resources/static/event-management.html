@@ -273,10 +273,14 @@
                     : `${window.API_BASE_URL}/events`;
                 
                 const method = editingEventId ? 'PUT' : 'POST';
+                const token = localStorage.getItem('authToken');
                 
                 const response = await fetch(url, {
                     method: method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(eventData)
                 });
                 

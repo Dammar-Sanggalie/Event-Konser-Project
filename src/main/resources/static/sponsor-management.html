@@ -214,7 +214,7 @@
         // Load sponsors
         async function loadSponsors() {
             try {
-                const response = await fetch(`${window.API_BASE_URL}/sponsor`);
+                const response = await fetch(`${window.API_BASE_URL}/sponsors`);
                 const result = await response.json();
 
                 if (result.success && result.data) {
@@ -307,8 +307,12 @@
             if (!confirm('Are you sure you want to delete this sponsor?')) return;
 
             try {
-                const response = await fetch(`${window.API_BASE_URL}/sponsor/${sponsorId}`, {
-                    method: 'DELETE'
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${window.API_BASE_URL}/sponsors/${sponsorId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
                 const result = await response.json();
@@ -361,15 +365,23 @@
             try {
                 let response;
                 if (isEditMode) {
-                    response = await fetch(`${window.API_BASE_URL}/sponsor/${currentSponsorId}`, {
+                    const token = localStorage.getItem('authToken');
+                    response = await fetch(`${window.API_BASE_URL}/sponsors/${currentSponsorId}`, {
                         method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: JSON.stringify(formData)
                     });
                 } else {
-                    response = await fetch(`${window.API_BASE_URL}/sponsor`, {
+                    const token = localStorage.getItem('authToken');
+                    response = await fetch(`${window.API_BASE_URL}/sponsors`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
                         body: JSON.stringify(formData)
                     });
                 }

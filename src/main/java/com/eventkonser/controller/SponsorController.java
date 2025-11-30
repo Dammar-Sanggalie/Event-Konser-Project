@@ -18,6 +18,14 @@ public class SponsorController {
     private final SponsorService sponsorService;
     
     /**
+     * GET /api/sponsors - Get all sponsors (Admin)
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Sponsor>>> getAllSponsors() {
+        return ResponseEntity.ok(ApiResponse.success("Success", sponsorService.getAllSponsors()));
+    }
+    
+    /**
      * GET /api/sponsors/event/{eventId} - Get sponsors by event
      */
     @GetMapping("/event/{eventId}")

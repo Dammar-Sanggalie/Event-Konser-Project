@@ -333,14 +333,16 @@
             }
             
             try {
-                await fetch(`${window.API_BASE_URL}/notifications/mark-read`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + window.auth.getToken()
-                    },
-                    body: JSON.stringify({ ids: selectedNotifications })
-                });
+                // Mark each notification as read individually
+                for (const id of selectedNotifications) {
+                    await fetch(`${window.API_BASE_URL}/notifications/${id}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + window.auth.getToken()
+                        }
+                    });
+                }
                 
                 selectedNotifications.forEach(id => {
                     const notif = allNotifications.find(n => n.id === id);
@@ -360,7 +362,7 @@
         
         async function markAllAsRead() {
             try {
-                await fetch(`${window.API_BASE_URL}/notifications/mark-all-read`, {
+                await fetch(`${window.API_BASE_URL}/notifications/read-all`, {
                     method: 'POST',
                     headers: { 'Authorization': 'Bearer ' + window.auth.getToken() }
                 });
@@ -384,14 +386,16 @@
             if (!confirm(`Delete ${selectedNotifications.length} notification(s)?`)) return;
             
             try {
-                await fetch(`${window.API_BASE_URL}/notifications`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + window.auth.getToken()
-                    },
-                    body: JSON.stringify({ ids: selectedNotifications })
-                });
+                // Delete each notification individually
+                for (const id of selectedNotifications) {
+                    await fetch(`${window.API_BASE_URL}/notifications/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + window.auth.getToken()
+                        }
+                    });
+                }
                 
                 allNotifications = allNotifications.filter(n => !selectedNotifications.includes(n.id));
                 selectedNotifications = [];

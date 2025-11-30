@@ -20,7 +20,7 @@ public class OrderController {
     
     /**
      * POST /api/orders/book - Book tickets (CRITICAL ENDPOINT)
-     * Frontend sends: { idPengguna, totalHarga, items: [{idTiket, jumlah}] }
+     * Frontend sends: { idPengguna, totalHarga, items: [{idTiket, jumlah}], discountAmount, promoCode, subtotal }
      */
     @PostMapping("/book")
     public ResponseEntity<ApiResponse<Order>> bookTicket(@RequestBody BookingRequest request) {
@@ -28,6 +28,9 @@ public class OrderController {
             System.out.println("📌 BookingRequest received: " + request);
             System.out.println("   idPengguna: " + request.getIdPengguna());
             System.out.println("   items: " + request.getItems());
+            System.out.println("   subtotal: " + request.getSubtotal());
+            System.out.println("   discountAmount: " + request.getDiscountAmount());
+            System.out.println("   promoCode: " + request.getPromoCode());
             
             // For now, create order with first ticket as primary
             // TODO: Upgrade to support multiple tickets per order
@@ -36,7 +39,10 @@ public class OrderController {
                 Order order = orderService.bookTicket(
                     request.getIdPengguna(),
                     request.getItems().get(0).getIdTiket(),
-                    request.getItems().get(0).getJumlah()
+                    request.getItems().get(0).getJumlah(),
+                    request.getDiscountAmount() != null ? java.math.BigDecimal.valueOf(request.getDiscountAmount()) : null,
+                    request.getPromoCode(),
+                    request.getSubtotal() != null ? java.math.BigDecimal.valueOf(request.getSubtotal()) : null
                 );
                 return ResponseEntity.ok(ApiResponse.success("Booking berhasil! Silakan selesaikan pembayaran dalam 15 menit.", order));
             }

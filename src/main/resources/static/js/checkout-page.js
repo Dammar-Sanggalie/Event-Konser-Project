@@ -3,14 +3,16 @@
  * Menangani form validation, promo code, dan order creation
  */
 
-let checkoutState = {
-    ticketId: null,
-    quantity: 1,
-    ticketData: null,
-    promoCode: null,
-    discountAmount: 0,
-    totalPrice: 0
-};
+if (typeof checkoutState === 'undefined') {
+    window.checkoutState = {
+        ticketId: null,
+        quantity: 1,
+        ticketData: null,
+        promoCode: null,
+        discountAmount: 0,
+        totalPrice: 0
+    };
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initializeCheckout();
@@ -21,22 +23,28 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 async function initializeCheckout() {
     try {
-        // Get ticket ID from URL
-        const params = new URLSearchParams(window.location.search);
-        const ticketId = params.get('ticketId');
-        const quantity = params.get('quantity') || 1;
+        // Check if user logged in
+        if (!window.auth.isAuthenticated()) {
+            showToast('Please login first', 'warning');
+            window.location.href = '/login.html?redirect=checkout.html';
+            return;
+        }
         
-        if (!ticketId) {
-            showToast('No ticket selected', 'error');
+        // Get order data from sessionStorage
+        const orderDataStr = sessionStorage.getItem('checkout_order');
+        if (!orderDataStr) {
+            showToast('No order data found. Please select tickets first', 'error');
             setTimeout(() => window.location.href = '/events.html', 2000);
             return;
         }
         
-        checkoutState.ticketId = ticketId;
-        checkoutState.quantity = parseInt(quantity);
+        const orderData = JSON.parse(orderDataStr);
+        window.checkoutState.orderData = orderData;
+        window.checkoutState.items = orderData.items || [];
+        window.checkoutState.subtotal = orderData.subtotal || 0;
         
-        // Load ticket details
-        await loadTicketDetails(ticketId);
+        // Display order summary
+        displayOrderSummary(orderData);
         
         // Setup event listeners
         setupCheckoutListeners();
@@ -48,56 +56,65 @@ async function initializeCheckout() {
 }
 
 /**
- * Load ticket details
+ * Display order summary from booking
  */
-async function loadTicketDetails(ticketId) {
-    try {
-        const response = await fetch(`${window.API_BASE_URL}/tickets/${ticketId}`);
-        const result = await response.json();
-        
-        if (result.success && result.data) {
-            checkoutState.ticketData = result.data;
-            displayTicketDetails(result.data);
-            updatePriceCalculation();
-        }
-    } catch (error) {
-        console.error('Error loading ticket details:', error);
-        showToast('Failed to load ticket details', 'error');
-    }
+function displayOrderSummary(orderData) {
+    const itemsContainer = document.getElementById('order-items');
+    if (!itemsContainer) return;
+    
+    let itemsHtml = '';
+    
+    (orderData.items || []).forEach(item => {
+        const itemTotal = item.harga * item.jumlah;
+        itemsHtml += `
+            <div class="flex items-center justify-between py-3 border-b">
+                <div>
+                    <p class="font-medium text-gray-900">${item.jenisTiket}</p>
+                    <p class="text-sm text-gray-600">${formatCurrency(item.harga)} x ${item.jumlah}</p>
+                </div>
+                <p class="font-semibold text-gray-900">${formatCurrency(itemTotal)}</p>
+            </div>
+        `;
+    });
+    
+    itemsContainer.innerHTML = itemsHtml;
+    
+    const adminFee = 15000;
+    const subtotal = orderData.subtotal || 0;
+    const total = subtotal + adminFee;
+    
+    window.checkoutState.totalPrice = total;
+    window.checkoutState.adminFee = adminFee;
+    
+    // Update sidebar totals
+    updateCheckoutTotals(subtotal, adminFee, 0, total);
 }
 
 /**
- * Display ticket details
+ * Update checkout totals in sidebar
  */
-function displayTicketDetails(ticket) {
-    document.getElementById('ticket-name').textContent = ticket.kategoriTiket || 'Ticket';
-    document.getElementById('ticket-price').textContent = formatCurrency(ticket.hargaTiket);
-    document.getElementById('ticket-description').textContent = ticket.deskripsiTiket || 'Event ticket';
-    document.getElementById('available-stock').textContent = ticket.stok;
-    document.getElementById('max-purchase').textContent = ticket.maxPembelian || 'Unlimited';
+function updateCheckoutTotals(subtotal, adminFee, discount, total) {
+    const subtotalElem = document.getElementById('subtotal');
+    const discountElem = document.getElementById('discount');
+    const adminFeeElem = document.getElementById('admin-fee');
+    const totalElem = document.getElementById('total');
+    
+    if (subtotalElem) subtotalElem.textContent = formatCurrency(subtotal);
+    if (adminFeeElem) adminFeeElem.textContent = formatCurrency(adminFee);
+    if (discountElem) discountElem.textContent = `${discount > 0 ? '-' : ''}${formatCurrency(discount)}`;
+    if (totalElem) totalElem.textContent = formatCurrency(total);
 }
 
 /**
  * Setup checkout event listeners
  */
 function setupCheckoutListeners() {
-    const qtyInput = document.getElementById('quantity-input');
-    const qtyMinus = document.getElementById('qty-minus');
-    const qtyPlus = document.getElementById('qty-plus');
     const promoInput = document.getElementById('promo-code-input');
     const promoBtn = document.getElementById('apply-promo-btn');
     const checkoutBtn = document.getElementById('checkout-button');
     const emailInput = document.getElementById('email-input');
     const phoneInput = document.getElementById('phone-input');
-    
-    // Quantity controls
-    if (qtyMinus) qtyMinus.addEventListener('click', () => decreaseQuantity());
-    if (qtyPlus) qtyPlus.addEventListener('click', () => increaseQuantity());
-    if (qtyInput) {
-        qtyInput.addEventListener('change', (e) => {
-            updateQuantity(parseInt(e.target.value) || 1);
-        });
-    }
+    const backBtn = document.getElementById('back-to-booking-btn');
     
     // Promo code
     if (promoBtn) promoBtn.addEventListener('click', () => applyPromoCode());
@@ -112,6 +129,14 @@ function setupCheckoutListeners() {
         checkoutBtn.addEventListener('click', () => processCheckout());
     }
     
+    // Back button
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('checkout_order');
+            window.location.href = '/booking.html';
+        });
+    }
+    
     // Form validation
     if (emailInput) {
         emailInput.addEventListener('change', validateEmail);
@@ -122,48 +147,11 @@ function setupCheckoutListeners() {
 }
 
 /**
- * Increase quantity
- */
-function increaseQuantity() {
-    const max = checkoutState.ticketData?.maxPembelian || checkoutState.ticketData?.stok || 999;
-    if (checkoutState.quantity < max) {
-        checkoutState.quantity++;
-        document.getElementById('quantity-input').value = checkoutState.quantity;
-        updatePriceCalculation();
-    }
-}
-
-/**
- * Decrease quantity
- */
-function decreaseQuantity() {
-    if (checkoutState.quantity > 1) {
-        checkoutState.quantity--;
-        document.getElementById('quantity-input').value = checkoutState.quantity;
-        updatePriceCalculation();
-    }
-}
-
-/**
- * Update quantity manually
- */
-function updateQuantity(qty) {
-    const max = checkoutState.ticketData?.maxPembelian || checkoutState.ticketData?.stok || 999;
-    if (qty > 0 && qty <= max) {
-        checkoutState.quantity = qty;
-        updatePriceCalculation();
-    } else {
-        document.getElementById('quantity-input').value = checkoutState.quantity;
-        showToast(`Max quantity: ${max}`, 'warning');
-    }
-}
-
-/**
  * Apply promo code
  */
 async function applyPromoCode() {
-    const promoInput = document.getElementById('promo-code-input');
-    const code = promoInput.value.trim();
+    const promoInput = document.getElementById('promo-code');
+    const code = promoInput.value.trim().toUpperCase();
     
     if (!code) {
         showToast('Please enter a promo code', 'warning');
@@ -171,32 +159,28 @@ async function applyPromoCode() {
     }
     
     try {
-        const response = await fetch(`${window.API_BASE_URL}/promo-codes/validate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
-        });
-        
+        const response = await fetch(`${window.API_BASE_URL}/promo/validate/${code}`);
         const result = await response.json();
         
         if (result.success && result.data) {
             const promo = result.data;
-            checkoutState.promoCode = promo;
+            window.checkoutState.promoCode = promo;
             
-            // Calculate discount
-            const baseTotal = checkoutState.ticketData.hargaTiket * checkoutState.quantity;
-            if (promo.typeDiskon === 'PERCENTAGE') {
-                checkoutState.discountAmount = (baseTotal * promo.nilaiDiskon) / 100;
+            // Calculate discount on subtotal
+            const subtotal = window.checkoutState.subtotal;
+            if (promo.jenisDiskon === 'PERCENTAGE') {
+                window.checkoutState.discountAmount = (subtotal * promo.nilaiDiskon) / 100;
             } else {
-                checkoutState.discountAmount = promo.nilaiDiskon;
+                window.checkoutState.discountAmount = promo.nilaiDiskon;
             }
             
             updatePriceCalculation();
-            showToast(`Promo applied! Discount: ${formatCurrency(checkoutState.discountAmount)}`, 'success');
+            showToast(`Promo applied! Discount: ${formatCurrency(window.checkoutState.discountAmount)}`, 'success');
+            promoInput.disabled = true;
             
         } else {
-            checkoutState.promoCode = null;
-            checkoutState.discountAmount = 0;
+            window.checkoutState.promoCode = null;
+            window.checkoutState.discountAmount = 0;
             showToast(result.message || 'Invalid promo code', 'error');
             updatePriceCalculation();
         }
@@ -210,56 +194,25 @@ async function applyPromoCode() {
  * Update price calculation
  */
 function updatePriceCalculation() {
-    const unitPrice = checkoutState.ticketData?.hargaTiket || 0;
-    const subtotal = unitPrice * checkoutState.quantity;
-    const discount = checkoutState.discountAmount;
-    const total = Math.max(0, subtotal - discount);
+    const subtotal = window.checkoutState.subtotal || 0;
+    const adminFee = 15000;
+    const discount = window.checkoutState.discountAmount || 0;
+    const total = Math.max(0, subtotal + adminFee - discount);
     
-    checkoutState.totalPrice = total;
+    window.checkoutState.totalPrice = total;
     
-    // Display calculations
-    document.getElementById('subtotal-amount').textContent = formatCurrency(subtotal);
-    document.getElementById('discount-amount').textContent = `- ${formatCurrency(discount)}`;
-    document.getElementById('total-amount').textContent = formatCurrency(total);
+    // Display calculations - using correct checkout.html IDs
+    const subtotalElem = document.getElementById('subtotal');
+    const discountElem = document.getElementById('discount');
+    const adminFeeElem = document.getElementById('admin-fee');
+    const totalElem = document.getElementById('total');
     
-    // Show/hide discount section
-    const discountSection = document.getElementById('discount-section');
-    if (discountSection) {
-        discountSection.classList.toggle('hidden', discount === 0);
-    }
+    if (subtotalElem) subtotalElem.textContent = formatCurrency(subtotal);
+    if (adminFeeElem) adminFeeElem.textContent = formatCurrency(adminFee);
+    if (discountElem) discountElem.textContent = `-${formatCurrency(discount)}`;
+    if (totalElem) totalElem.textContent = formatCurrency(total);
 }
 
-/**
- * Validate email
- */
-function validateEmail() {
-    const email = document.getElementById('email-input').value;
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValid = regex.test(email);
-    
-    const emailError = document.getElementById('email-error');
-    if (emailError) {
-        emailError.classList.toggle('hidden', isValid);
-    }
-    
-    return isValid;
-}
-
-/**
- * Validate phone
- */
-function validatePhone() {
-    const phone = document.getElementById('phone-input').value;
-    const regex = /^(\+62|0)[0-9]{9,12}$/;
-    const isValid = regex.test(phone);
-    
-    const phoneError = document.getElementById('phone-error');
-    if (phoneError) {
-        phoneError.classList.toggle('hidden', isValid);
-    }
-    
-    return isValid;
-}
 
 /**
  * Process checkout - Create order
@@ -273,26 +226,30 @@ async function processCheckout() {
             return;
         }
         
-        // Validate form
-        if (!validateEmail() || !validatePhone()) {
-            showToast('Please fill all fields correctly', 'error');
+        const user = window.auth.getUser();
+        const orderData = window.checkoutState.orderData;
+        
+        if (!orderData) {
+            showToast('No order data found', 'error');
             return;
         }
         
-        const checkoutBtn = document.getElementById('checkout-button');
-        checkoutBtn.disabled = true;
-        checkoutBtn.textContent = 'Processing...';
+        if (!user || !user.idPengguna) {
+            showToast('User information not found', 'error');
+            return;
+        }
         
-        const user = window.auth.getUser();
-        
-        // Prepare booking request
+        // Prepare booking request from order data
         const bookingRequest = {
-            idPengguna: user.id,
-            totalHarga: checkoutState.totalPrice,
-            items: [{
-                idTiket: checkoutState.ticketId,
-                jumlah: checkoutState.quantity
-            }]
+            idPengguna: user.idPengguna,
+            totalHarga: window.checkoutState.totalPrice,
+            subtotal: window.checkoutState.subtotal || 0,
+            discountAmount: window.checkoutState.discountAmount || 0,
+            promoCode: window.checkoutState.promoCode?.code || null,
+            items: (orderData.items || []).map(item => ({
+                idTiket: item.idTiket,
+                jumlah: item.jumlah
+            }))
         };
         
         // Create order
@@ -311,21 +268,18 @@ async function processCheckout() {
             const order = result.data;
             showToast('Order created successfully! Redirecting to payment...', 'success');
             
-            // Redirect to payment page
+            // Clear sessionStorage and redirect to payment page
+            sessionStorage.removeItem('checkout_order');
             setTimeout(() => {
                 window.location.href = `/payment.html?orderId=${order.idPembelian}`;
-            }, 2000);
+            }, 1500);
         } else {
             showToast(result.message || 'Failed to create order', 'error');
-            checkoutBtn.disabled = false;
-            checkoutBtn.textContent = 'Complete Checkout';
         }
         
     } catch (error) {
         console.error('Error processing checkout:', error);
         showToast('Error processing checkout', 'error');
-        document.getElementById('checkout-button').disabled = false;
-        document.getElementById('checkout-button').textContent = 'Complete Checkout';
     }
 }
 
@@ -346,4 +300,18 @@ function formatCurrency(amount) {
 function showToast(message, type = 'info') {
     console.log(`[${type.toUpperCase()}] ${message}`);
     // You can implement a better toast UI here
+}
+
+/**
+ * Alias for proceedToPayment in checkout.html
+ */
+function proceedToPayment() {
+    processCheckout();
+}
+
+/**
+ * Apply promo code from checkout.html
+ */
+function applyPromo() {
+    applyPromoCode();
 }

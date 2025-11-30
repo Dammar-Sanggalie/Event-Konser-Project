@@ -302,8 +302,12 @@ async function loadHomepageEvents(type, gridSelector, limit) {
 }
 
 // --- Events Page Logic ---
-let allEventsData = []; // Cache data event
-let currentFilters = {}; // State filter
+if (typeof window.allEventsData === 'undefined') {
+    window.allEventsData = []; // Cache data event
+}
+if (typeof window.currentFilters === 'undefined') {
+    window.currentFilters = {}; // State filter
+}
 
 async function initializeEventsPage() {
     console.log("Initializing Events Page...");
@@ -311,7 +315,7 @@ async function initializeEventsPage() {
     
     // Baca filter awal dari URL (jika ada)
     const urlParams = new URLSearchParams(window.location.search);
-    currentFilters = {
+    window.currentFilters = {
         search: urlParams.get('search') || '',
         categoryId: urlParams.get('categoryId') || '',
         city: urlParams.get('city') || '',
@@ -319,11 +323,11 @@ async function initializeEventsPage() {
         endDate: urlParams.get('endDate') || '',
     };
     // Set nilai awal di form filter
-    document.getElementById('search-input').value = currentFilters.search;
-    document.getElementById('filter-category').value = currentFilters.categoryId;
-    document.getElementById('filter-city').value = currentFilters.city;
-    document.getElementById('filter-start-date').value = currentFilters.startDate;
-    document.getElementById('filter-end-date').value = currentFilters.endDate;
+    document.getElementById('search-input').value = window.currentFilters.search;
+    document.getElementById('filter-category').value = window.currentFilters.categoryId;
+    document.getElementById('filter-city').value = window.currentFilters.city;
+    document.getElementById('filter-start-date').value = window.currentFilters.startDate;
+    document.getElementById('filter-end-date').value = window.currentFilters.endDate;
 
     await fetchAndRenderEvents();
 
@@ -363,7 +367,7 @@ function setupEventListenersForEventsPage() {
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            currentFilters.search = searchInput.value.trim();
+            window.currentFilters.search = searchInput.value.trim();
             updateUrlAndFetchEvents();
         }, 500);
     });
@@ -371,12 +375,12 @@ function setupEventListenersForEventsPage() {
     // Filter otomatis saat diganti
     filterForm.addEventListener('change', (e) => {
         const formData = new FormData(filterForm);
-        currentFilters.categoryId = formData.get('categoryId');
-        currentFilters.city = formData.get('city');
-        currentFilters.startDate = formData.get('startDate');
-        currentFilters.endDate = formData.get('endDate');
+        window.currentFilters.categoryId = formData.get('categoryId');
+        window.currentFilters.city = formData.get('city');
+        window.currentFilters.startDate = formData.get('startDate');
+        window.currentFilters.endDate = formData.get('endDate');
         // Kosongkan search jika filter lain aktif
-        currentFilters.search = '';
+        window.currentFilters.search = '';
         searchInput.value = '';
         updateUrlAndFetchEvents();
     });
@@ -385,20 +389,20 @@ function setupEventListenersForEventsPage() {
     resetFiltersButton.addEventListener('click', () => {
         filterForm.reset();
         searchInput.value = '';
-        currentFilters = {};
+        window.currentFilters = {};
         updateUrlAndFetchEvents();
     });
     
     // Sorting (hanya re-render data yang sudah ada)
     sortSelect.addEventListener('change', () => {
-        renderEventGrid(sortEvents(allEventsData, sortSelect.value), '#event-grid');
+        renderEventGrid(sortEvents(window.allEventsData, sortSelect.value), '#event-grid');
     });
 }
 
 function updateUrlAndFetchEvents() {
     // Update URL tanpa reload
     const urlParams = new URLSearchParams();
-    Object.entries(currentFilters).forEach(([key, value]) => {
+    Object.entries(window.currentFilters).forEach(([key, value]) => {
         if (value) {
             urlParams.set(key, value);
         }
@@ -431,26 +435,26 @@ async function fetchAndRenderEvents() {
         let endpoint = '/events/upcoming'; // Default
         const params = new URLSearchParams();
         
-        if (currentFilters.search) {
+        if (window.currentFilters.search) {
              endpoint = '/events/search';
-             params.set('q', currentFilters.search);
-        } else if (currentFilters.categoryId || currentFilters.city || currentFilters.startDate || currentFilters.endDate) {
+             params.set('q', window.currentFilters.search);
+        } else if (window.currentFilters.categoryId || window.currentFilters.city || window.currentFilters.startDate || window.currentFilters.endDate) {
              endpoint = '/events/filter';
-             if (currentFilters.categoryId) params.set('categoryId', currentFilters.categoryId);
-             if (currentFilters.city) params.set('city', currentFilters.city);
-             if (currentFilters.startDate) params.set('startDate', currentFilters.startDate);
-             if (currentFilters.endDate) params.set('endDate', currentFilters.endDate);
+             if (window.currentFilters.categoryId) params.set('categoryId', window.currentFilters.categoryId);
+             if (window.currentFilters.city) params.set('city', window.currentFilters.city);
+             if (window.currentFilters.startDate) params.set('startDate', window.currentFilters.startDate);
+             if (window.currentFilters.endDate) params.set('endDate', window.currentFilters.endDate);
         }
         
         // Ambil data event
-        allEventsData = await apiFetch(`${endpoint}?${params.toString()}`);
+        window.allEventsData = await apiFetch(`${endpoint}?${params.toString()}`);
         
         // Update count
-        eventCount.textContent = `${allEventsData.length} events found`;
+        eventCount.textContent = `${window.allEventsData.length} events found`;
 
         // Render grid
-        if (allEventsData.length > 0) {
-            renderEventGrid(sortEvents(allEventsData, document.getElementById('sort-select').value), '#event-grid');
+        if (window.allEventsData.length > 0) {
+            renderEventGrid(sortEvents(window.allEventsData, document.getElementById('sort-select').value), '#event-grid');
             noEventsMessage.classList.add('hidden');
         } else {
             eventGrid.innerHTML = ''; // Kosongkan grid

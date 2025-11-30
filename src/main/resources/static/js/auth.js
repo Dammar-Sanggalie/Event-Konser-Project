@@ -305,15 +305,17 @@ function setupPasswordToggle(inputId, buttonId, eyeIconId, eyeOffIconId) {
 
 
 // Event Listener
-const loginForm = document.getElementById('login-form');
-if (loginForm) {
-    loginForm.addEventListener('submit', handleLoginSubmit);
-    setupPasswordToggle('password', 'toggle-password', 'eye-icon', 'eye-off-icon');
-}
+if (typeof document !== 'undefined') {
+    const loginFormElement = document.getElementById('login-form');
+    if (loginFormElement) {
+        loginFormElement.addEventListener('submit', handleLoginSubmit);
+        setupPasswordToggle('password', 'toggle-password', 'eye-icon', 'eye-off-icon');
+    }
 
-const registerForm = document.getElementById('register-form');
-if (registerForm) {
-    registerForm.addEventListener('submit', handleRegisterSubmit);
-    setupPasswordToggle('password', 'toggle-password', 'eye-icon-pw', 'eye-off-icon-pw');
-    setupPasswordToggle('confirmPassword', 'toggle-confirm-password', 'eye-icon-cpw', 'eye-off-icon-cpw');
+    const registerFormElement = document.getElementById('register-form');
+    if (registerFormElement) {
+        registerFormElement.addEventListener('submit', handleRegisterSubmit);
+        setupPasswordToggle('password', 'toggle-password', 'eye-icon-pw', 'eye-off-icon-pw');
+        setupPasswordToggle('confirmPassword', 'toggle-confirm-password', 'eye-icon-cpw', 'eye-off-icon-cpw');
+    }
 }

@@ -19,6 +19,14 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     
     /**
+     * GET /api/schedules - Get all schedules
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Schedule>>> getAllSchedules() {
+        return ResponseEntity.ok(ApiResponse.success("Success", scheduleService.getAllSchedules()));
+    }
+    
+    /**
      * GET /api/schedules/event/{eventId} - Get schedules by event
      */
     @GetMapping("/event/{eventId}")

@@ -3,14 +3,19 @@
  * Menangani semua fitur search, filter, dan display events
  */
 
-let currentEvents = [];
-let currentFilters = {
-    categoryId: null,
-    city: null,
-    startDate: null,
-    endDate: null,
-    searchQuery: ''
-};
+if (typeof currentEvents === 'undefined') {
+    window.currentEvents = [];
+}
+
+if (typeof currentFilters === 'undefined') {
+    window.currentFilters = {
+        categoryId: null,
+        city: null,
+        startDate: null,
+        endDate: null,
+        searchQuery: ''
+    };
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initializeEventsPage();
@@ -95,8 +100,8 @@ async function loadAllEvents() {
         const result = await response.json();
         
         if (result.success && result.data) {
-            currentEvents = result.data;
-            displayEvents(currentEvents);
+            window.currentEvents = result.data;
+            displayEvents(window.currentEvents);
         }
     } catch (error) {
         console.error('Error loading events:', error);
@@ -145,19 +150,19 @@ async function applyFiltersAndSearch() {
     try {
         // Get search query
         const searchInput = document.getElementById('search-input');
-        currentFilters.searchQuery = searchInput?.value || '';
+        window.currentFilters.searchQuery = searchInput?.value || '';
         
         // Get filter values
-        currentFilters.categoryId = document.getElementById('filter-category')?.value || null;
-        currentFilters.city = document.getElementById('filter-city')?.value || null;
-        currentFilters.startDate = document.getElementById('filter-start-date')?.value || null;
-        currentFilters.endDate = document.getElementById('filter-end-date')?.value || null;
+        window.currentFilters.categoryId = document.getElementById('filter-category')?.value || null;
+        window.currentFilters.city = document.getElementById('filter-city')?.value || null;
+        window.currentFilters.startDate = document.getElementById('filter-start-date')?.value || null;
+        window.currentFilters.endDate = document.getElementById('filter-end-date')?.value || null;
         
-        let filteredEvents = [...currentEvents];
+        let filteredEvents = [...window.currentEvents];
         
         // 1. Search filter
-        if (currentFilters.searchQuery) {
-            const query = currentFilters.searchQuery.toLowerCase();
+        if (window.currentFilters.searchQuery) {
+            const query = window.currentFilters.searchQuery.toLowerCase();
             filteredEvents = filteredEvents.filter(event => 
                 event.namaEvent?.toLowerCase().includes(query) ||
                 event.deskripsi?.toLowerCase().includes(query) ||
@@ -166,29 +171,29 @@ async function applyFiltersAndSearch() {
         }
         
         // 2. Category filter
-        if (currentFilters.categoryId) {
+        if (window.currentFilters.categoryId) {
             filteredEvents = filteredEvents.filter(event => 
-                event.kategori?.idKategori == currentFilters.categoryId
+                event.kategori?.idKategori == window.currentFilters.categoryId
             );
         }
         
         // 3. City filter
-        if (currentFilters.city) {
+        if (window.currentFilters.city) {
             filteredEvents = filteredEvents.filter(event => 
-                event.venue?.kota === currentFilters.city
+                event.venue?.kota === window.currentFilters.city
             );
         }
         
         // 4. Date range filter
-        if (currentFilters.startDate) {
-            const startDate = new Date(currentFilters.startDate);
+        if (window.currentFilters.startDate) {
+            const startDate = new Date(window.currentFilters.startDate);
             filteredEvents = filteredEvents.filter(event => 
                 new Date(event.tanggalMulai) >= startDate
             );
         }
         
-        if (currentFilters.endDate) {
-            const endDate = new Date(currentFilters.endDate);
+        if (window.currentFilters.endDate) {
+            const endDate = new Date(window.currentFilters.endDate);
             endDate.setHours(23, 59, 59, 999);
             filteredEvents = filteredEvents.filter(event => 
                 new Date(event.tanggalMulai) <= endDate
@@ -216,7 +221,7 @@ function resetFilters() {
     document.getElementById('sort-select').value = 'upcoming';
     
     // Reset filter object
-    currentFilters = {
+    window.currentFilters = {
         categoryId: null,
         city: null,
         startDate: null,
@@ -225,14 +230,14 @@ function resetFilters() {
     };
     
     // Display all events
-    displayEvents(currentEvents);
+    displayEvents(window.currentEvents);
 }
 
 /**
  * Apply sorting
  */
 function applySorting(sortBy) {
-    let sorted = [...currentEvents];
+    let sorted = [...window.currentEvents];
     
     switch (sortBy) {
         case 'upcoming':
@@ -249,8 +254,8 @@ function applySorting(sortBy) {
     
     // Reapply search/filters then display
     let filtered = sorted;
-    if (currentFilters.searchQuery) {
-        const query = currentFilters.searchQuery.toLowerCase();
+    if (window.currentFilters.searchQuery) {
+        const query = window.currentFilters.searchQuery.toLowerCase();
         filtered = filtered.filter(event => 
             event.namaEvent?.toLowerCase().includes(query)
         );

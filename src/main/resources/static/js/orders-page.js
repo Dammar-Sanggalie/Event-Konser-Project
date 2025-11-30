@@ -3,8 +3,13 @@
  * Menampilkan semua order user dengan ticket details
  */
 
-let userOrders = [];
-let selectedOrder = null;
+if (typeof userOrders === 'undefined') {
+    window.userOrders = [];
+}
+
+if (typeof selectedOrder === 'undefined') {
+    window.selectedOrder = null;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initializeOrdersPage();
@@ -42,13 +47,14 @@ async function loadUserOrders() {
         const user = window.auth.getUser();
         const token = window.auth.getToken();
         
-        if (!user || !user.id) {
+        if (!user || !user.idPengguna) {
+            console.error('[ERROR] User not found or invalid user object:', user);
             showToast('User not found', 'error');
             return;
         }
         
         const response = await fetch(
-            `${window.API_BASE_URL}/orders/user/${user.id}`,
+            `${window.API_BASE_URL}/orders/user/${user.idPengguna}`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -59,8 +65,8 @@ async function loadUserOrders() {
         const result = await response.json();
         
         if (result.success && result.data) {
-            userOrders = result.data;
-            displayOrders(userOrders);
+            window.userOrders = result.data;
+            displayOrders(window.userOrders);
         } else {
             showToast(result.message || 'Failed to load orders', 'error');
         }
@@ -72,7 +78,7 @@ async function loadUserOrders() {
 }
 
 /**
- * Display orders in table/list
+ * Display orders in card grid with images
  */
 function displayOrders(orders) {
     const ordersList = document.getElementById('orders-list');
@@ -88,47 +94,64 @@ function displayOrders(orders) {
     
     if (noOrdersMsg) noOrdersMsg.classList.add('hidden');
     
-    // Build orders table
+    // Build orders card grid
     ordersList.innerHTML = `
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="border-b-2 border-gray-200">
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Order ID</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Event</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Date</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Amount</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
-                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${orders.map(order => `
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                            <td class="py-4 px-4 font-mono text-primary-600">#${order.idPembelian}</td>
-                            <td class="py-4 px-4">${order.ticket?.event?.namaEvent || 'N/A'}</td>
-                            <td class="py-4 px-4">${formatDate(order.tanggalPembelian)}</td>
-                            <td class="py-4 px-4 font-semibold">${formatCurrency(order.totalHarga)}</td>
-                            <td class="py-4 px-4">
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                                    order.status === 'PAID' ? 'bg-green-500' :
-                                    order.status === 'PENDING' ? 'bg-yellow-500' :
-                                    order.status === 'CANCELLED' ? 'bg-red-500' :
-                                    'bg-gray-500'
-                                }">
-                                    ${order.status}
-                                </span>
-                            </td>
-                            <td class="py-4 px-4">
-                                <button class="text-primary-600 hover:text-primary-800 font-medium text-sm"
-                                        onclick="viewOrderDetails(${order.idPembelian})">
-                                    View
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${orders.map(order => {
+                // Calculate payment amount
+                let displayAmount = order.totalHarga;
+                if (order.discountAmount && order.discountAmount > 0) {
+                    displayAmount = (order.subtotal || order.totalHarga) - order.discountAmount;
+                }
+                
+                // Get event image URL
+                const eventImage = order.eventImageUrl || (order.ticket?.event?.posterUrl) || '/assets/images/placeholder-event.jpg';
+                
+                return `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                     onclick="viewOrderDetails(${order.idPembelian})">
+                    <!-- Event Image -->
+                    <div class="relative h-40 bg-gray-200 overflow-hidden">
+                        <img src="${eventImage}" alt="${order.eventName}" 
+                             class="w-full h-full object-cover hover:scale-105 transition-transform"
+                             onerror="this.src='/assets/images/placeholder-event.jpg'">
+                        <!-- Status Badge -->
+                        <div class="absolute top-3 right-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold text-white ${
+                                order.status === 'PAID' ? 'bg-green-500' :
+                                order.status === 'PENDING' ? 'bg-yellow-500' :
+                                order.status === 'CANCELLED' ? 'bg-red-500' :
+                                'bg-gray-500'
+                            }">
+                                ${order.status}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Content -->
+                    <div class="p-4 space-y-3">
+                        <!-- Order ID and Event Name -->
+                        <div>
+                            <p class="text-xs text-gray-600">Order ID: <span class="font-mono font-semibold">#${order.idPembelian}</span></p>
+                            <h3 class="font-semibold text-gray-900 line-clamp-2">${order.eventName || 'Event'}</h3>
+                        </div>
+                        
+                        <!-- Details -->
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <p>📅 ${formatDate(order.tanggalPembelian)}</p>
+                            <p>🎫 ${order.ticketType || 'Regular'} • Qty: ${order.jumlah || 1}</p>
+                            <p class="font-semibold text-primary-600">Total: ${formatCurrency(displayAmount)}</p>
+                        </div>
+                        
+                        <!-- Action Button -->
+                        <button class="w-full mt-3 px-3 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition"
+                                onclick="event.stopPropagation(); viewOrderDetails(${order.idPembelian})">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('')}
         </div>
     `;
 }
@@ -152,7 +175,7 @@ async function viewOrderDetails(orderId) {
         const result = await response.json();
         
         if (result.success && result.data) {
-            selectedOrder = result.data;
+            window.selectedOrder = result.data;
             displayOrderModal(result.data);
         } else {
             showToast('Failed to load order details', 'error');
@@ -229,16 +252,16 @@ function displayOrderModal(order) {
                 <div class="bg-gray-50 p-4 rounded-lg space-y-2">
                     <div class="flex justify-between">
                         <span>Subtotal:</span>
-                        <span>${formatCurrency(order.totalHarga)}</span>
+                        <span>${formatCurrency(order.subtotal || order.totalHarga)}</span>
                     </div>
-                    ${order.diskonTotal ? `
+                    ${order.discountAmount && order.discountAmount > 0 ? `
                         <div class="flex justify-between text-green-600">
-                            <span>Discount:</span>
-                            <span>- ${formatCurrency(order.diskonTotal)}</span>
+                            <span>Discount${order.promoCode ? ' (' + order.promoCode + ')' : ''}:</span>
+                            <span>- ${formatCurrency(order.discountAmount)}</span>
                         </div>
                     ` : ''}
                     <div class="flex justify-between font-bold text-lg border-t pt-2">
-                        <span>Total:</span>
+                        <span>Total Amount Paid:</span>
                         <span>${formatCurrency(order.totalHarga)}</span>
                     </div>
                 </div>
@@ -314,14 +337,14 @@ async function cancelOrder(orderId) {
  * Download ticket
  */
 function downloadTicket(orderId) {
-    if (!selectedOrder || !selectedOrder.qrCode) {
+    if (!window.selectedOrder || !window.selectedOrder.qrCode) {
         showToast('QR Code not available', 'warning');
         return;
     }
     
     // Generate PDF or image download
     const link = document.createElement('a');
-    link.href = `data:image/png;base64,${selectedOrder.qrCode}`;
+    link.href = `data:image/png;base64,${window.selectedOrder.qrCode}`;
     link.download = `ticket-${orderId}.png`;
     link.click();
     

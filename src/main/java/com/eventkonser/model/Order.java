@@ -70,6 +70,15 @@ public class Order {
     @Column(name = "id_event")
     private Long idEvent;
     
+    @Column(name = "discount_amount", precision = 10, scale = 2)
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+    
+    @Column(name = "promo_code")
+    private String promoCode;
+    
+    @Column(name = "subtotal", precision = 10, scale = 2)
+    private BigDecimal subtotal = BigDecimal.ZERO;
+    
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Payment payment;

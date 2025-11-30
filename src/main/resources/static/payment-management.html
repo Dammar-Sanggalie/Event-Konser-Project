@@ -176,7 +176,7 @@
         // Load payments
         async function loadPayments() {
             try {
-                const response = await fetch(`${window.API_BASE_URL}/pembayaran`);
+                const response = await fetch(`${window.API_BASE_URL}/payments`);
                 const result = await response.json();
 
                 if (result.success && result.data) {

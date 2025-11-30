@@ -18,6 +18,15 @@ public class TicketController {
     private final TicketService ticketService;
     
     /**
+     * GET /api/tickets - Get all tickets (Admin)
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Ticket>>> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTickets();
+        return ResponseEntity.ok(ApiResponse.success("Success", tickets));
+    }
+    
+    /**
      * GET /api/tickets/event/{eventId} - Get tickets by event
      */
     @GetMapping("/event/{eventId}")

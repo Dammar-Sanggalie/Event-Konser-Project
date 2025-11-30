@@ -39,10 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Long userId = tokenProvider.getUserIdFromToken(jwt);
 
                 // Create authentication token
+                // Add "ROLE_" prefix untuk Spring Security @PreAuthorize("hasRole('ADMIN')")
+                String roleWithPrefix = role.startsWith("ROLE_") ? role : "ROLE_" + role;
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
-                    Collections.singleton(new SimpleGrantedAuthority(role))
+                    Collections.singleton(new SimpleGrantedAuthority(roleWithPrefix))
                 );
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -52,7 +52,8 @@ public class OrderService {
      * Menggunakan Pessimistic Lock untuk prevent race condition
      */
     @Transactional
-    public Order bookTicket(Long userId, Long ticketId, Integer quantity) {
+    public Order bookTicket(Long userId, Long ticketId, Integer quantity, 
+                           BigDecimal discountAmount, String promoCode, BigDecimal subtotal) {
         // 1. Validasi user
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan"));
@@ -92,6 +93,11 @@ public class OrderService {
         order.setTotalHarga(totalHarga);
         order.setTanggalPembelian(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
+        
+        // Set discount dan promo info
+        order.setSubtotal(subtotal != null ? subtotal : totalHarga);
+        order.setDiscountAmount(discountAmount != null ? discountAmount : BigDecimal.ZERO);
+        order.setPromoCode(promoCode);
         
         // Snapshot info untuk history
         try {

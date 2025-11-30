@@ -227,6 +227,7 @@
     
     <script>
         let orderData = null;
+        let orderId = null;
         const ADMIN_FEE = 15000;
         const PAYMENT_TIMEOUT_MINUTES = 15;
         
@@ -236,22 +237,49 @@
                 return;
             }
             
-            // Get order from sessionStorage
+            // Get orderId from URL parameter
+            const params = new URLSearchParams(window.location.search);
+            orderId = params.get('orderId');
+            
+            // Try to get order from sessionStorage first (fallback)
             const sessionOrder = sessionStorage.getItem('checkout_order');
-            if (!sessionOrder) {
-                window.location.href = '/booking.html';
+            
+            if (orderId) {
+                // Fetch order details from backend
+                try {
+                    const response = await fetch(`${window.API_BASE_URL}/orders/${orderId}`, {
+                        headers: { 'Authorization': `Bearer ${window.auth.getToken()}` }
+                    });
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        orderData = result.data;
+                    } else {
+                        throw new Error('Failed to load order');
+                    }
+                } catch (e) {
+                    console.error('Error fetching order:', e);
+                    if (sessionOrder) {
+                        orderData = JSON.parse(sessionOrder);
+                    } else {
+                        window.location.href = '/events.html';
+                        return;
+                    }
+                }
+            } else if (sessionOrder) {
+                orderData = JSON.parse(sessionOrder);
+            } else {
+                window.location.href = '/events.html';
                 return;
             }
             
             try {
-                orderData = JSON.parse(sessionOrder);
                 renderOrderSummary();
                 setupPaymentMethods();
                 setupFormValidation();
                 setPaymentDeadline();
             } catch (e) {
-                console.error('Error parsing order data:', e);
-                window.location.href = '/booking.html';
+                console.error('Error initializing payment page:', e);
+                window.location.href = '/events.html';
             }
         });
         
@@ -274,11 +302,15 @@
         
         function calculatePaymentTotal() {
             let subtotal = 0;
-            if (orderData.items) {
+            // Use subtotal dari order data jika tersedia
+            if (orderData.subtotal) {
+                subtotal = orderData.subtotal;
+            } else if (orderData.items) {
+                // Fallback: hitung dari items
                 subtotal = orderData.items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0);
             }
             
-            const discount = orderData.discount || 0;
+            const discount = orderData.discountAmount || 0;
             const total = subtotal - discount + ADMIN_FEE;
             
             document.getElementById('pay-subtotal').textContent = formatCurrency(subtotal);
@@ -375,7 +407,6 @@
         
         async function processPayment() {
             const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
-            const userId = window.auth.getUserId();
             
             try {
                 // Show loading
@@ -383,40 +414,51 @@
                 payButton.disabled = true;
                 payButton.innerHTML = '<span class="animate-spin">⏳</span> Processing Payment...';
                 
-                // Step 1: Create the order
-                console.log('Step 1: Creating order...');
-                const orderPayload = {
-                    idPengguna: userId,
-                    totalHarga: orderData.items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0) - (orderData.discount || 0) + ADMIN_FEE,
-                    items: orderData.items.map(item => ({
-                        idTiket: item.idTiket,
-                        jumlah: item.jumlah
-                    }))
-                };
+                let paymentOrderId = orderId;
                 
-                const orderResponse = await fetch(`${window.API_BASE_URL}/orders/book`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderPayload)
-                });
-                
-                const orderResult = await orderResponse.json();
-                
-                if (!orderResult.success) {
-                    showToast('Failed to create order: ' + (orderResult.message || 'Unknown error'), 'error');
-                    payButton.disabled = false;
-                    payButton.innerHTML = 'Complete Payment';
-                    return;
+                // If no orderId from URL, create order first
+                if (!paymentOrderId) {
+                    console.log('Step 1: Creating order...');
+                    const userId = window.auth.getUserId();
+                    const orderPayload = {
+                        idPengguna: userId,
+                        totalHarga: orderData.items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0) - (orderData.discount || 0) + ADMIN_FEE,
+                        items: orderData.items.map(item => ({
+                            idTiket: item.idTiket,
+                            jumlah: item.jumlah
+                        }))
+                    };
+                    
+                    const orderResponse = await fetch(`${window.API_BASE_URL}/orders/book`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${window.auth.getToken()}`
+                        },
+                        body: JSON.stringify(orderPayload)
+                    });
+                    
+                    const orderResult = await orderResponse.json();
+                    
+                    if (!orderResult.success) {
+                        showToast('Failed to create order: ' + (orderResult.message || 'Unknown error'), 'error');
+                        payButton.disabled = false;
+                        payButton.innerHTML = 'Complete Payment';
+                        return;
+                    }
+                    
+                    paymentOrderId = orderResult.data.idPembelian || orderResult.data.id;
+                    console.log('Order created with ID:', paymentOrderId);
                 }
                 
-                const orderId = orderResult.data.idPembelian || orderResult.data.id;
-                console.log('Order created with ID:', orderId);
-                
                 // Step 2: Process payment menggunakan MOCK PAYMENT
-                console.log('Step 2: Processing mock payment for order:', orderId);
-                const paymentResponse = await fetch(`${window.API_BASE_URL}/payments/process-mock?orderId=${orderId}`, {
+                console.log('Step 2: Processing mock payment for order:', paymentOrderId);
+                const paymentResponse = await fetch(`${window.API_BASE_URL}/payments/process-mock?orderId=${paymentOrderId}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.auth.getToken()}`
+                    }
                 });
                 
                 const paymentResult = await paymentResponse.json();
@@ -436,7 +478,7 @@
                 
                 // Redirect to orders page
                 setTimeout(() => {
-                    window.location.href = `/orders.html?payment=success&orderId=${orderId}`;
+                    window.location.href = `/orders.html?payment=success&orderId=${paymentOrderId}`;
                 }, 1500);
                 
             } catch (error) {
