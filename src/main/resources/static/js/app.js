@@ -6,11 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Memuat komponen reusable (Navbar & Footer)
+ * Memuat komponen reusable (Navbar, Footer, & Admin Sidebar)
  */
 async function loadReusableComponents() {
     const navbarPlaceholder = document.getElementById('navbar-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
+    const sidebarPlaceholder = document.getElementById('admin-sidebar-placeholder');
 
     try {
         // Load Navbar
@@ -20,6 +21,13 @@ async function loadReusableComponents() {
             navbarPlaceholder.innerHTML = html;
             // Setelah HTML dimuat, jalankan logika untuk Navbar
             initializeNavbarLogic();
+        }
+
+        // Load Admin Sidebar (jika ada placeholder)
+        if (sidebarPlaceholder) {
+            const response = await fetch('/components/admin-sidebar.html');
+            const html = await response.text();
+            sidebarPlaceholder.innerHTML = html;
         }
 
         // Load Footer

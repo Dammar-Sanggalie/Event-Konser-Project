@@ -44,9 +44,13 @@
 
 <body class="bg-gray-50 font-sans antialiased" data-page="event-management">
     
-    <header id="navbar-placeholder"></header>
-    
-    <main class="min-h-screen bg-gray-50 pb-16">
+    <div class="flex">
+        <div id="admin-sidebar-placeholder"></div>
+        
+        <div class="flex-1 flex flex-col">
+            <header id="navbar-placeholder"></header>
+            
+            <main class="flex-1 min-h-screen bg-gray-50 pb-16">
         <div class="container mx-auto max-w-6xl px-4 py-8">
             <div class="flex justify-between items-center mb-8">
                 <div>
@@ -153,29 +157,22 @@
                     </button>
                 </div>
             </form>
+        </main>
+        
+        <footer id="footer-placeholder"></footer>
         </div>
-    </main>
-    
-    <footer id="footer-placeholder"></footer>
+    </div>
     
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
     <script src="/js/app.js"></script>
     
     <script>
         let editingEventId = null;
         
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.auth.isAuthenticated()) {
-                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
-                return;
-            }
-            
-            const user = window.auth.getUser();
-            if (user.role !== 'ADMIN') {
-                window.location.href = '/index.html';
-                return;
-            }
+            window.admin.protectAdminPage();
             
             await loadCategories();
             await loadVenues();
@@ -250,7 +247,7 @@
                 }
             } catch (error) {
                 console.error('Error loading event:', error);
-                showToast('Failed to load event data', 'error');
+                window.admin.showToast('Failed to load event data', 'error');
             }
         }
         
@@ -286,16 +283,16 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showToast(`Event ${editingEventId ? 'updated' : 'created'} successfully`, 'success');
+                    window.admin.showToast(`Event ${editingEventId ? 'updated' : 'created'} successfully`);
                     setTimeout(() => {
                         window.location.href = '/admin-dashboard.html';
                     }, 1500);
                 } else {
-                    showToast(result.message || 'Failed to save event', 'error');
+                    window.admin.showToast(result.message || 'Failed to save event', 'error');
                 }
             } catch (error) {
                 console.error('Error saving event:', error);
-                showToast('An error occurred', 'error');
+                window.admin.showToast('An error occurred', 'error');
             }
         }
         
@@ -308,17 +305,6 @@
             const minutes = String(date.getMinutes()).padStart(2, '0');
             
             return `${year}-${month}-${day}T${hours}:${minutes}`;
-        }
-        
-        function showToast(message, type) {
-            const toast = document.createElement('div');
-            toast.className = `fixed bottom-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 ${
-                type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-            } text-white`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.remove(), 3000);
         }
     </script>
 </body>
