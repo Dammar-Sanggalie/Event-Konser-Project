@@ -1,0 +1,574 @@
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Mobile First - Base styles for mobile */
+
+/* Extra Small (xs) - 0px and up */
+@media (max-width: 640px) {
+    /* Layout */
+    .container {
+        @apply px-4;
+    }
+
+    /* Typography */
+    h1 {
+        @apply text-2xl;
+    }
+
+    h2 {
+        @apply text-xl;
+    }
+
+    h3 {
+        @apply text-lg;
+    }
+
+    /* Navigation */
+    nav {
+        @apply px-4;
+    }
+
+    /* Cards */
+    .card {
+        @apply rounded-md;
+    }
+
+    .card-header {
+        @apply px-4 py-3;
+    }
+
+    .card-body {
+        @apply px-4 py-3;
+    }
+
+    /* Buttons */
+    .btn {
+        @apply w-full;
+    }
+
+    /* Tables */
+    .table-wrapper {
+        @apply -mx-4 overflow-x-auto;
+    }
+
+    .table {
+        @apply text-sm;
+    }
+
+    .table thead th,
+    .table tbody td {
+        @apply px-4 py-2;
+    }
+
+    /* Forms */
+    .admin-form {
+        @apply p-4;
+    }
+
+    /* Grid */
+    .grid {
+        @apply grid-cols-1;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        @apply fixed left-0 top-0 w-64 h-full transform -translate-x-full transition-transform z-50;
+    }
+
+    .sidebar.open {
+        @apply translate-x-0;
+    }
+
+    /* Modal */
+    .modal {
+        @apply p-0 rounded-b-lg rounded-t-none;
+    }
+
+    .modal-content {
+        @apply max-h-screen;
+    }
+
+    /* Pagination */
+    .pagination {
+        @apply gap-1;
+    }
+
+    .pagination-btn {
+        @apply px-2 py-1 text-sm;
+    }
+
+    /* Header */
+    .header {
+        @apply flex-col;
+    }
+
+    /* Section */
+    .section-header {
+        @apply mb-4;
+    }
+
+    .section-title {
+        @apply text-xl;
+    }
+
+    /* Flex */
+    .flex-column-mobile {
+        @apply flex-col;
+    }
+
+    /* Gap */
+    .gap-mobile {
+        @apply gap-2;
+    }
+
+    /* Margin */
+    .mb-mobile {
+        @apply mb-4;
+    }
+
+    /* Padding */
+    .p-mobile {
+        @apply p-4;
+    }
+
+    /* Width */
+    .w-mobile-full {
+        @apply w-full;
+    }
+
+    /* Text */
+    .text-mobile-center {
+        @apply text-center;
+    }
+
+    /* Hidden on mobile */
+    .hidden-mobile {
+        @apply hidden;
+    }
+
+    /* Show only on mobile */
+    .visible-mobile {
+        @apply block;
+    }
+
+    /* Dashboard Stats Grid */
+    .admin-stats-grid {
+        @apply grid-cols-1;
+    }
+
+    /* Admin Search */
+    .admin-search {
+        @apply flex-col;
+    }
+
+    /* Dropdown */
+    .dropdown {
+        @apply w-full;
+    }
+
+    /* List */
+    .list-group-item {
+        @apply px-4 py-3;
+    }
+
+    /* Alert */
+    .alert {
+        @apply p-3 text-sm;
+    }
+
+    /* Badge */
+    .badge {
+        @apply text-xs px-2 py-0.5;
+    }
+}
+
+/* Small (sm) - 640px and up */
+@media (min-width: 640px) {
+    .visible-mobile {
+        @apply hidden;
+    }
+
+    .hidden-mobile {
+        @apply block;
+    }
+}
+
+/* Medium (md) - 768px and up */
+@media (min-width: 768px) {
+    /* Layout */
+    .container {
+        @apply px-6;
+    }
+
+    /* Typography */
+    h1 {
+        @apply text-3xl;
+    }
+
+    h2 {
+        @apply text-2xl;
+    }
+
+    h3 {
+        @apply text-xl;
+    }
+
+    /* Grid */
+    .grid {
+        @apply grid-cols-2;
+    }
+
+    .grid-3 {
+        @apply grid-cols-3;
+    }
+
+    .grid-4 {
+        @apply grid-cols-4;
+    }
+
+    /* Navigation */
+    .nav-mobile-collapse {
+        @apply flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        @apply static translate-x-0;
+    }
+
+    /* Modal */
+    .modal-content {
+        @apply max-w-2xl max-h-[90vh];
+    }
+
+    /* Forms */
+    .form-row {
+        @apply grid grid-cols-2 gap-4;
+    }
+
+    /* Flex */
+    .flex-md-row {
+        @apply flex-row;
+    }
+
+    /* Gap */
+    .gap-md {
+        @apply gap-6;
+    }
+
+    /* Width */
+    .w-md-auto {
+        @apply w-auto;
+    }
+
+    /* Table */
+    .table {
+        @apply text-base;
+    }
+
+    .table thead th,
+    .table tbody td {
+        @apply px-6 py-4;
+    }
+
+    /* Admin Search */
+    .admin-search {
+        @apply flex-row;
+    }
+
+    .admin-search-input {
+        @apply flex-1;
+    }
+
+    /* Dashboard Stats Grid */
+    .admin-stats-grid {
+        @apply grid-cols-2;
+    }
+}
+
+/* Large (lg) - 1024px and up */
+@media (min-width: 1024px) {
+    /* Layout */
+    .container {
+        @apply px-8;
+    }
+
+    /* Grid */
+    .grid {
+        @apply grid-cols-3;
+    }
+
+    .grid-4 {
+        @apply grid-cols-4;
+    }
+
+    .grid-6 {
+        @apply grid-cols-6;
+    }
+
+    /* Sidebar Width */
+    .sidebar {
+        @apply w-72;
+    }
+
+    /* Modal */
+    .modal-content {
+        @apply max-w-4xl;
+    }
+
+    /* Forms */
+    .form-row {
+        @apply grid grid-cols-3 gap-6;
+    }
+
+    /* Dashboard Stats Grid */
+    .admin-stats-grid {
+        @apply grid-cols-4;
+    }
+
+    /* Content */
+    .content-lg {
+        @apply max-w-7xl;
+    }
+}
+
+/* Extra Large (xl) - 1280px and up */
+@media (min-width: 1280px) {
+    .container {
+        @apply max-w-7xl mx-auto px-8;
+    }
+
+    /* Grid */
+    .grid {
+        @apply grid-cols-4;
+    }
+
+    .grid-6 {
+        @apply grid-cols-6;
+    }
+
+    /* Forms */
+    .form-row {
+        @apply grid grid-cols-4 gap-8;
+    }
+}
+
+/* 2XL (2xl) - 1536px and up */
+@media (min-width: 1536px) {
+    .container {
+        @apply max-w-7xl mx-auto px-12;
+    }
+
+    /* Grid */
+    .grid {
+        @apply grid-cols-5;
+    }
+
+    .grid-6 {
+        @apply grid-cols-6;
+    }
+
+    /* Forms */
+    .form-row {
+        @apply grid grid-cols-5 gap-8;
+    }
+}
+
+/* ===== UTILITY RESPONSIVE CLASSES ===== */
+
+/* Display utilities */
+.d-none-mobile {
+    @apply hidden sm:block;
+}
+
+.d-none-tablet {
+    @apply hidden md:block;
+}
+
+.d-none-desktop {
+    @apply hidden lg:block;
+}
+
+.d-block-mobile {
+    @apply block sm:hidden;
+}
+
+.d-block-tablet {
+    @apply block md:hidden;
+}
+
+.d-block-desktop {
+    @apply block lg:hidden;
+}
+
+/* Width utilities */
+.w-full-mobile {
+    @apply w-full sm:w-auto;
+}
+
+.w-full-tablet {
+    @apply w-full md:w-auto;
+}
+
+/* Padding utilities */
+.p-mobile {
+    @apply p-4 sm:p-6 md:p-8;
+}
+
+.px-mobile {
+    @apply px-4 sm:px-6 md:px-8;
+}
+
+.py-mobile {
+    @apply py-4 sm:py-6 md:py-8;
+}
+
+/* Margin utilities */
+.m-mobile {
+    @apply m-4 sm:m-6 md:m-8;
+}
+
+.mx-mobile {
+    @apply mx-4 sm:mx-6 md:mx-8;
+}
+
+.my-mobile {
+    @apply my-4 sm:my-6 md:my-8;
+}
+
+/* Gap utilities */
+.gap-mobile {
+    @apply gap-2 sm:gap-4 md:gap-6 lg:gap-8;
+}
+
+/* Text size utilities */
+.text-fluid {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl;
+}
+
+.text-fluid-sm {
+    @apply text-base sm:text-lg md:text-xl;
+}
+
+/* Grid utilities */
+.grid-auto-mobile {
+    @apply grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
+}
+
+.grid-auto-md {
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+}
+
+/* Flex utilities */
+.flex-mobile {
+    @apply flex flex-col sm:flex-row;
+}
+
+.flex-mobile-reverse {
+    @apply flex flex-col-reverse sm:flex-row;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    body {
+        @apply bg-white;
+    }
+
+    .no-print,
+    .sidebar,
+    .navbar,
+    nav,
+    .pagination,
+    .admin-actions,
+    .btn-print {
+        @apply hidden;
+    }
+
+    .card {
+        @apply shadow-none border border-gray-200;
+    }
+
+    .table {
+        @apply text-xs;
+    }
+
+    .page-break {
+        @apply page-break-after-always;
+    }
+
+    .page-break-before {
+        @apply page-break-before-always;
+    }
+
+    .avoid-break {
+        @apply page-break-inside-avoid;
+    }
+}
+
+/* ===== DARK MODE SUPPORT (Optional) ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1f2937;
+        --bg-secondary: #111827;
+        --text-primary: #f3f4f6;
+        --text-secondary: #d1d5db;
+    }
+
+    body {
+        @apply bg-gray-900 text-gray-100;
+    }
+
+    .card {
+        @apply bg-gray-800;
+    }
+
+    .input-field {
+        @apply bg-gray-800 border-gray-700 text-white;
+    }
+
+    .table {
+        @apply bg-gray-800;
+    }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        @apply !transition-none !animate-none;
+    }
+
+    html {
+        @apply scroll-smooth;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+    .btn {
+        @apply border border-current;
+    }
+
+    .input-field {
+        @apply border-2 border-current;
+    }
+}
+
+/* Large text mode */
+@media (prefers-contrast: more) and (min-width: 1024px) {
+    body {
+        @apply text-lg;
+    }
+
+    h1 {
+        @apply text-4xl;
+    }
+
+    h2 {
+        @apply text-3xl;
+    }
+
+    .btn {
+        @apply px-6 py-3 text-lg;
+    }
+}

@@ -16,6 +16,11 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     
     @Transactional(readOnly = true)
+    public List<Schedule> getAllSchedules() {
+        return scheduleRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
     public List<Schedule> getSchedulesByEvent(Long eventId) {
         return scheduleRepository.findByEvent_IdEventOrderByTanggalAscJamMulaiAsc(eventId);
     }

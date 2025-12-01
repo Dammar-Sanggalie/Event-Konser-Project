@@ -1,5 +1,8 @@
 // Base URL backend Anda
-const API_BASE_URL = 'http://localhost:8081/api';
+
+if (typeof window.API_BASE_URL === 'undefined') {
+    window.API_BASE_URL = 'http://localhost:8081/api'; // Export to window for use in other files
+}
 
 /**
  * Fungsi helper untuk melakukan fetch request.
@@ -8,7 +11,7 @@ const API_BASE_URL = 'http://localhost:8081/api';
  * @param {object} options - Opsi standar untuk fetch (method, headers, body)
  */
 async function apiFetch(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${window.API_BASE_URL}${endpoint}`;
     
     // Siapkan headers default
     const defaultHeaders = {

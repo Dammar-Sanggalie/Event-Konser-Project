@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased" data-page="notifications">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main class="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-16">
+        <div class="container mx-auto max-w-5xl px-4 py-12">
+            
+            <!-- Header -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-5xl font-bold bg-gradient-to-r from-primary-600 to-primary-900 bg-clip-text text-transparent">Notifications</h1>
+                        <p class="text-gray-600 mt-2 text-lg">Stay updated with your bookings, orders, and promotions</p>
+                    </div>
+                    <button onclick="window.history.back()" class="px-4 py-2.5 text-gray-600 hover:bg-gray-200 rounded-lg transition font-medium">
+                        Back
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <!-- Sidebar Navigation -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-24 space-y-2 border border-gray-100">
+                        <button onclick="filterNotifications('all')" data-filter="all" class="notification-filter w-full text-left px-5 py-3 rounded-xl font-semibold transition active:bg-primary-50 active:text-primary-600 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>All</span>
+                            <span id="count-all" class="text-xs bg-primary-100 text-primary-700 px-2.5 py-1 rounded-full font-bold">0</span>
+                        </button>
+                        <button onclick="filterNotifications('order')" data-filter="order" class="notification-filter w-full text-left px-5 py-3 rounded-xl font-semibold transition hover:bg-gray-50 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Orders</span>
+                            <span id="count-order" class="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-bold">0</span>
+                        </button>
+                        <button onclick="filterNotifications('payment')" data-filter="payment" class="notification-filter w-full text-left px-5 py-3 rounded-xl font-semibold transition hover:bg-gray-50 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V5a3 3 0 00-3-3H6a3 3 0 00-3 3v11a3 3 0 003 3z" /></svg>Payments</span>
+                            <span id="count-payment" class="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-bold">0</span>
+                        </button>
+                        <button onclick="filterNotifications('event')" data-filter="event" class="notification-filter w-full text-left px-5 py-3 rounded-xl font-semibold transition hover:bg-gray-50 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Events</span>
+                            <span id="count-event" class="text-xs bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full font-bold">0</span>
+                        </button>
+                        <button onclick="filterNotifications('promo')" data-filter="promo" class="notification-filter w-full text-left px-5 py-3 rounded-xl font-semibold transition hover:bg-gray-50 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>Promos</span>
+                            <span id="count-promo" class="text-xs bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full font-bold">0</span>
+                        </button>
+                        
+                        <div class="border-t pt-4 mt-4">
+                            <button onclick="markAllAsRead()" class="w-full px-4 py-2.5 text-sm text-primary-600 hover:bg-primary-50 rounded-lg transition font-semibold">
+                                Mark all as read
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="lg:col-span-3">
+                    
+                    <!-- Action Bar -->
+                    <div class="bg-white rounded-2xl shadow-md p-5 mb-6 flex items-center justify-between border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="select-all" class="w-5 h-5 text-primary-600 rounded" onchange="toggleSelectAll()">
+                            <span id="selection-info" class="text-sm font-semibold text-gray-700">None selected</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="markSelectedAsRead()" class="px-5 py-2.5 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold">
+                                Mark as read
+                            </button>
+                            <button onclick="deleteSelected()" class="px-5 py-2.5 text-sm border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition font-semibold">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications List -->
+                    <div id="notifications-list" class="space-y-3">
+                        <!-- Notifications populated by JS -->
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="empty-state" class="hidden bg-white rounded-2xl shadow-md p-16 text-center border border-gray-100">
+                        <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-900 text-xl font-bold mb-2">No notifications</p>
+                        <p class="text-gray-600">You're all caught up! Check back later for new updates.</p>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div id="pagination" class="mt-8 flex items-center justify-center gap-2">
+                        <!-- Pagination buttons populated by JS -->
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Notification Detail Modal -->
+    <div id="notification-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full max-h-96 overflow-y-auto">
+            <div class="flex items-start justify-between mb-6">
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-900">-</h2>
+                <button onclick="closeNotificationModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-light">×</button>
+            </div>
+            
+            <div id="modal-content" class="text-gray-700 mb-6 text-base">
+                <!-- Content populated by JS -->
+            </div>
+            
+            <div id="modal-actions" class="flex gap-3 pt-4 border-t">
+                <!-- Actions populated by JS -->
+            </div>
+        </div>
+    </div>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        let allNotifications = [];
+        let currentFilter = 'all';
+        let selectedNotifications = [];
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            try {
+                await loadNotifications();
+                renderNotifications();
+            } catch (e) {
+                console.error('Error loading notifications:', e);
+                showToast('Failed to load notifications', 'error');
+            }
+        });
+        
+        async function loadNotifications() {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/notifications`, {
+                    headers: { 'Authorization': 'Bearer ' + window.auth.getToken() }
+                });
+                
+                if (!response.ok) throw new Error('Failed to fetch notifications');
+                
+                const result = await response.json();
+                allNotifications = result.data || result || [];
+                
+                // Sort by date (newest first)
+                allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                updateCountBadges();
+            } catch (error) {
+                console.error('Error:', error);
+                allNotifications = [];
+            }
+        }
+        
+        function updateCountBadges() {
+            const types = ['all', 'order', 'payment', 'event', 'promo'];
+            types.forEach(type => {
+                let count = 0;
+                if (type === 'all') {
+                    count = allNotifications.filter(n => !n.isRead).length;
+                } else {
+                    count = allNotifications.filter(n => !n.isRead && n.type === type).length;
+                }
+                document.getElementById(`count-${type}`).textContent = count > 0 ? count : '0';
+            });
+        }
+        
+        function filterNotifications(type) {
+            currentFilter = type;
+            currentPage = 1;
+            selectedNotifications = [];
+            
+            document.querySelectorAll('.notification-filter').forEach(btn => {
+                btn.classList.remove('bg-primary-50', 'text-primary-600');
+                btn.classList.add('hover:bg-gray-50');
+            });
+            document.querySelector(`[data-filter="${type}"]`).classList.add('bg-primary-50', 'text-primary-600');
+            document.querySelector(`[data-filter="${type}"]`).classList.remove('hover:bg-gray-50');
+            
+            renderNotifications();
+        }
+        
+        function renderNotifications() {
+            let filtered = allNotifications;
+            
+            if (currentFilter !== 'all') {
+                filtered = allNotifications.filter(n => n.type === currentFilter);
+            }
+            
+            if (filtered.length === 0) {
+                document.getElementById('notifications-list').innerHTML = '';
+                document.getElementById('empty-state').classList.remove('hidden');
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
+            document.getElementById('empty-state').classList.add('hidden');
+            
+            // Pagination
+            const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const paged = filtered.slice(start, end);
+            
+            // Render notifications
+            document.getElementById('notifications-list').innerHTML = paged.map(notif => `
+                <div class="notification-item bg-white rounded-2xl shadow-md p-5 flex items-start gap-4 cursor-pointer hover:shadow-lg transition border-l-4 border-gray-200 hover:border-primary-600 group" onclick="openNotificationDetail('${notif.id}')">
+                    <input type="checkbox" class="notification-checkbox mt-1.5 w-5 h-5 text-primary-600 rounded cursor-pointer" data-id="${notif.id}" onclick="event.stopPropagation(); toggleNotificationSelect('${notif.id}')">
+                    
+                    <!-- Icon Circle -->
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
+                        notif.type === 'order' ? 'bg-blue-100' :
+                        notif.type === 'payment' ? 'bg-green-100' :
+                        notif.type === 'event' ? 'bg-purple-100' :
+                        notif.type === 'promo' ? 'bg-yellow-100' :
+                        'bg-gray-100'
+                    }">
+                        ${
+                        notif.type === 'order' ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' :
+                        notif.type === 'payment' ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V5a3 3 0 00-3-3H6a3 3 0 00-3 3v11a3 3 0 003 3z" /></svg>' :
+                        notif.type === 'event' ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' :
+                        notif.type === 'promo' ? '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>' :
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
+                        }
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-gray-900 group-hover:text-primary-600 transition">${notif.title}</h3>
+                                <p class="text-gray-600 text-sm mt-1 line-clamp-2">${notif.message}</p>
+                            </div>
+                            <span class="text-xs text-gray-500 font-medium whitespace-nowrap ml-2">${formatTime(notif.createdAt)}</span>
+                        </div>
+                        <div class="mt-3 flex gap-2">
+                            <span class="inline-block px-2.5 py-1 bg-${getTypeColor(notif.type)}-100 text-${getTypeColor(notif.type)}-700 text-xs rounded-full font-semibold">
+                                ${getTypeLabel(notif.type)}
+                            </span>
+                            ${notif.isRead ? '' : '<span class="inline-block w-2.5 h-2.5 bg-primary-600 rounded-full"></span>'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Pagination buttons
+            let paginationHTML = '';
+            if (totalPages > 1) {
+                paginationHTML += `<button onclick="goToPage(${Math.max(1, currentPage - 1)})" class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-semibold ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}">Previous</button>`;
+                
+                for (let i = 1; i <= Math.min(5, totalPages); i++) {
+                    paginationHTML += `<button onclick="goToPage(${i})" class="px-4 py-2.5 ${i === currentPage ? 'bg-primary-600 text-white' : 'border border-gray-300 hover:bg-gray-50'} rounded-lg transition font-semibold">${i}</button>`;
+                }
+                
+                if (totalPages > 5) {
+                    paginationHTML += `<span class="text-gray-600 font-semibold">...</span>`;
+                }
+                
+                paginationHTML += `<button onclick="goToPage(${Math.min(totalPages, currentPage + 1)})" class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-semibold ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}">Next</button>`;
+            }
+            document.getElementById('pagination').innerHTML = paginationHTML;
+        }
+        
+        function toggleNotificationSelect(id) {
+            const checkbox = document.querySelector(`[data-id="${id}"]`);
+            if (checkbox.checked) {
+                selectedNotifications.push(id);
+            } else {
+                selectedNotifications = selectedNotifications.filter(n => n !== id);
+            }
+            updateSelectionInfo();
+        }
+        
+        function toggleSelectAll() {
+            const checkbox = document.getElementById('select-all');
+            document.querySelectorAll('.notification-checkbox').forEach(cb => {
+                cb.checked = checkbox.checked;
+                if (checkbox.checked) {
+                    if (!selectedNotifications.includes(cb.dataset.id)) {
+                        selectedNotifications.push(cb.dataset.id);
+                    }
+                } else {
+                    selectedNotifications = selectedNotifications.filter(n => n !== cb.dataset.id);
+                }
+            });
+            updateSelectionInfo();
+        }
+        
+        function updateSelectionInfo() {
+            const info = document.getElementById('selection-info');
+            if (selectedNotifications.length === 0) {
+                info.textContent = 'None selected';
+            } else {
+                info.textContent = `${selectedNotifications.length} selected`;
+            }
+        }
+        
+        async function markSelectedAsRead() {
+            if (selectedNotifications.length === 0) {
+                showToast('No notifications selected', 'info');
+                return;
+            }
+            
+            try {
+                // Mark each notification as read individually
+                for (const id of selectedNotifications) {
+                    await fetch(`${window.API_BASE_URL}/notifications/${id}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + window.auth.getToken()
+                        }
+                    });
+                }
+                
+                selectedNotifications.forEach(id => {
+                    const notif = allNotifications.find(n => n.id === id);
+                    if (notif) notif.isRead = true;
+                });
+                
+                selectedNotifications = [];
+                document.getElementById('select-all').checked = false;
+                updateCountBadges();
+                renderNotifications();
+                showToast('Marked as read', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to mark as read', 'error');
+            }
+        }
+        
+        async function markAllAsRead() {
+            try {
+                await fetch(`${window.API_BASE_URL}/notifications/read-all`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + window.auth.getToken() }
+                });
+                
+                allNotifications.forEach(n => n.isRead = true);
+                updateCountBadges();
+                renderNotifications();
+                showToast('All marked as read', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to mark all as read', 'error');
+            }
+        }
+        
+        async function deleteSelected() {
+            if (selectedNotifications.length === 0) {
+                showToast('No notifications selected', 'info');
+                return;
+            }
+            
+            if (!confirm(`Delete ${selectedNotifications.length} notification(s)?`)) return;
+            
+            try {
+                // Delete each notification individually
+                for (const id of selectedNotifications) {
+                    await fetch(`${window.API_BASE_URL}/notifications/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + window.auth.getToken()
+                        }
+                    });
+                }
+                
+                allNotifications = allNotifications.filter(n => !selectedNotifications.includes(n.id));
+                selectedNotifications = [];
+                document.getElementById('select-all').checked = false;
+                updateCountBadges();
+                renderNotifications();
+                showToast('Notifications deleted', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Failed to delete notifications', 'error');
+            }
+        }
+        
+        function openNotificationDetail(id) {
+            const notif = allNotifications.find(n => n.id === id);
+            if (!notif) return;
+            
+            document.getElementById('modal-title').textContent = notif.title;
+            document.getElementById('modal-content').innerHTML = `
+                <p class="mb-3">${notif.message}</p>
+                <p class="text-sm text-gray-500">${new Date(notif.createdAt).toLocaleString('id-ID')}</p>
+            `;
+            
+            let actionsHTML = '';
+            if (notif.actionUrl) {
+                actionsHTML += `<button onclick="window.location.href='${notif.actionUrl}'" class="flex-1 px-4 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-semibold">View Details</button>`;
+            }
+            actionsHTML += `<button onclick="closeNotificationModal()" class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold">Close</button>`;
+            
+            document.getElementById('modal-actions').innerHTML = actionsHTML;
+            document.getElementById('notification-modal').classList.remove('hidden');
+            
+            // Mark as read
+            if (!notif.isRead) {
+                notif.isRead = true;
+                updateCountBadges();
+            }
+        }
+        
+        function closeNotificationModal() {
+            document.getElementById('notification-modal').classList.add('hidden');
+        }
+        
+        function goToPage(page) {
+            let filtered = currentFilter === 'all' ? allNotifications : allNotifications.filter(n => n.type === currentFilter);
+            const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+            
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderNotifications();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function getTypeLabel(type) {
+            const labels = {
+                'order': 'Order',
+                'payment': 'Payment',
+                'event': 'Event',
+                'promo': 'Promotion'
+            };
+            return labels[type] || type;
+        }
+        
+        function getTypeColor(type) {
+            const colors = {
+                'order': 'blue',
+                'payment': 'green',
+                'event': 'purple',
+                'promo': 'yellow'
+            };
+            return colors[type] || 'gray';
+        }
+        
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            
+            return date.toLocaleDateString('id-ID');
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

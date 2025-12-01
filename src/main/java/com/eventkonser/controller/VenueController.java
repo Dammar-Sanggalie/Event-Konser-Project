@@ -5,6 +5,7 @@ import com.eventkonser.service.VenueService;
 import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -62,6 +63,7 @@ public class VenueController {
     /**
      * POST /api/venues - Create new venue (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Venue>> createVenue(@RequestBody Venue venue) {
         return ResponseEntity.ok(ApiResponse.success("Venue berhasil dibuat", venueService.createVenue(venue)));
@@ -70,6 +72,7 @@ public class VenueController {
     /**
      * PUT /api/venues/{id} - Update venue (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Venue>> updateVenue(
             @PathVariable Long id,
@@ -80,6 +83,7 @@ public class VenueController {
     /**
      * DELETE /api/venues/{id} - Delete venue (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteVenue(@PathVariable Long id) {
         venueService.deleteVenue(id);

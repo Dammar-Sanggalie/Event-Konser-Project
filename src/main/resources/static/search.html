@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Component</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Search Component -->
+    <div class="w-full max-w-2xl mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="search-input"
+                    placeholder="Search events..." 
+                    class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                <svg class="absolute right-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+
+            <!-- Recent Searches -->
+            <div id="recent-searches" class="border-t px-4 py-2 hidden">
+                <p class="text-xs font-semibold text-gray-600 mb-2">RECENT SEARCHES</p>
+                <div class="flex flex-wrap gap-2" id="recent-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <div id="search-results" class="border-t max-h-96 overflow-y-auto hidden">
+                <p class="text-xs font-semibold text-gray-600 px-4 py-2">RESULTS</p>
+                <div id="results-container" class="divide-y">
+                    <!-- Results populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SearchComponent {
+            constructor(options = {}) {
+                this.options = {
+                    placeholder: options.placeholder || 'Search...',
+                    minChars: options.minChars || 2,
+                    maxResults: options.maxResults || 10,
+                    debounceMs: options.debounceMs || 300,
+                    searchCallback: options.searchCallback || this.defaultSearch,
+                    ...options
+                };
+
+                this.input = document.getElementById('search-input');
+                this.resultsContainer = document.getElementById('search-results');
+                this.recentSearchesContainer = document.getElementById('recent-searches');
+                this.debounceTimer = null;
+
+                this.init();
+            }
+
+            init() {
+                this.input.placeholder = this.options.placeholder;
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+                this.input.addEventListener('focus', () => this.showRecentSearches());
+                this.loadRecentSearches();
+            }
+
+            handleInput(e) {
+                const query = e.target.value.trim();
+
+                clearTimeout(this.debounceTimer);
+
+                if (query.length === 0) {
+                    this.showRecentSearches();
+                    return;
+                }
+
+                if (query.length < this.options.minChars) {
+                    this.resultsContainer.classList.add('hidden');
+                    return;
+                }
+
+                this.debounceTimer = setTimeout(() => {
+                    this.search(query);
+                }, this.options.debounceMs);
+            }
+
+            async search(query) {
+                try {
+                    const results = await this.options.searchCallback(query);
+                    this.displayResults(results, query);
+                } catch (error) {
+                    console.error('Search error:', error);
+                    this.showError('Search failed');
+                }
+            }
+
+            displayResults(results, query) {
+                const container = document.getElementById('results-container');
+                container.innerHTML = '';
+
+                if (results.length === 0) {
+                    container.innerHTML = '<div class="px-4 py-8 text-center text-gray-500">No results found</div>';
+                    this.resultsContainer.classList.remove('hidden');
+                    return;
+                }
+
+                results.slice(0, this.options.maxResults).forEach(result => {
+                    const div = document.createElement('div');
+                    div.className = 'px-4 py-3 hover:bg-gray-50 cursor-pointer transition';
+                    div.innerHTML = `
+                        <div class="font-medium text-gray-900">${result.title}</div>
+                        <div class="text-sm text-gray-600">${result.subtitle || ''}</div>
+                    `;
+                    div.addEventListener('click', () => {
+                        this.selectResult(result, query);
+                    });
+                    container.appendChild(div);
+                });
+
+                this.resultsContainer.classList.remove('hidden');
+                this.saveSearch(query);
+            }
+
+            selectResult(result, query) {
+                this.input.value = result.title;
+                this.resultsContainer.classList.add('hidden');
+                if (this.options.onSelect) {
+                    this.options.onSelect(result);
+                }
+            }
+
+            showRecentSearches() {
+                const searches = this.getRecentSearches();
+                if (searches.length === 0) return;
+
+                const list = document.getElementById('recent-list');
+                list.innerHTML = '';
+
+                searches.slice(0, 5).forEach(search => {
+                    const tag = document.createElement('button');
+                    tag.className = 'px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200 transition';
+                    tag.textContent = search;
+                    tag.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.input.value = search;
+                        this.search(search);
+                    });
+                    list.appendChild(tag);
+                });
+
+                this.recentSearchesContainer.classList.remove('hidden');
+                this.resultsContainer.classList.add('hidden');
+            }
+
+            saveSearch(query) {
+                let searches = this.getRecentSearches();
+                searches = [query, ...searches.filter(s => s !== query)].slice(0, 10);
+                localStorage.setItem('recentSearches', JSON.stringify(searches));
+            }
+
+            getRecentSearches() {
+                return JSON.parse(localStorage.getItem('recentSearches') || '[]');
+            }
+
+            loadRecentSearches() {
+                this.showRecentSearches();
+            }
+
+            showError(message) {
+                const container = document.getElementById('results-container');
+                container.innerHTML = `<div class="px-4 py-8 text-center text-red-500">${message}</div>`;
+                this.resultsContainer.classList.remove('hidden');
+            }
+
+            async defaultSearch(query) {
+                // Default implementation - override with custom callback
+                return [
+                    { title: `Result for "${query}"`, subtitle: 'Example result' }
+                ];
+            }
+        }
+
+        // Example usage
+        const search = new SearchComponent({
+            placeholder: 'Search events...',
+            minChars: 2,
+            searchCallback: async (query) => {
+                // Mock search - replace with actual API call
+                const mockResults = [
+                    { title: 'Concert Alpha', subtitle: 'Music Event' },
+                    { title: 'Concert Beta', subtitle: 'Music Event' },
+                    { title: 'Concert Gamma', subtitle: 'Music Event' }
+                ];
+                return mockResults.filter(r => r.title.toLowerCase().includes(query.toLowerCase()));
+            },
+            onSelect: (result) => {
+                console.log('Selected:', result);
+            }
+        });
+    </script>
+</body>
+</html>

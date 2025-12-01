@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased" data-page="admin">
+    
+    <div class="flex">
+        <div id="admin-sidebar-placeholder"></div>
+        
+        <div class="flex-1 flex flex-col">
+            <header id="navbar-placeholder"></header>
+            
+            <main class="flex-1 min-h-screen bg-gray-50 pb-16">
+        <div class="container mx-auto max-w-7xl px-4 py-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p class="text-gray-600 mt-2">Welcome back! Here's your business overview.</p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Total Events Card -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Events</p>
+                            <p id="total-events" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Events Card -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Upcoming Events</p>
+                            <p id="upcoming-events" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Orders Card -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Orders</p>
+                            <p id="total-orders" class="text-3xl font-bold text-gray-900 mt-2">0</p>
+                        </div>
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Revenue Card -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Revenue</p>
+                            <p id="total-revenue" class="text-3xl font-bold text-gray-900 mt-2">Rp0</p>
+                        </div>
+                        <div class="p-3 bg-orange-100 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1m2 1v2.5M2 7l2-1m-2 1l2 1m0 0v2.5M2 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1m2 1l2-1m0 0v-2.5M18 18l2 1m-2-1l-2 1m2-1v-2.5" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="flex space-x-4 mb-6 border-b border-gray-200">
+                <button onclick="switchTab('events')" class="tab-btn px-4 py-3 font-medium text-primary-600 border-b-2 border-primary-600" data-tab="events">
+                    Events Management
+                </button>
+                <button onclick="switchTab('orders')" class="tab-btn px-4 py-3 font-medium text-gray-600 border-b-2 border-transparent hover:text-primary-600" data-tab="orders">
+                    Recent Orders
+                </button>
+                <button onclick="switchTab('users')" class="tab-btn px-4 py-3 font-medium text-gray-600 border-b-2 border-transparent hover:text-primary-600" data-tab="users">
+                    Users
+                </button>
+            </div>
+            
+            <!-- Events Tab -->
+            <div id="events-tab" class="tab-content">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Events</h2>
+                        <a href="/event-management.html" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                            + Add New Event
+                        </a>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Event Name</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Date</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Status</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Tickets Sold</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Revenue</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="events-table">
+                                <tr>
+                                    <td colspan="6" class="text-center py-8 text-gray-500">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders Tab -->
+            <div id="orders-tab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Recent Orders</h2>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Order ID</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Customer</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Amount</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Status</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table">
+                                <tr>
+                                    <td colspan="5" class="text-center py-8 text-gray-500">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Users Tab -->
+            <div id="users-tab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Users</h2>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Name</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Email</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Phone</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Role</th>
+                                    <th class="text-left px-4 py-3 font-semibold text-gray-700">Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table">
+                                <tr>
+                                    <td colspan="5" class="text-center py-8 text-gray-500">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </main>
+        
+        <footer id="footer-placeholder"></footer>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            window.admin.protectAdminPage();
+            
+            await loadDashboardStats();
+            await loadEvents();
+            await loadOrders();
+            await loadUsers();
+        });
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-primary-600', 'border-primary-600');
+                el.classList.add('text-gray-600', 'border-transparent');
+            });
+            
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            const btn = document.querySelector('[data-tab="' + tabName + '"]');
+            btn.classList.remove('text-gray-600', 'border-transparent');
+            btn.classList.add('text-primary-600', 'border-primary-600');
+        }
+        
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/admin/dashboard`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const stats = result.data;
+                    document.getElementById('total-events').textContent = stats.totalEvents || 0;
+                    document.getElementById('upcoming-events').textContent = stats.upcomingEvents || 0;
+                    document.getElementById('total-orders').textContent = stats.totalOrders || 0;
+                    document.getElementById('total-revenue').textContent = formatCurrency(stats.totalRevenue || 0);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+        
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/events`);
+                const result = await response.json();
+                
+                let html = '';
+                if (result.data && result.data.length > 0) {
+                    html = result.data.slice(0, 10).map(event => `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="px-4 py-3">${event.namaEvent || ''}</td>
+                            <td class="px-4 py-3">${formatDate(event.tanggalMulai)}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(event.status)}">
+                                    ${event.status || 'UPCOMING'}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">-</td>
+                            <td class="px-4 py-3">-</td>
+                            <td class="px-4 py-3">
+                                <a href="/event-management.html?id=${event.idEvent}" class="text-primary-600 hover:text-primary-700 font-medium">Edit</a>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('events-table').innerHTML = html || '<tr><td colspan="6" class="text-center py-8 text-gray-500">No events found</td></tr>';
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+        
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/orders`);
+                const result = await response.json();
+                
+                let html = '';
+                if (result.data && result.data.length > 0) {
+                    html = result.data.slice(0, 10).map(order => `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium">#${order.idPembelian || order.id}</td>
+                            <td class="px-4 py-3">${order.pengguna?.nama || 'Unknown'}</td>
+                            <td class="px-4 py-3">${formatCurrency(order.totalHarga || 0)}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${getPaymentStatusBadge(order.status)}">
+                                    ${order.status || 'PENDING'}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">${formatDate(order.tanggalPembelian)}</td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('orders-table').innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No orders found</td></tr>';
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+        
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/users`);
+                const result = await response.json();
+                
+                let html = '';
+                if (result.data && result.data.length > 0) {
+                    html = result.data.slice(0, 10).map(user => `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium">${user.nama || user.name}</td>
+                            <td class="px-4 py-3">${user.email}</td>
+                            <td class="px-4 py-3">${user.noHp || user.phone || '-'}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">
+                                    ${user.role || 'USER'}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">${formatDate(user.createdAt)}</td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('users-table').innerHTML = html || '<tr><td colspan="5" class="text-center py-8 text-gray-500">No users found</td></tr>';
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'UPCOMING': 'bg-blue-100 text-blue-800',
+                'ONGOING': 'bg-green-100 text-green-800',
+                'COMPLETED': 'bg-gray-100 text-gray-800',
+                'CANCELLED': 'bg-red-100 text-red-800'
+            };
+            return badges[status] || 'bg-gray-100 text-gray-800';
+        }
+        
+        function getPaymentStatusBadge(status) {
+            const badges = {
+                'PENDING': 'bg-yellow-100 text-yellow-800',
+                'PAID': 'bg-green-100 text-green-800',
+                'CANCELLED': 'bg-red-100 text-red-800',
+                'EXPIRED': 'bg-gray-100 text-gray-800'
+            };
+            return badges[status] || 'bg-gray-100 text-gray-800';
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount || 0);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(date);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .order-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .order-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 via-primary-50/30 to-accent-50/20 font-sans antialiased min-h-screen">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main class="pb-16">
+        
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-primary-500 via-primary-600 to-accent/80 text-white overflow-hidden py-16">
+            <div class="container mx-auto max-w-7xl px-4">
+                <h1 class="text-4xl lg:text-5xl font-bold mb-3">My Orders</h1>
+                <p class="text-lg text-white/90">Track and manage your ticket purchases</p>
+            </div>
+            <div class="absolute inset-0 overflow-hidden -z-10">
+                <div class="absolute -top-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+            </div>
+        </section>
+        
+        <!-- Stats Section -->
+        <section class="py-8 bg-white shadow-sm border-b border-gray-200">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary-600" id="total-orders">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Total Orders</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-green-600" id="paid-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Paid</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-yellow-600" id="pending-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Pending</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-red-600" id="failed-count">0</div>
+                        <div class="text-sm text-gray-600 mt-1">Failed/Other</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Filter & Sort Section -->
+        <section class="py-6 bg-white sticky top-0 z-40 shadow-sm">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="flex gap-2 flex-wrap">
+                        <button id="filter-all" class="px-4 py-2 bg-primary-100 text-primary-600 rounded-lg font-medium hover:bg-primary-200 transition">
+                            All Orders
+                        </button>
+                        <button id="filter-paid" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-medium hover:bg-gray-200 transition">
+                            Paid
+                        </button>
+                        <button id="filter-unpaid" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-medium hover:bg-gray-200 transition">
+                            Pending
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm text-gray-600 font-medium">Sort:</label>
+                        <select id="sort-select" class="px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 hover:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="price-high">Highest Price</option>
+                            <option value="price-low">Lowest Price</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Content Section -->
+        <section class="py-8">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div id="loading-state" class="text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    <p class="text-gray-600 mt-4">Loading orders...</p>
+                </div>
+                
+                <div id="empty-state" class="hidden text-center py-12 bg-white rounded-lg border border-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <p class="text-gray-600 text-lg">No orders yet</p>
+                    <p class="text-gray-500 text-sm mt-1">Start by booking your first concert ticket!</p>
+                </div>
+                
+                <div id="orders-list" class="hidden space-y-6"></div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="hidden fixed bottom-6 right-6 bg-white rounded-lg shadow-lg p-4 flex items-center gap-3 max-w-sm z-50">
+        <div id="toast-icon"></div>
+        <div id="toast-message" class="text-gray-800"></div>
+        <button id="toast-close" class="text-gray-400 hover:text-gray-600">✕</button>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/validation.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        // ============================================
+        // STATE
+        // ============================================
+        let ordersData = [];
+        let currentFilter = 'all';
+        let currentSort = 'newest';
+        
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=/my-orders.html';
+                return;
+            }
+            
+            setupEventListeners();
+            await loadOrders();
+        });
+        
+        // ============================================
+        // LOAD DATA
+        // ============================================
+        async function loadOrders() {
+            try {
+                const userId = window.auth.getUserId();
+                const token = window.auth.getToken();
+                
+                const response = await fetch(`${window.API_BASE_URL}/pembelian-tiket/user/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const result = await response.json();
+                document.getElementById('loading-state').classList.add('hidden');
+                
+                if (result.success && Array.isArray(result.data)) {
+                    ordersData = result.data;
+                    updateStats();
+                    applyFilterAndSort();
+                    document.getElementById('empty-state').classList.add('hidden');
+                    document.getElementById('orders-list').classList.remove('hidden');
+                } else {
+                    document.getElementById('empty-state').classList.remove('hidden');
+                    document.getElementById('orders-list').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('loading-state').classList.add('hidden');
+                showToast('Failed to load orders', 'error');
+            }
+        }
+        
+        // ============================================
+        // STATS
+        // ============================================
+        function updateStats() {
+            const paid = ordersData.filter(o => o.status === 'PAID').length;
+            const pending = ordersData.filter(o => o.status === 'PENDING').length;
+            const failed = ordersData.filter(o => ['FAILED', 'CANCELLED', 'EXPIRED', 'REFUNDED'].includes(o.status)).length;
+            
+            document.getElementById('total-orders').textContent = ordersData.length;
+            document.getElementById('paid-count').textContent = paid;
+            document.getElementById('pending-count').textContent = pending;
+            document.getElementById('failed-count').textContent = failed;
+        }
+        
+        // ============================================
+        // FILTER & SORT
+        // ============================================
+        function setupEventListeners() {
+            document.getElementById('filter-all').addEventListener('click', () => {
+                currentFilter = 'all';
+                updateFilterButtons();
+                applyFilterAndSort();
+            });
+            
+            document.getElementById('filter-paid').addEventListener('click', () => {
+                currentFilter = 'paid';
+                updateFilterButtons();
+                applyFilterAndSort();
+            });
+            
+            document.getElementById('filter-unpaid').addEventListener('click', () => {
+                currentFilter = 'unpaid';
+                updateFilterButtons();
+                applyFilterAndSort();
+            });
+            
+            document.getElementById('sort-select').addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                applyFilterAndSort();
+            });
+            
+            document.getElementById('toast-close').addEventListener('click', () => {
+                document.getElementById('toast-notification').classList.add('hidden');
+            });
+        }
+        
+        function updateFilterButtons() {
+            const btns = {
+                all: document.getElementById('filter-all'),
+                paid: document.getElementById('filter-paid'),
+                unpaid: document.getElementById('filter-unpaid')
+            };
+            
+            Object.values(btns).forEach(btn => {
+                btn.classList.remove('bg-primary-100', 'text-primary-600');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            
+            btns[currentFilter].classList.remove('bg-gray-100', 'text-gray-600');
+            btns[currentFilter].classList.add('bg-primary-100', 'text-primary-600');
+        }
+        
+        function applyFilterAndSort() {
+            let filtered = [...ordersData];
+            
+            if (currentFilter === 'paid') {
+                filtered = filtered.filter(o => o.status === 'PAID');
+            } else if (currentFilter === 'unpaid') {
+                filtered = filtered.filter(o => o.status === 'PENDING');
+            }
+            
+            switch(currentSort) {
+                case 'newest':
+                    filtered.sort((a, b) => new Date(b.tanggalPembelian) - new Date(a.tanggalPembelian));
+                    break;
+                case 'oldest':
+                    filtered.sort((a, b) => new Date(a.tanggalPembelian) - new Date(b.tanggalPembelian));
+                    break;
+                case 'price-high':
+                    filtered.sort((a, b) => b.totalHarga - a.totalHarga);
+                    break;
+                case 'price-low':
+                    filtered.sort((a, b) => a.totalHarga - b.totalHarga);
+                    break;
+            }
+            
+            renderOrders(filtered);
+        }
+        
+        // ============================================
+        // RENDER
+        // ============================================
+        function renderOrders(orders) {
+            const list = document.getElementById('orders-list');
+            list.innerHTML = '';
+            
+            if (orders.length === 0) {
+                list.innerHTML = '<div class="text-center py-12 text-gray-600">No orders found</div>';
+                return;
+            }
+            
+            orders.forEach((order, idx) => {
+                const card = createOrderCard(order, idx);
+                list.appendChild(card);
+            });
+        }
+        
+        function createOrderCard(order, idx) {
+            const isPaid = order.status === 'PAID';
+            let statusText = 'Pending Payment';
+            let statusClass = 'bg-yellow-100 text-yellow-800';
+            
+            if (isPaid) {
+                statusText = 'Paid';
+                statusClass = 'bg-green-100 text-green-800';
+            } else if (['FAILED', 'CANCELLED', 'EXPIRED'].includes(order.status)) {
+                statusText = order.status;
+                statusClass = 'bg-red-100 text-red-800';
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'order-card bg-white rounded-xl shadow-md p-6';
+            div.style.animation = `slideInRight ${0.3 + idx * 0.05}s ease-out`;
+            
+            div.innerHTML = `
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <div class="sm:w-32 h-32 flex-shrink-0 bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="${order.eventImageUrl || '/assets/images/placeholder-event.jpg'}" 
+                             alt="${order.eventName}" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='/assets/images/placeholder-event.jpg'">
+                    </div>
+                    
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">${order.eventName || 'Concert Event'}</h3>
+                                <p class="text-sm text-gray-600">Order #${order.idPembelian}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4 text-sm">
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">TICKET TYPE</p>
+                                <p class="text-gray-900 font-semibold">${order.ticketType || 'Standard'}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">QUANTITY</p>
+                                <p class="text-gray-900 font-semibold">${order.jumlah} ticket${order.jumlah > 1 ? 's' : ''}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">PURCHASE DATE</p>
+                                <p class="text-gray-900 font-semibold">${formatDateTime(order.tanggalPembelian)}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">EVENT DATE</p>
+                                <p class="text-gray-900 font-semibold">${order.eventDate ? formatDate(order.eventDate) : 'TBA'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                            <div class="text-sm text-gray-600">
+                                📍 ${order.venueName || 'Location TBA'}
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">Total Price</p>
+                                <p class="text-2xl font-bold text-primary-600">${formatCurrency(order.totalHarga)}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+                            <a href="/event-detail.html?id=${order.idEvent}" 
+                               class="flex-1 px-4 py-2 bg-primary-100 text-primary-600 text-center rounded-lg font-medium hover:bg-primary-200 transition">
+                                View Event
+                            </a>
+                            ${!isPaid ? `
+                            <button onclick="handlePayment(${order.idPembelian})"
+                                    class="px-4 py-2 bg-gradient-to-r from-accent to-pink-600 text-white rounded-lg font-medium hover:shadow-lg transition">
+                                Pay Now
+                            </button>
+                            ` : `
+                            <button onclick="handleDownload(${order.idPembelian})"
+                                    class="px-4 py-2 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200 transition">
+                                Download Ticket
+                            </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        // ============================================
+        // ACTIONS
+        // ============================================
+        function handlePayment(orderId) {
+            const order = ordersData.find(o => o.idPembelian === orderId);
+            if (!order) {
+                showToast('Order not found', 'error');
+                return;
+            }
+            
+            showToast(`Redirecting to payment for Order #${orderId}...`, 'info');
+            setTimeout(() => {
+                window.location.href = `/checkout.html?orderId=${orderId}`;
+            }, 500);
+        }
+        
+        function handleDownload(orderId) {
+            const order = ordersData.find(o => o.idPembelian === orderId);
+            if (!order) {
+                showToast('Order not found', 'error');
+                return;
+            }
+            
+            if (order.status !== 'PAID') {
+                showToast('Only paid orders can be downloaded', 'error');
+                return;
+            }
+            
+            showToast('Generating ticket...', 'info');
+            
+            const qrValue = order.qrCode || `TKT-${order.idPembelian}`;
+            const ticketHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ticket - ${order.eventName}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .ticket { background: white; padding: 40px; max-width: 800px; margin: 0 auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: #0284c7; font-size: 32px; margin: 0; }
+        .event-info { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .info-item { border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .info-label { font-weight: bold; color: #333; font-size: 12px; text-transform: uppercase; }
+        .info-value { color: #666; font-size: 14px; margin-top: 3px; }
+        .qr-section { text-align: center; background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 30px 0; }
+        .qr-section img { max-width: 200px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="header">
+            <h1>🎫 Concert Ticket</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">Order #${order.idPembelian}</p>
+        </div>
+        
+        <div class="event-info">
+            <h2 style="margin: 0 0 10px 0;">${order.eventName}</h2>
+            <p style="margin: 5px 0; font-size: 14px;">📅 ${formatDate(order.eventDate)}</p>
+            <p style="margin: 5px 0; font-size: 14px;">📍 ${order.venueName}</p>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Ticket Type</div>
+                <div class="info-value">${order.ticketType || 'Standard'}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Quantity</div>
+                <div class="info-value">${order.jumlah} ticket${order.jumlah > 1 ? 's' : ''}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Total Price</div>
+                <div class="info-value">${formatCurrency(order.totalHarga)}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Purchase Date</div>
+                <div class="info-value">${formatDateTime(order.tanggalPembelian)}</div>
+            </div>
+        </div>
+        
+        <div class="qr-section">
+            <h3 style="margin: 0 0 15px 0;">Present this QR Code at entrance</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}" alt="QR Code">
+            <p style="margin: 15px 0 0 0; font-size: 12px; color: #666;">Code: ${qrValue}</p>
+        </div>
+        
+        <div class="footer">
+            <p>Thank you for your purchase! Enjoy the concert! 🎵</p>
+            <p>For questions, contact us at support@eventkonser.com</p>
+        </div>
+    </div>
+</body>
+</html>`;
+            
+            const blob = new Blob([ticketHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Ticket-${order.idPembelian}-${order.eventName}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showToast('Ticket downloaded successfully!', 'success');
+        }
+        
+        // ============================================
+        // UTILITIES
+        // ============================================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast-notification');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ',
+                warning: '⚠'
+            };
+            
+            icon.textContent = icons[type] || 'ℹ';
+            icon.className = {
+                success: 'text-green-600 font-bold text-xl',
+                error: 'text-red-600 font-bold text-xl',
+                info: 'text-blue-600 font-bold text-xl',
+                warning: 'text-yellow-600 font-bold text-xl'
+            }[type] || 'text-blue-600 font-bold text-xl';
+            
+            msg.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(date);
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+    </script>
+</body>
+</html>

@@ -11,6 +11,31 @@
                 <a href="/events.html" class="nav-link" data-page="events">Events</a>
                 
                 <div id="nav-links-desktop" class="flex items-center space-x-6"></div>
+                
+                <!-- Admin Dropdown Menu -->
+                <div id="admin-menu-desktop" class="relative hidden">
+                    <button id="admin-menu-trigger" class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                        Admin
+                    </button>
+                    <div id="admin-dropdown-menu" class="hidden absolute left-0 mt-2 w-56 rounded-lg shadow-xl bg-white border border-gray-200 z-40 py-2">
+                        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Manage Events</div>
+                        <a href="/event-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">📅 Events</a>
+                        <a href="/category-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">🏷️ Categories</a>
+                        <a href="/artist-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">🎤 Artists</a>
+                        <a href="/schedule-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">⏰ Schedules</a>
+                        
+                        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-t mt-2 pt-2">Manage Sales</div>
+                        <a href="/ticket-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">🎫 Tickets</a>
+                        <a href="/order-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">📦 Orders</a>
+                        <a href="/payment-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">💳 Payments</a>
+                        
+                        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-t mt-2 pt-2">Manage Other</div>
+                        <a href="/promo-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">🎁 Promo Codes</a>
+                        <a href="/sponsor-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">🤝 Sponsors</a>
+                        <a href="/user-management.html" class="admin-dropdown-link block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600">👥 Users</a>
+                    </div>
+                </div>
             </div>
             
             <div class="hidden md:flex items-center space-x-4" id="nav-actions-desktop">
@@ -31,6 +56,27 @@
             <a href="/events.html" class="nav-link-mobile" data-page="events">Events</a>
             
             <div id="nav-links-mobile" class="flex flex-col space-y-2"></div>
+            
+            <!-- Admin Dropdown Mobile -->
+            <div id="admin-menu-mobile" class="hidden border-t pt-3 mt-3">
+                <button id="admin-menu-trigger-mobile" class="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                    Admin Menu
+                    <svg id="admin-menu-arrow-mobile" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                </button>
+                <div id="admin-submenu-mobile" class="hidden mt-2 space-y-1">
+                    <a href="/event-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">📅 Events</a>
+                    <a href="/category-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">🏷️ Categories</a>
+                    <a href="/artist-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">🎤 Artists</a>
+                    <a href="/schedule-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">⏰ Schedules</a>
+                    <a href="/ticket-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">🎫 Tickets</a>
+                    <a href="/order-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">📦 Orders</a>
+                    <a href="/payment-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">💳 Payments</a>
+                    <a href="/promo-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">🎁 Promo Codes</a>
+                    <a href="/sponsor-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">🤝 Sponsors</a>
+                    <a href="/user-management.html" class="admin-submenu-link block px-6 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600">👥 Users</a>
+                </div>
+            </div>
             
             <div class="border-t border-gray-200 pt-4" id="nav-actions-mobile">
                 </div>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Component</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Modal Component</h1>
+
+        <!-- Demo Buttons -->
+        <div class="space-y-3 mb-8">
+            <button id="btn-default-modal" class="w-full px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                Open Default Modal
+            </button>
+            <button id="btn-confirm-modal" class="w-full px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition">
+                Open Confirm Modal
+            </button>
+            <button id="btn-danger-modal" class="w-full px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                Open Danger Modal
+            </button>
+            <button id="btn-form-modal" class="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                Open Form Modal
+            </button>
+        </div>
+    </div>
+
+    <!-- Generic Modal Template -->
+    <div id="generic-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <!-- Header -->
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 id="modal-title" class="text-xl font-bold text-gray-900">Modal Title</h2>
+                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div id="modal-content" class="px-6 py-4">
+                <!-- Content will be inserted here -->
+            </div>
+
+            <!-- Footer -->
+            <div id="modal-footer" class="border-t px-6 py-4 flex gap-3">
+                <!-- Buttons will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Modal {
+            constructor(options = {}) {
+                this.options = {
+                    title: options.title || 'Modal Title',
+                    content: options.content || '',
+                    type: options.type || 'default', // default, confirm, danger, form
+                    buttons: options.buttons || [],
+                    onClose: options.onClose,
+                    closeOnEscape: options.closeOnEscape !== false,
+                    backdrop: options.backdrop !== false,
+                    ...options
+                };
+
+                this.modal = document.getElementById('generic-modal');
+                this.titleEl = document.getElementById('modal-title');
+                this.contentEl = document.getElementById('modal-content');
+                this.footerEl = document.getElementById('modal-footer');
+                this.closeBtn = document.getElementById('btn-close-modal');
+
+                this.init();
+            }
+
+            init() {
+                this.titleEl.textContent = this.options.title;
+                
+                if (typeof this.options.content === 'string') {
+                    this.contentEl.innerHTML = this.options.content;
+                } else if (this.options.content instanceof HTMLElement) {
+                    this.contentEl.innerHTML = '';
+                    this.contentEl.appendChild(this.options.content);
+                }
+
+                this.renderButtons();
+                this.attachEventListeners();
+                this.setModalType();
+            }
+
+            setModalType() {
+                const headerBorder = this.modal.querySelector('.border-b');
+                
+                switch (this.options.type) {
+                    case 'danger':
+                        headerBorder.classList.remove('border-gray-200');
+                        headerBorder.classList.add('border-red-200', 'bg-red-50');
+                        this.titleEl.classList.add('text-red-900');
+                        break;
+                    case 'confirm':
+                        headerBorder.classList.remove('border-gray-200');
+                        headerBorder.classList.add('border-yellow-200', 'bg-yellow-50');
+                        this.titleEl.classList.add('text-yellow-900');
+                        break;
+                    case 'form':
+                        this.modal.classList.add('max-w-2xl');
+                        break;
+                }
+            }
+
+            renderButtons() {
+                this.footerEl.innerHTML = '';
+
+                const defaultButtons = {
+                    default: [
+                        { text: 'Close', type: 'secondary', action: () => this.close() }
+                    ],
+                    confirm: [
+                        { text: 'Cancel', type: 'secondary', action: () => this.close() },
+                        { text: 'Confirm', type: 'primary', action: () => this.close() }
+                    ],
+                    danger: [
+                        { text: 'Cancel', type: 'secondary', action: () => this.close() },
+                        { text: 'Delete', type: 'danger', action: () => this.close() }
+                    ],
+                    form: [
+                        { text: 'Cancel', type: 'secondary', action: () => this.close() },
+                        { text: 'Submit', type: 'primary', action: () => this.close() }
+                    ]
+                };
+
+                const buttons = this.options.buttons.length > 0 
+                    ? this.options.buttons 
+                    : defaultButtons[this.options.type] || defaultButtons.default;
+
+                buttons.forEach(btn => {
+                    const button = document.createElement('button');
+                    button.textContent = btn.text;
+                    
+                    const typeClasses = {
+                        primary: 'flex-1 px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700',
+                        secondary: 'flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50',
+                        danger: 'flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                    };
+
+                    button.className = typeClasses[btn.type] || typeClasses.secondary;
+                    button.addEventListener('click', () => btn.action?.());
+                    this.footerEl.appendChild(button);
+                });
+            }
+
+            attachEventListeners() {
+                this.closeBtn.addEventListener('click', () => this.close());
+
+                if (this.options.closeOnEscape) {
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                            this.close();
+                        }
+                    });
+                }
+
+                if (this.options.backdrop) {
+                    this.modal.addEventListener('click', (e) => {
+                        if (e.target === this.modal) {
+                            this.close();
+                        }
+                    });
+                }
+            }
+
+            open() {
+                this.modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            close() {
+                this.modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                if (this.options.onClose) {
+                    this.options.onClose();
+                }
+            }
+
+            setContent(content) {
+                if (typeof content === 'string') {
+                    this.contentEl.innerHTML = content;
+                } else {
+                    this.contentEl.innerHTML = '';
+                    this.contentEl.appendChild(content);
+                }
+            }
+        }
+
+        // Example usage
+        document.getElementById('btn-default-modal').addEventListener('click', () => {
+            const modal = new Modal({
+                title: 'Default Modal',
+                content: '<p class="text-gray-700">This is a default modal dialog.</p>',
+                type: 'default'
+            });
+            modal.open();
+        });
+
+        document.getElementById('btn-confirm-modal').addEventListener('click', () => {
+            const modal = new Modal({
+                title: 'Confirm Action',
+                content: '<p class="text-gray-700">Are you sure you want to proceed with this action?</p>',
+                type: 'confirm',
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', action: function() { modal.close(); } },
+                    { text: 'Confirm', type: 'primary', action: function() { 
+                        console.log('Confirmed!');
+                        modal.close();
+                    }}
+                ]
+            });
+            modal.open();
+        });
+
+        document.getElementById('btn-danger-modal').addEventListener('click', () => {
+            const modal = new Modal({
+                title: 'Delete Item',
+                content: '<p class="text-gray-700">This action cannot be undone. Are you sure you want to delete this item?</p>',
+                type: 'danger',
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', action: function() { modal.close(); } },
+                    { text: 'Delete', type: 'danger', action: function() {
+                        console.log('Item deleted!');
+                        modal.close();
+                    }}
+                ]
+            });
+            modal.open();
+        });
+
+        document.getElementById('btn-form-modal').addEventListener('click', () => {
+            const formContent = document.createElement('div');
+            formContent.className = 'space-y-4';
+            formContent.innerHTML = `
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <input type="text" placeholder="Enter your name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" placeholder="Enter your email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <textarea placeholder="Enter your message" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                </div>
+            `;
+
+            const modal = new Modal({
+                title: 'Submit Form',
+                content: formContent,
+                type: 'form',
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', action: function() { modal.close(); } },
+                    { text: 'Submit', type: 'primary', action: function() {
+                        console.log('Form submitted!');
+                        modal.close();
+                    }}
+                ]
+            });
+            modal.open();
+        });
+    </script>
+</body>
+</html>

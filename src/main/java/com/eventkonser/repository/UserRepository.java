@@ -30,4 +30,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     // Count users by role
     long countByRole(Role role);
+    
+    // Get all users as native query to bypass enum validation
+    @Query(value = "SELECT id_pengguna as idPengguna, nama, email, no_hp as noHp, role, alamat, created_at as createdAt, updated_at as updatedAt FROM pengguna", nativeQuery = true)
+    List<UserRawData> findAllAsRawData();
+    
+    // Interface for raw user data mapping
+    interface UserRawData {
+        Long getIdPengguna();
+        String getNama();
+        String getEmail();
+        String getNoHp();
+        String getRole();
+        String getAlamat();
+        java.time.LocalDateTime getCreatedAt();
+        java.time.LocalDateTime getUpdatedAt();
+    }
 }

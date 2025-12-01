@@ -64,6 +64,21 @@ public class Order {
     @Column(name = "ticket_type")
     private String ticketType;
     
+    @Column(name = "event_image_url")
+    private String eventImageUrl;
+    
+    @Column(name = "id_event")
+    private Long idEvent;
+    
+    @Column(name = "discount_amount", precision = 10, scale = 2)
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+    
+    @Column(name = "promo_code")
+    private String promoCode;
+    
+    @Column(name = "subtotal", precision = 10, scale = 2)
+    private BigDecimal subtotal = BigDecimal.ZERO;
+    
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Payment payment;

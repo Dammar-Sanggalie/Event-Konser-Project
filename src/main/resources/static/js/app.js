@@ -6,11 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Memuat komponen reusable (Navbar & Footer)
+ * Memuat komponen reusable (Navbar, Footer, & Admin Sidebar)
  */
 async function loadReusableComponents() {
     const navbarPlaceholder = document.getElementById('navbar-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
+    const sidebarPlaceholder = document.getElementById('admin-sidebar-placeholder');
 
     try {
         // Load Navbar
@@ -20,6 +21,13 @@ async function loadReusableComponents() {
             navbarPlaceholder.innerHTML = html;
             // Setelah HTML dimuat, jalankan logika untuk Navbar
             initializeNavbarLogic();
+        }
+
+        // Load Admin Sidebar (jika ada placeholder)
+        if (sidebarPlaceholder) {
+            const response = await fetch('/components/admin-sidebar.html');
+            const html = await response.text();
+            sidebarPlaceholder.innerHTML = html;
         }
 
         // Load Footer
@@ -52,6 +60,9 @@ function initializeNavbarLogic() {
     
     // 3. Logika Menandai Link Aktif
     highlightActiveNavLink();
+    
+    // 4. Setup Admin Menu Dropdown
+    setupAdminMenuDropdown();
 }
 
 /**
@@ -77,15 +88,37 @@ function updateNavbarAuthState() {
 
     if (isAuthenticated) {
         // TAMPILAN JIKA SUDAH LOGIN
+        const user = window.auth.getUser();
+        const isAdmin = user && user.role === 'ADMIN';
+        
+        // Show/Hide Admin Menu
+        const adminMenuDesktop = document.getElementById('admin-menu-desktop');
+        const adminMenuMobile = document.getElementById('admin-menu-mobile');
+        if (adminMenuDesktop) adminMenuDesktop.classList.toggle('hidden', !isAdmin);
+        if (adminMenuMobile) adminMenuMobile.classList.toggle('hidden', !isAdmin);
         
         // Links (Desktop)
-        desktopLinks.innerHTML = `
+        let desktopLinksHtml = `
+            <a href="/promo.html" class="nav-link" data-page="promo">Promo</a>
             <a href="/orders.html" class="nav-link" data-page="orders">My Orders</a>
             <a href="/wishlist.html" class="nav-link" data-page="wishlist">Wishlist</a>
+            <a href="/notifications.html" class="nav-link" data-page="notifications"> Notifications</a>
         `;
+        if (isAdmin) {
+            desktopLinksHtml = `
+                <a href="/admin-dashboard.html" class="nav-link" data-page="admin">Admin Dashboard</a>
+                <a href="/notifications.html" class="nav-link" data-page="notifications"> Notifications</a>
+            `;
+        }
+        desktopLinks.innerHTML = desktopLinksHtml;
         
         // Actions (Desktop)
         desktopActions.innerHTML = `
+            <a href="/notifications.html" class="text-gray-600 hover:text-primary-600" title="Notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+            </a>
             <a href="/profile.html" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-primary-600">
                 <span class="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-semibold">
                     ${userName.charAt(0).toUpperCase()}
@@ -95,11 +128,23 @@ function updateNavbarAuthState() {
         `;
         
         // Links (Mobile)
-        mobileLinks.innerHTML = `
+        let mobileLinksHtml = `
             <a href="/profile.html" class="nav-link-mobile" data-page="profile">My Profile</a>
+            <a href="/edit-profile.html" class="nav-link-mobile" data-page="edit-profile">Edit Profile</a>
+            <a href="/promo.html" class="nav-link-mobile" data-page="promo">Promo</a>
             <a href="/orders.html" class="nav-link-mobile" data-page="orders">My Orders</a>
             <a href="/wishlist.html" class="nav-link-mobile" data-page="wishlist">Wishlist</a>
+            <a href="/notifications.html" class="nav-link-mobile" data-page="notifications">Notifications</a>
         `;
+        if (isAdmin) {
+            mobileLinksHtml = `
+                <a href="/admin-dashboard.html" class="nav-link-mobile" data-page="admin">Admin Dashboard</a>
+                <a href="/profile.html" class="nav-link-mobile" data-page="profile">My Profile</a>
+                <a href="/edit-profile.html" class="nav-link-mobile" data-page="edit-profile">Edit Profile</a>
+                <a href="/notifications.html" class="nav-link-mobile" data-page="notifications">Notifications</a>
+            `;
+        }
+        mobileLinks.innerHTML = mobileLinksHtml;
         
         // Actions (Mobile)
         mobileActions.innerHTML = `
@@ -143,6 +188,7 @@ function addLogoutButtonListeners() {
     
     const handleLogout = () => {
         window.auth.removeUser();
+        localStorage.removeItem('authToken');
         alert('Anda telah logout.');
         window.location.href = '/login.html'; // Arahkan ke halaman login
     };
@@ -256,8 +302,12 @@ async function loadHomepageEvents(type, gridSelector, limit) {
 }
 
 // --- Events Page Logic ---
-let allEventsData = []; // Cache data event
-let currentFilters = {}; // State filter
+if (typeof window.allEventsData === 'undefined') {
+    window.allEventsData = []; // Cache data event
+}
+if (typeof window.currentFilters === 'undefined') {
+    window.currentFilters = {}; // State filter
+}
 
 async function initializeEventsPage() {
     console.log("Initializing Events Page...");
@@ -265,7 +315,7 @@ async function initializeEventsPage() {
     
     // Baca filter awal dari URL (jika ada)
     const urlParams = new URLSearchParams(window.location.search);
-    currentFilters = {
+    window.currentFilters = {
         search: urlParams.get('search') || '',
         categoryId: urlParams.get('categoryId') || '',
         city: urlParams.get('city') || '',
@@ -273,11 +323,11 @@ async function initializeEventsPage() {
         endDate: urlParams.get('endDate') || '',
     };
     // Set nilai awal di form filter
-    document.getElementById('search-input').value = currentFilters.search;
-    document.getElementById('filter-category').value = currentFilters.categoryId;
-    document.getElementById('filter-city').value = currentFilters.city;
-    document.getElementById('filter-start-date').value = currentFilters.startDate;
-    document.getElementById('filter-end-date').value = currentFilters.endDate;
+    document.getElementById('search-input').value = window.currentFilters.search;
+    document.getElementById('filter-category').value = window.currentFilters.categoryId;
+    document.getElementById('filter-city').value = window.currentFilters.city;
+    document.getElementById('filter-start-date').value = window.currentFilters.startDate;
+    document.getElementById('filter-end-date').value = window.currentFilters.endDate;
 
     await fetchAndRenderEvents();
 
@@ -317,7 +367,7 @@ function setupEventListenersForEventsPage() {
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            currentFilters.search = searchInput.value.trim();
+            window.currentFilters.search = searchInput.value.trim();
             updateUrlAndFetchEvents();
         }, 500);
     });
@@ -325,12 +375,12 @@ function setupEventListenersForEventsPage() {
     // Filter otomatis saat diganti
     filterForm.addEventListener('change', (e) => {
         const formData = new FormData(filterForm);
-        currentFilters.categoryId = formData.get('categoryId');
-        currentFilters.city = formData.get('city');
-        currentFilters.startDate = formData.get('startDate');
-        currentFilters.endDate = formData.get('endDate');
+        window.currentFilters.categoryId = formData.get('categoryId');
+        window.currentFilters.city = formData.get('city');
+        window.currentFilters.startDate = formData.get('startDate');
+        window.currentFilters.endDate = formData.get('endDate');
         // Kosongkan search jika filter lain aktif
-        currentFilters.search = '';
+        window.currentFilters.search = '';
         searchInput.value = '';
         updateUrlAndFetchEvents();
     });
@@ -339,20 +389,20 @@ function setupEventListenersForEventsPage() {
     resetFiltersButton.addEventListener('click', () => {
         filterForm.reset();
         searchInput.value = '';
-        currentFilters = {};
+        window.currentFilters = {};
         updateUrlAndFetchEvents();
     });
     
     // Sorting (hanya re-render data yang sudah ada)
     sortSelect.addEventListener('change', () => {
-        renderEventGrid(sortEvents(allEventsData, sortSelect.value), '#event-grid');
+        renderEventGrid(sortEvents(window.allEventsData, sortSelect.value), '#event-grid');
     });
 }
 
 function updateUrlAndFetchEvents() {
     // Update URL tanpa reload
     const urlParams = new URLSearchParams();
-    Object.entries(currentFilters).forEach(([key, value]) => {
+    Object.entries(window.currentFilters).forEach(([key, value]) => {
         if (value) {
             urlParams.set(key, value);
         }
@@ -385,26 +435,26 @@ async function fetchAndRenderEvents() {
         let endpoint = '/events/upcoming'; // Default
         const params = new URLSearchParams();
         
-        if (currentFilters.search) {
+        if (window.currentFilters.search) {
              endpoint = '/events/search';
-             params.set('q', currentFilters.search);
-        } else if (currentFilters.categoryId || currentFilters.city || currentFilters.startDate || currentFilters.endDate) {
+             params.set('q', window.currentFilters.search);
+        } else if (window.currentFilters.categoryId || window.currentFilters.city || window.currentFilters.startDate || window.currentFilters.endDate) {
              endpoint = '/events/filter';
-             if (currentFilters.categoryId) params.set('categoryId', currentFilters.categoryId);
-             if (currentFilters.city) params.set('city', currentFilters.city);
-             if (currentFilters.startDate) params.set('startDate', currentFilters.startDate);
-             if (currentFilters.endDate) params.set('endDate', currentFilters.endDate);
+             if (window.currentFilters.categoryId) params.set('categoryId', window.currentFilters.categoryId);
+             if (window.currentFilters.city) params.set('city', window.currentFilters.city);
+             if (window.currentFilters.startDate) params.set('startDate', window.currentFilters.startDate);
+             if (window.currentFilters.endDate) params.set('endDate', window.currentFilters.endDate);
         }
         
         // Ambil data event
-        allEventsData = await apiFetch(`${endpoint}?${params.toString()}`);
+        window.allEventsData = await apiFetch(`${endpoint}?${params.toString()}`);
         
         // Update count
-        eventCount.textContent = `${allEventsData.length} events found`;
+        eventCount.textContent = `${window.allEventsData.length} events found`;
 
         // Render grid
-        if (allEventsData.length > 0) {
-            renderEventGrid(sortEvents(allEventsData, document.getElementById('sort-select').value), '#event-grid');
+        if (window.allEventsData.length > 0) {
+            renderEventGrid(sortEvents(window.allEventsData, document.getElementById('sort-select').value), '#event-grid');
             noEventsMessage.classList.add('hidden');
         } else {
             eventGrid.innerHTML = ''; // Kosongkan grid
@@ -531,6 +581,13 @@ async function initializeEventDetailPage() {
     console.log("Initializing Event Detail Page...");
     const eventDetailContainer = document.getElementById('event-detail-container');
     const template = document.getElementById('event-detail-template');
+    
+    // Check if template exists (old implementation), if not, skip this initialization
+    // because event-detail.html now has its own implementation
+    if (!template) {
+        console.log("Event detail template not found - using inline implementation");
+        return;
+    }
     
     // 1. Ambil ID event dari URL parameter (?id=...)
     const urlParams = new URLSearchParams(window.location.search);
@@ -755,9 +812,19 @@ async function setupWishlistButton(button, eventId) {
     // Cek status awal jika user login
     if (userId) {
         try {
-            // Kita perlu endpoint /wishlist/check (sudah ada di backend)
-            isWishlisted = await apiFetch(`/wishlist/check?userId=${userId}&eventId=${eventId}`);
-        } catch (e) { console.error("Failed to check wishlist status", e); }
+            // Call API to check wishlist status
+            const response = await fetch(`${window.API_BASE_URL}/wishlist/check?userId=${userId}&eventId=${eventId}`);
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Wishlist check response:', result);
+                // apiFetch already extracts data.data, so result.success tells if it worked
+                if (result.success) {
+                    isWishlisted = result.data;
+                }
+            }
+        } catch (e) { 
+            console.error("Failed to check wishlist status", e); 
+        }
     }
     
     // Update tampilan tombol awal
@@ -776,13 +843,21 @@ async function setupWishlistButton(button, eventId) {
         try {
             if (isWishlisted) {
                 // Hapus dari wishlist
-                await apiFetch(`/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'DELETE' });
-                alert('Removed from wishlist');
+                const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'DELETE' });
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to remove from wishlist');
+                }
+                showToast('Removed from wishlist', 'success');
                 isWishlisted = false;
             } else {
                 // Tambah ke wishlist
-                await apiFetch(`/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'POST' });
-                alert('Added to wishlist');
+                const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, { method: 'POST' });
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to add to wishlist');
+                }
+                showToast('Added to wishlist', 'success');
                 isWishlisted = true;
             }
             // Update UI tombol
@@ -790,7 +865,7 @@ async function setupWishlistButton(button, eventId) {
             
         } catch (error) {
             console.error('Failed to update wishlist', error);
-            alert('Failed to update wishlist. Please try again.');
+            showToast('Failed to update wishlist: ' + error.message, 'error');
         } finally {
             button.disabled = false;
         }
@@ -835,4 +910,70 @@ function setupShareButton(button, eventData) {
              // alert('Could not share the event.'); // Opsional
          }
      });
+}
+
+// Toast notification for wishlist
+function showToast(message, type = 'info') {
+    // Create or get toast container
+    let toastContainer = document.getElementById('app-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'app-toast-container';
+        toastContainer.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999;';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg mb-3 animate-slide-in-right`;
+    toast.textContent = message;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+/**
+ * Setup Admin Menu Dropdown interactions
+ */
+function setupAdminMenuDropdown() {
+    // Desktop Admin Dropdown
+    const adminMenuTrigger = document.getElementById('admin-menu-trigger');
+    const adminDropdownMenu = document.getElementById('admin-dropdown-menu');
+    
+    if (adminMenuTrigger && adminDropdownMenu) {
+        adminMenuTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminDropdownMenu.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            adminDropdownMenu.classList.add('hidden');
+        });
+        
+        // Prevent closing when clicking inside dropdown
+        adminDropdownMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+    
+    // Mobile Admin Dropdown
+    const adminMenuTriggerMobile = document.getElementById('admin-menu-trigger-mobile');
+    const adminSubmenuMobile = document.getElementById('admin-submenu-mobile');
+    const adminMenuArrowMobile = document.getElementById('admin-menu-arrow-mobile');
+    
+    if (adminMenuTriggerMobile && adminSubmenuMobile) {
+        adminMenuTriggerMobile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminSubmenuMobile.classList.toggle('hidden');
+            if (adminMenuArrowMobile) {
+                adminMenuArrowMobile.style.transform = adminSubmenuMobile.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            }
+        });
+    }
 }

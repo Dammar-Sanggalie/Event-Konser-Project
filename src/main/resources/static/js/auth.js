@@ -47,10 +47,37 @@ window.auth = {
     getUserName: () => {
         const user = window.auth.getUser();
         return user ? user.nama : 'User';
+    },
+
+    /**
+     * Menyimpan token JWT ke localStorage
+     * @param {string} token - JWT token dari backend
+     */
+    setToken: (token) => {
+        localStorage.setItem('authToken', token);
+    },
+
+    /**
+     * Mengambil token JWT dari localStorage
+     * @returns {string|null} - JWT token atau null
+     */
+    getToken: () => {
+        return localStorage.getItem('authToken');
+    },
+
+    /**
+     * Cek apakah user adalah admin
+     * @returns {boolean}
+     */
+    isAdmin: () => {
+        const user = window.auth.getUser();
+        return user && user.role === 'ADMIN';
     }
 };
 
-// (Kode yang sudah ada sebelumnya tetap di atas)
+// ==========================================
+// FUNGSI HANDLE SUBMIT (FINAL FIX)
+// ==========================================
 
 /**
  * Fungsi untuk menangani submit form login
@@ -71,7 +98,7 @@ async function handleLoginSubmit(event) {
     emailInput.classList.remove('border-red-500');
     passwordInput.classList.remove('border-red-500');
 
-    // Validasi sederhana (backend akan validasi lagi)
+    // Validasi sederhana
     if (!emailInput.value) {
         document.getElementById('email-error').textContent = 'Email is required';
         document.getElementById('email-error').classList.remove('hidden');
@@ -91,28 +118,39 @@ async function handleLoginSubmit(event) {
     loader.classList.remove('hidden');
 
     try {
-        // Panggil API untuk get user by email (simulasi login)
-        const user = await apiFetch(`/users/email/${emailInput.value}`);
-        
-        // Cek password (SIMULASI - TIDAK AMAN, HANYA UNTUK CONTOH)
-        // Di aplikasi nyata, backend yang akan cek password ter-hash
-        if (user && user.password === passwordInput.value) {
-            window.auth.saveUser(user);
+        // PERBAIKAN FINAL: Hapus '/api' di depan karena apiFetch sudah menambahkannya
+        // Jadi pathnya cukup '/auth/login'
+        const response = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                // PERBAIKAN: Key sesuai LoginRequest.java
+                emailOrUsername: emailInput.value, 
+                password: passwordInput.value
+            })
+        });
+
+        if (response && response.token) {
+            window.auth.setToken(response.token);
+            window.auth.saveUser({
+                idPengguna: response.userId,
+                nama: response.nama,
+                email: response.email,
+                role: response.role
+            });
+            
             alert('Login berhasil!');
-            window.location.href = '/'; // Arahkan ke homepage
+            window.location.href = '/'; 
         } else {
-            // Password salah atau user tidak ditemukan
-            document.getElementById('email-error').textContent = 'Invalid email or password';
-            document.getElementById('email-error').classList.remove('hidden');
-            emailInput.classList.add('border-red-500');
-            passwordInput.classList.add('border-red-500');
-            throw new Error('Invalid credentials');
+            throw new Error('Invalid login response');
         }
         
     } catch (error) {
-        // Error sudah di-handle oleh apiFetch, tapi kita bisa tambahkan logika UI di sini jika perlu
         console.error('Login failed:', error);
-        // Hentikan loader, enable tombol kembali
+        
+        const errorMessage = error.message || 'Email atau Password salah';
+        document.getElementById('email-error').textContent = errorMessage;
+        document.getElementById('email-error').classList.remove('hidden');
+        
         button.disabled = false;
         buttonText.textContent = 'Login';
         loader.classList.add('hidden');
@@ -142,7 +180,7 @@ async function handleRegisterSubmit(event) {
     document.querySelectorAll('[id$="-error"]').forEach(el => el.classList.add('hidden'));
     form.querySelectorAll('input, textarea').forEach(el => el.classList.remove('border-red-500'));
 
-    // Validasi
+    // Validasi Frontend
     let isValid = true;
     if (!nameInput.value) {
         document.getElementById('name-error').textContent = 'Name is required';
@@ -192,7 +230,6 @@ async function handleRegisterSubmit(event) {
 
     if (!isValid) return;
 
-    // Tampilkan loader
     button.disabled = true;
     buttonText.textContent = 'Creating Account...';
     loader.classList.remove('hidden');
@@ -201,42 +238,54 @@ async function handleRegisterSubmit(event) {
         const userData = {
             nama: nameInput.value,
             email: emailInput.value,
-            password: passwordInput.value, // Ingat: Backend belum hash password!
-            noHp: phoneInput.value,
-            alamat: addressInput.value,
-            role: 'USER' // Default role
+            // PERBAIKAN: Kirim username (diisi email)
+            username: emailInput.value, 
+            password: passwordInput.value,
+            // PERBAIKAN: Kirim confirmPassword
+            confirmPassword: confirmPasswordInput.value, 
+            noTelepon: phoneInput.value,
+            alamat: addressInput.value
         };
 
-        // Panggil API register (POST /users)
-        await apiFetch('/users', {
+        // PERBAIKAN FINAL: Hapus '/api' di depan
+        const response = await apiFetch('/auth/register', {
             method: 'POST',
             body: JSON.stringify(userData)
         });
 
-        alert('Registrasi berhasil! Silakan login.');
-        window.location.href = '/login.html'; // Arahkan ke halaman login
+        if (response && response.token) {
+            window.auth.setToken(response.token);
+            window.auth.saveUser({
+                idPengguna: response.userId,
+                nama: response.nama,
+                email: response.email,
+                role: response.role
+            });
+            
+            alert('Registrasi berhasil! Anda sudah login.');
+            window.location.href = '/'; 
+        } else {
+            alert('Registrasi berhasil! Silakan login.');
+            window.location.href = '/login.html'; 
+        }
 
     } catch (error) {
-        // apiFetch sudah menampilkan alert, kita hanya perlu reset UI
         button.disabled = false;
         buttonText.textContent = 'Create Account';
         loader.classList.add('hidden');
         
-        // Cek jika error karena email sudah ada (dari backend / DuplicateResourceException)
-        if (error.message.includes('Email sudah terdaftar')) {
+        if (error.message && error.message.includes('Email')) {
             document.getElementById('email-error').textContent = error.message;
             document.getElementById('email-error').classList.remove('hidden');
             emailInput.classList.add('border-red-500');
+        } else {
+            alert("Registrasi Gagal: " + error.message);
         }
     }
 }
 
 /**
  * Fungsi untuk toggle show/hide password
- * @param {string} inputId - ID input password
- * @param {string} buttonId - ID tombol toggle
- * @param {string} eyeIconId - ID ikon mata
- * @param {string} eyeOffIconId - ID ikon mata coret
  */
 function setupPasswordToggle(inputId, buttonId, eyeIconId, eyeOffIconId) {
     const passwordInput = document.getElementById(inputId);
@@ -255,16 +304,18 @@ function setupPasswordToggle(inputId, buttonId, eyeIconId, eyeOffIconId) {
 }
 
 
-// Event Listener untuk form (hanya jika form ada di halaman)
-const loginForm = document.getElementById('login-form');
-if (loginForm) {
-    loginForm.addEventListener('submit', handleLoginSubmit);
-    setupPasswordToggle('password', 'toggle-password', 'eye-icon', 'eye-off-icon');
-}
+// Event Listener
+if (typeof document !== 'undefined') {
+    const loginFormElement = document.getElementById('login-form');
+    if (loginFormElement) {
+        loginFormElement.addEventListener('submit', handleLoginSubmit);
+        setupPasswordToggle('password', 'toggle-password', 'eye-icon', 'eye-off-icon');
+    }
 
-const registerForm = document.getElementById('register-form');
-if (registerForm) {
-    registerForm.addEventListener('submit', handleRegisterSubmit);
-    setupPasswordToggle('password', 'toggle-password', 'eye-icon-pw', 'eye-off-icon-pw');
-    setupPasswordToggle('confirmPassword', 'toggle-confirm-password', 'eye-icon-cpw', 'eye-off-icon-cpw');
+    const registerFormElement = document.getElementById('register-form');
+    if (registerFormElement) {
+        registerFormElement.addEventListener('submit', handleRegisterSubmit);
+        setupPasswordToggle('password', 'toggle-password', 'eye-icon-pw', 'eye-off-icon-pw');
+        setupPasswordToggle('confirmPassword', 'toggle-confirm-password', 'eye-icon-cpw', 'eye-off-icon-cpw');
+    }
 }

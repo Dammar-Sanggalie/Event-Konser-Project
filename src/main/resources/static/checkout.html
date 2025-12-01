@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased" data-page="checkout">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main class="min-h-screen bg-gray-50 pb-16">
+        <div class="container mx-auto max-w-6xl px-4 py-8">
+            <!-- Progress Indicator -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white font-bold">1</div>
+                        <div class="h-1 w-20 bg-primary-600"></div>
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white font-bold">2</div>
+                        <div class="h-1 w-20 bg-gray-300"></div>
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold">3</div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-2 text-sm text-gray-600">
+                    <span>Order Review</span>
+                    <span>Shipping & Billing</span>
+                    <span>Payment</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Checkout Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Order Items -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+                        <div id="order-items" class="space-y-4">
+                            <!-- Items will be populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping & Billing -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Shipping & Billing Address</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="same-address" checked class="w-4 h-4">
+                                <label for="same-address" class="ml-2 text-sm text-gray-700">Same as profile address</label>
+                            </div>
+                            
+                            <div id="address-form" class="hidden space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                        <input type="text" id="ship-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                        <input type="tel" id="ship-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                                    <textarea id="ship-address" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none"></textarea>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                        <input type="text" id="ship-city" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">ZIP Code</label>
+                                        <input type="text" id="ship-zip" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Promo Code -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Promo Code</h2>
+                        
+                        <div class="flex gap-2">
+                            <input type="text" id="promo-code" placeholder="Enter promo code" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none">
+                            <button onclick="applyPromo()" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
+                                Apply
+                            </button>
+                        </div>
+                        
+                        <div id="promo-message" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-lg p-6 sticky top-24">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Total</h3>
+                        
+                        <div class="space-y-3 mb-4 pb-4 border-b">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span id="subtotal" class="font-medium">Rp0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Discount</span>
+                                <span id="discount" class="font-medium text-green-600">-Rp0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Admin Fee</span>
+                                <span id="admin-fee" class="font-medium">Rp15,000</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-6">
+                            <span class="font-semibold text-gray-900">Total</span>
+                            <span id="total" class="text-2xl font-bold text-primary-600">Rp0</span>
+                        </div>
+                        
+                        <button onclick="proceedToPayment()" class="w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
+                            Proceed to Payment
+                        </button>
+                        
+                        <button onclick="window.history.back()" class="w-full mt-3 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">
+                            Back to Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/validation.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/checkout-page.js"></script>
+</body>
+</html>

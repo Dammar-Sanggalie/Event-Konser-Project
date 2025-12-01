@@ -19,7 +19,7 @@ public class Ticket {
     @Column(name = "id_tiket")
     private Long idTiket;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_event", nullable = false)
     @JsonBackReference
     private Event event;

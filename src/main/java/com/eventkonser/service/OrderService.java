@@ -4,6 +4,7 @@ import com.eventkonser.model.*;
 import com.eventkonser.repository.*;
 import com.eventkonser.exception.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -12,16 +13,31 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     
     private final OrderRepository orderRepository;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final NotificationService notificationService;
     
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public long countAllOrders() {
+        try {
+            // Gunakan count query yang lebih efficient
+            long count = orderRepository.count();
+            log.info("Total orders count: {}", count);
+            return count;
+        } catch (Exception e) {
+            log.error("Error counting all orders: ", e);
+            return 0L;
+        }
     }
     
     @Transactional(readOnly = true)
@@ -51,7 +67,8 @@ public class OrderService {
      * Menggunakan Pessimistic Lock untuk prevent race condition
      */
     @Transactional
-    public Order bookTicket(Long userId, Long ticketId, Integer quantity) {
+    public Order bookTicket(Long userId, Long ticketId, Integer quantity, 
+                           BigDecimal discountAmount, String promoCode, BigDecimal subtotal) {
         // 1. Validasi user
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User tidak ditemukan"));
@@ -73,9 +90,10 @@ public class OrderService {
         }
         
         // 5. Validasi max pembelian
-        if (quantity > ticket.getMaxPembelian()) {
+        Integer maxPembelian = ticket.getMaxPembelian();
+        if (maxPembelian != null && quantity > maxPembelian) {
             throw new InvalidRequestException(
-                "Maksimal pembelian " + ticket.getMaxPembelian() + " tiket per transaksi"
+                "Maksimal pembelian " + maxPembelian + " tiket per transaksi"
             );
         }
         
@@ -91,10 +109,29 @@ public class OrderService {
         order.setTanggalPembelian(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
         
+        // Set discount dan promo info
+        order.setSubtotal(subtotal != null ? subtotal : totalHarga);
+        order.setDiscountAmount(discountAmount != null ? discountAmount : BigDecimal.ZERO);
+        order.setPromoCode(promoCode);
+        
         // Snapshot info untuk history
-        order.setEventName(ticket.getEvent().getNamaEvent());
-        order.setEventDate(ticket.getEvent().getTanggalMulai().toString());
-        order.setVenueName(ticket.getEvent().getVenue().getNamaVenue());
+        try {
+            Event event = ticket.getEvent();
+            if (event != null) {
+                order.setEventName(event.getNamaEvent());
+                order.setEventDate(event.getTanggalMulai() != null ? event.getTanggalMulai().toString() : "");
+                order.setEventImageUrl(event.getPosterUrl()); // Capture poster URL
+                order.setIdEvent(event.getIdEvent()); // Capture event ID
+                if (event.getVenue() != null) {
+                    order.setVenueName(event.getVenue().getNamaVenue());
+                }
+            }
+        } catch (Exception e) {
+            // If event/venue data is corrupted, just use ticket info
+            order.setEventName("Event Information Unavailable");
+            order.setEventDate("");
+            order.setVenueName("Venue Information Unavailable");
+        }
         order.setTicketType(ticket.getJenisTiket());
         
         // 8. Kurangi stok
@@ -114,8 +151,24 @@ public class OrderService {
         payment.setOrder(savedOrder);
         payment.setJumlahBayar(totalHarga);
         payment.setStatusPembayaran(PaymentStatus.PENDING);
+        payment.setMetodePembayaran("MOCK"); // Default MOCK payment untuk development
         payment.setExpiredAt(LocalDateTime.now().plusMinutes(15));
         paymentRepository.save(payment);
+        
+        // 11. Send notification ke user
+        try {
+            String eventName = savedOrder.getEventName() != null ? savedOrder.getEventName() : "Event";
+            notificationService.sendNotification(
+                userId,
+                "Pemesanan Tiket Berhasil",
+                "Pesanan Anda untuk event " + eventName + " sebanyak " + quantity + " tiket telah dibuat. Silakan selesaikan pembayaran dalam 15 menit.",
+                "order",
+                "/orders/" + savedOrder.getIdPembelian()
+            );
+        } catch (Exception e) {
+            // Log error tapi jangan sampai bikin order failed
+            System.err.println("⚠️ Notification failed: " + e.getMessage());
+        }
         
         return savedOrder;
         // Jika ada error, semua rollback otomatis karena @Transactional
@@ -137,8 +190,22 @@ public class OrderService {
         
         // Update order status
         order.setStatus(OrderStatus.CANCELLED);
+        Order cancelledOrder = orderRepository.save(order);
         
-        return orderRepository.save(order);
+        // Send notification
+        try {
+            notificationService.sendNotification(
+                order.getUser().getIdPengguna(),
+                "Pemesanan Dibatalkan",
+                "Pesanan Anda untuk event " + (order.getEventName() != null ? order.getEventName() : "Event") + " telah dibatalkan. Stok tiket telah dikembalikan.",
+                "order",
+                "/orders/" + orderId
+            );
+        } catch (Exception e) {
+            System.err.println("⚠️ Notification failed: " + e.getMessage());
+        }
+        
+        return cancelledOrder;
     }
     
     @Transactional
@@ -178,12 +245,43 @@ public class OrderService {
     
     @Transactional(readOnly = true)
     public Double getTotalRevenue() {
-        Double revenue = orderRepository.getTotalRevenue();
-        return revenue != null ? revenue : 0.0;
+        try {
+            Double revenue = orderRepository.getTotalRevenue();
+            
+            // Jika query mengembalikan null, hitung manual dari semua order PAID
+            if (revenue == null) {
+                List<Order> paidOrders = orderRepository.findByStatus(OrderStatus.PAID);
+                revenue = paidOrders.stream()
+                    .map(Order::getTotalHarga)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+                    .doubleValue();
+                System.out.println("getTotalRevenue (manual): " + revenue + " from " + paidOrders.size() + " PAID orders");
+            } else {
+                System.out.println("getTotalRevenue (query): " + revenue);
+            }
+            
+            return revenue != null ? revenue : 0.0;
+        } catch (Exception e) {
+            System.err.println("Error calculating getTotalRevenue: " + e.getMessage());
+            e.printStackTrace();
+            return 0.0;
+        }
     }
     
     @Transactional(readOnly = true)
     public long countOrdersByStatus(OrderStatus status) {
         return orderRepository.countByStatus(status);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Order> getOrdersByUserAndStatus(Long userId, OrderStatus status) {
+        return orderRepository.findByUser_IdPenggunaAndStatusOrderByTanggalPembelianDesc(userId, status);
+    }
+    
+    @Transactional
+    public Order updateOrderStatus(Long orderId, OrderStatus newStatus) {
+        Order order = getOrderById(orderId);
+        order.setStatus(newStatus);
+        return orderRepository.save(order);
     }
 }

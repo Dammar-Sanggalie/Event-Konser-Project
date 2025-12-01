@@ -7,7 +7,9 @@ import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,6 +53,15 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Event>> getEventById(@PathVariable Long id) {
+        Event event = eventService.getEventWithDetails(id);
+        return ResponseEntity.ok(ApiResponse.success("Success", event));
+    }
+    
+    /**
+     * GET /api/events/{id}/details - Get event by ID with all details (alias)
+     */
+    @GetMapping("/{id}/details")
+    public ResponseEntity<ApiResponse<Event>> getEventDetails(@PathVariable Long id) {
         Event event = eventService.getEventWithDetails(id);
         return ResponseEntity.ok(ApiResponse.success("Success", event));
     }
@@ -112,8 +123,9 @@ public class EventController {
     /**
      * POST /api/events - Create new event (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ApiResponse<Event>> createEvent(@RequestBody Event event) {
+    public ResponseEntity<ApiResponse<Event>> createEvent(@Valid @RequestBody Event event) {
         Event createdEvent = eventService.createEvent(event);
         return ResponseEntity.ok(ApiResponse.success("Event berhasil dibuat", createdEvent));
     }
@@ -121,10 +133,11 @@ public class EventController {
     /**
      * PUT /api/events/{id} - Update event (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Event>> updateEvent(
             @PathVariable Long id,
-            @RequestBody Event event) {
+            @Valid @RequestBody Event event) {
         Event updatedEvent = eventService.updateEvent(id, event);
         return ResponseEntity.ok(ApiResponse.success("Event berhasil diupdate", updatedEvent));
     }
@@ -132,6 +145,7 @@ public class EventController {
     /**
      * PATCH /api/events/{id}/status - Update event status (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<Event>> updateEventStatus(
             @PathVariable Long id,
@@ -143,6 +157,7 @@ public class EventController {
     /**
      * DELETE /api/events/{id} - Delete event (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);

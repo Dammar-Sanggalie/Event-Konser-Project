@@ -1,0 +1,123 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.6)
+
+2025-11-30T22:46:33.892+07:00  INFO 17388 --- [event-konser-backend] [           main] c.e.EventKonserBackendApplication        : Starting EventKonserBackendApplication v0.0.1-SNAPSHOT using Java 21.0.4 with PID 17388 (C:\Users\HP ELITEBOOK 820 G4\Documents\Project Basis Data\Event-Konser-Project\target\event-konser-backend-0.0.1-SNAPSHOT.jar started by DS in C:\Users\HP ELITEBOOK 820 G4\Documents\Project Basis Data\Event-Konser-Project)
+2025-11-30T22:46:33.899+07:00  INFO 17388 --- [event-konser-backend] [           main] c.e.EventKonserBackendApplication        : No active profile set, falling back to 1 default profile: "default"
+2025-11-30T22:46:37.960+07:00  INFO 17388 --- [event-konser-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-30T22:46:38.465+07:00  INFO 17388 --- [event-konser-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 470 ms. Found 13 JPA repository interfaces.
+2025-11-30T22:46:42.031+07:00  INFO 17388 --- [event-konser-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2025-11-30T22:46:42.082+07:00  INFO 17388 --- [event-konser-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-30T22:46:42.083+07:00  INFO 17388 --- [event-konser-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-30T22:46:42.279+07:00  INFO 17388 --- [event-konser-backend] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-30T22:46:42.289+07:00  INFO 17388 --- [event-konser-backend] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 8238 ms
+2025-11-30T22:46:42.731+07:00  INFO 17388 --- [event-konser-backend] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-30T22:46:42.966+07:00  INFO 17388 --- [event-konser-backend] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-30T22:46:43.091+07:00  INFO 17388 --- [event-konser-backend] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-30T22:46:44.228+07:00  INFO 17388 --- [event-konser-backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-30T22:46:44.309+07:00  INFO 17388 --- [event-konser-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-30T22:46:44.994+07:00  INFO 17388 --- [event-konser-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7c956dda
+2025-11-30T22:46:45.000+07:00  INFO 17388 --- [event-konser-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-30T22:46:45.149+07:00  WARN 17388 --- [event-konser-backend] [           main] org.hibernate.dialect.Dialect            : HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-11-30T22:46:45.188+07:00  WARN 17388 --- [event-konser-backend] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-30T22:46:45.263+07:00  INFO 17388 --- [event-konser-backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 5.5.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-30T22:46:48.379+07:00  INFO 17388 --- [event-konser-backend] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    alter table event 
+       modify column status enum ('CANCELLED','COMPLETED','ONGOING','UPCOMING')
+Hibernate: 
+    alter table pembayaran 
+       modify column status_pembayaran enum ('EXPIRED','FAILED','PENDING','REFUNDED','SUCCESS') not null
+Hibernate: 
+    alter table pembelian_tiket 
+       modify column status enum ('CANCELLED','EXPIRED','PAID','PENDING','REFUNDED','USED') not null
+Hibernate: 
+    alter table pengguna 
+       modify column role enum ('ADMIN','ORGANIZER','USER') not null
+Hibernate: 
+    alter table tiket 
+       modify column status enum ('AVAILABLE','DISABLED','SOLD_OUT')
+2025-11-30T22:46:48.828+07:00  INFO 17388 --- [event-konser-backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-30T22:46:49.929+07:00  INFO 17388 --- [event-konser-backend] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-30T22:46:56.941+07:00  INFO 17388 --- [event-konser-backend] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-11-30T22:46:56.943+07:00  WARN 17388 --- [event-konser-backend] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-11-30T22:47:00.328+07:00  WARN 17388 --- [event-konser-backend] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-30T22:47:00.543+07:00  INFO 17388 --- [event-konser-backend] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2025-11-30T22:47:03.701+07:00  INFO 17388 --- [event-konser-backend] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2025-11-30T22:47:03.743+07:00  INFO 17388 --- [event-konser-backend] [           main] c.e.EventKonserBackendApplication        : Started EventKonserBackendApplication in 31.482 seconds (process running for 33.414)
+2025-11-30T22:47:45.932+07:00  INFO 17388 --- [event-konser-backend] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-30T22:47:45.933+07:00  INFO 17388 --- [event-konser-backend] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-30T22:47:45.936+07:00  INFO 17388 --- [event-konser-backend] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Hibernate: 
+    SELECT
+        id_pengguna as idPengguna,
+        nama,
+        email,
+        no_hp as noHp,
+        role,
+        alamat,
+        created_at as createdAt,
+        updated_at as updatedAt 
+    FROM
+        pengguna
+? Found 11 users
+Hibernate: 
+    select
+        u1_0.id_pengguna,
+        u1_0.alamat,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.jabatan,
+        u1_0.nama,
+        u1_0.no_hp,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        pengguna u1_0 
+    where
+        u1_0.id_pengguna=?
+Hibernate: 
+    update
+        pengguna 
+    set
+        alamat=?,
+        created_at=?,
+        email=?,
+        jabatan=?,
+        nama=?,
+        no_hp=?,
+        password=?,
+        role=?,
+        updated_at=? 
+    where
+        id_pengguna=?
+Hibernate: 
+    select
+        u1_0.id_pengguna,
+        u1_0.alamat,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.jabatan,
+        u1_0.nama,
+        u1_0.no_hp,
+        u1_0.password,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        pengguna u1_0 
+    where
+        u1_0.id_pengguna=?

@@ -3,11 +3,13 @@ package com.eventkonser.service;
 import com.eventkonser.model.*;
 import com.eventkonser.repository.*;
 import com.eventkonser.exception.*;
+import com.eventkonser.dto.PaymentDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +17,13 @@ public class PaymentService {
     
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final MockPaymentService mockPaymentService;
+    private final NotificationService notificationService;
+    
+    @Transactional(readOnly = true)
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
     
     @Transactional(readOnly = true)
     public Payment getPaymentById(Long id) {
@@ -30,23 +39,41 @@ public class PaymentService {
     
     @Transactional
     public Payment processPayment(Long orderId, String paymentMethod) {
-        Payment payment = getPaymentByOrderId(orderId);
-        Order order = payment.getOrder();
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("Order tidak ditemukan dengan ID: " + orderId));
         
         if (order.getStatus() != OrderStatus.PENDING) {
-            throw new InvalidRequestException("Order tidak dapat diproses");
+            throw new InvalidRequestException("Order tidak dapat diproses. Status: " + order.getStatus());
         }
         
-        // Update payment
-        payment.setMetodePembayaran(paymentMethod);
-        payment.setTanggalBayar(LocalDateTime.now());
-        payment.setStatusPembayaran(PaymentStatus.SUCCESS);
+        // Get or create payment
+        Payment payment = paymentRepository.findByOrder_IdPembelian(orderId)
+            .orElseGet(() -> {
+                Payment newPayment = new Payment();
+                newPayment.setOrder(order);
+                newPayment.setJumlahBayar(order.getTotalHarga());
+                newPayment.setStatusPembayaran(PaymentStatus.PENDING);
+                newPayment.setMetodePembayaran("MOCK"); // Default MOCK payment
+                newPayment.setExpiredAt(LocalDateTime.now().plusMinutes(15));
+                return newPayment;
+            });
         
-        // Update order
-        order.setStatus(OrderStatus.PAID);
-        orderRepository.save(order);
+        // Update payment method
+        payment.setMetodePembayaran(paymentMethod);
         
         return paymentRepository.save(payment);
+    }
+    
+    /**
+     * Process payment menggunakan Mock Payment Service
+     * Ini adalah method yang dipanggil dari frontend saat user klik "Complete Payment"
+     * 
+     * Mock payment instantly mark order sebagai PAID tanpa external service call
+     */
+    @Transactional
+    public java.util.Map<String, Object> processPaymentWithMock(Long orderId) {
+        // Delegate ke MockPaymentService yang handle instant success
+        return mockPaymentService.processMockPayment(orderId);
     }
     
     @Transactional
@@ -63,5 +90,61 @@ public class PaymentService {
     public Double getSuccessRate() {
         Double rate = paymentRepository.getSuccessRate();
         return rate != null ? rate : 0.0;
+    }
+    
+    @Transactional
+    public Payment updatePaymentStatus(Long orderId, PaymentStatus newStatus) {
+        Payment payment = paymentRepository.findByOrder_IdPembelian(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("Payment tidak ditemukan untuk Order ID: " + orderId));
+        payment.setStatusPembayaran(newStatus);
+        return paymentRepository.save(payment);
+    }
+    
+    /**
+     * Get all payments dengan detail (untuk admin)
+     */
+    @Transactional(readOnly = true)
+    public List<PaymentDetailResponse> getAllPaymentsWithDetails() {
+        List<Payment> payments = paymentRepository.findAll();
+        return payments.stream()
+                .map(this::convertToDetailResponse)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Convert Payment entity to PaymentDetailResponse DTO
+     */
+    private PaymentDetailResponse convertToDetailResponse(Payment payment) {
+        PaymentDetailResponse response = new PaymentDetailResponse();
+        
+        response.setIdPembayaran(payment.getIdPembayaran());
+        response.setMetodePembayaran(payment.getMetodePembayaran());
+        response.setJumlahBayar(payment.getJumlahBayar());
+        response.setStatusPembayaran(payment.getStatusPembayaran().toString());
+        response.setTanggalBayar(payment.getTanggalBayar());
+        response.setCreatedAt(payment.getCreatedAt());
+        response.setPaymentGatewayId(payment.getPaymentGatewayId());
+        response.setExpiredAt(payment.getExpiredAt());
+        
+        // Order info
+        if (payment.getOrder() != null) {
+            Order order = payment.getOrder();
+            response.setIdPembelian(order.getIdPembelian());
+            response.setOrderId(order.getIdPembelian());
+            response.setEventName(order.getEventName());
+            response.setTanggalPembelian(order.getTanggalPembelian());
+            response.setOrderStatus(order.getStatus().toString());
+            
+            // User info
+            if (order.getUser() != null) {
+                User user = order.getUser();
+                response.setIdPengguna(user.getIdPengguna());
+                response.setUserNama(user.getNama());
+                response.setUserEmail(user.getEmail());
+                response.setUserNoHp(user.getNoHp());
+            }
+        }
+        
+        return response;
     }
 }

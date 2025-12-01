@@ -5,6 +5,7 @@ import com.eventkonser.model.EventStatus;
 import com.eventkonser.repository.EventRepository;
 import com.eventkonser.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -12,13 +13,27 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventService {
     
     private final EventRepository eventRepository;
     
     @Transactional(readOnly = true)
     public List<Event> getAllEvents() {
-        return eventRepository.findAllWithDetails();
+        return eventRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public long countAllEvents() {
+        try {
+            // Gunakan count query yang lebih efficient daripada loading semua data
+            long count = eventRepository.count();
+            log.info("Total events count: {}", count);
+            return count;
+        } catch (Exception e) {
+            log.error("Error counting all events: ", e);
+            return 0L;
+        }
     }
     
     @Transactional(readOnly = true)
@@ -34,8 +49,16 @@ public class EventService {
     
     @Transactional(readOnly = true)
     public Event getEventWithDetails(Long id) {
-        return eventRepository.findByIdWithDetails(id)
+        // First, fetch event with artists, category, and venue
+        Event event = eventRepository.findByIdWithDetails(id)
             .orElseThrow(() -> new ResourceNotFoundException("Event tidak ditemukan dengan ID: " + id));
+        
+        // Then, fetch tickets separately to avoid MultipleBagFetchException
+        eventRepository.findByIdWithTickets(id).ifPresent(e -> {
+            event.setTickets(e.getTickets());
+        });
+        
+        return event;
     }
     
     @Transactional(readOnly = true)
@@ -125,7 +148,25 @@ public class EventService {
     
     @Transactional(readOnly = true)
     public long countUpcomingEvents() {
-        return eventRepository.countByTanggalMulaiGreaterThanEqual(LocalDate.now());
+        try {
+            long count = eventRepository.countByTanggalMulaiGreaterThanEqual(LocalDate.now());
+            
+            // Jika query tidak bekerja, hitung manual
+            if (count == 0) {
+                List<Event> upcomingList = getUpcomingEvents();
+                count = upcomingList.size();
+                System.out.println("countUpcomingEvents (manual): " + count);
+            } else {
+                System.out.println("countUpcomingEvents (query): " + count);
+            }
+            
+            return count;
+        } catch (Exception e) {
+            System.err.println("Error calculating countUpcomingEvents: " + e.getMessage());
+            e.printStackTrace();
+            // Fallback ke manual count
+            return getUpcomingEvents().size();
+        }
     }
     
     @Transactional(readOnly = true)

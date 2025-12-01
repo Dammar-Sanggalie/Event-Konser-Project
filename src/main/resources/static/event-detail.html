@@ -18,17 +18,16 @@
                             '200': '#bae6fd',
                             '300': '#7dd3fc',
                             '400': '#38bdf8',
-                            '500': '#0ea5e9', // Biru langit yang soft
+                            '500': '#0ea5e9',
                             '600': '#0284c7',
                             '700': '#0369a1',
                             '800': '#075985',
                             '900': '#0c4a6e'
                         },
-                        secondary: '#4b5563', // Abu-abu netral
-                        accent: '#ec4899' // Pink untuk highlight
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
                     },
                     fontFamily: {
-                        // Font modern dan clean
                         sans: ['Inter', 'system-ui', 'sans-serif']
                     }
                 }
@@ -47,114 +46,411 @@
     
     <header id="navbar-placeholder"></header>
     
- <main id="main-content" class="min-h-screen bg-gray-50 pb-16">
-    <div id="event-detail-container">
-        <div class="container mx-auto max-w-7xl px-4 py-16 text-center">
+    <main id="main-content" class="min-h-screen bg-gray-50 pb-16">
+        <!-- Loading State -->
+        <div id="loading-container" class="container mx-auto max-w-7xl px-4 py-16 text-center">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
             <p class="text-gray-600">Loading event details...</p>
         </div>
-    </div>
-
-    <template id="event-detail-template">
-        <div>
-            <div class="relative h-64 sm:h-80 lg:h-96 bg-gray-900">
-                <img id="event-banner" src="/assets/images/placeholder-event.jpg" alt="Event Banner" class="w-full h-full object-cover opacity-80">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <a href="/events.html" class="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                </a>
-                <div class="absolute top-4 right-4 flex items-center space-x-2">
-                    <button id="wishlist-button" class="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition">
-                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                    </button>
-                    <button id="share-button" class="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.846 13.18 9 12.898 9 12.601s-.154-.579-.316-.741l-4.243-4.243a1 1 0 011.414-1.414L12 8.586l4.243-4.243a1 1 0 111.414 1.414l-4.243 4.243c-.162.162-.316.443-.316.741s.154.579.316.741l4.243 4.243a1 1 0 01-1.414 1.414L12 15.414l-4.243 4.243a1 1 0 01-1.414-1.414l4.243-4.243z" /></svg> </button>
-                </div>
-            </div>
-
-            <div class="container mx-auto max-w-7xl px-4 py-8">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 space-y-6">
-                        <div class="bg-white rounded-xl shadow-md p-6">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex-1">
-                                    <span id="event-category" class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 mb-3">Category</span>
-                                    <h1 id="event-name" class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Event Name Loading...</h1>
-                                </div>
-                                <span id="event-status" class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Status</span>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="event-info-grid">
-                                </div>
-                        </div>
-
-                        <div id="artists-section" class="bg-white rounded-xl shadow-md p-6 hidden">
-                             <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.08-1.282-.23-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.08-1.282.23-1.857m10.519-2.87A7.5 7.5 0 0012 11c-2.02 0-3.83.74-5.23 1.94" /></svg>
-                                <span>Performing Artists</span>
-                            </h2>
-                            <div id="artists-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                </div>
-                        </div>
-
-                        <div class="bg-white rounded-xl shadow-md p-6">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">About This Event</h2>
-                            <div id="event-description" class="prose prose-gray max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                Loading description...
-                            </div>
-                        </div>
-
-                        <div id="schedules-section" class="bg-white rounded-xl shadow-md p-6 hidden">
-                             <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <span>Event Schedule</span>
-                            </h2>
-                            <div id="schedules-list" class="space-y-3">
-                                </div>
-                        </div>
-
-                         <div id="sponsors-section" class="bg-white rounded-xl shadow-md p-6 hidden">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Event Sponsors</h2>
-                            <div id="sponsors-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                </div>
-                        </div>
-                    </div>
-
-                    <aside class="lg:col-span-1">
-                        <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
-                            <div class="mb-6">
-                                <p class="text-sm text-gray-500 mb-2">Starting from</p>
-                                <p id="event-price" class="text-3xl font-bold text-primary-600">Loading...</p>
-                            </div>
-                            <div id="tickets-preview" class="space-y-3 mb-6">
-                                <h3 class="text-sm font-semibold text-gray-900 flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
-                                    <span>Available Tickets</span>
-                                </h3>
-                                <p class="text-sm text-gray-500 text-center">Loading tickets...</p>
-                            </div>
-                            <button id="book-button" disabled
-                                    class="w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                                Book Tickets
-                            </button>
-                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-                                <p class="text-xs text-blue-900">
-                                    <strong>💡 Quick Booking:</strong> Secure your tickets now. Payment within 15 mins.
-                                </p>
-                            </div>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </div>
-    </template>
-</main>
+        
+        <!-- Event Detail Container -->
+        <div id="event-detail-container" class="hidden"></div>
+    </main>
     
     <footer id="footer-placeholder"></footer>
     
     <script src="/js/api.js"></script>
-    
     <script src="/js/auth.js"></script>
-    
     <script src="/js/app.js"></script>
+    
+    <script>
+        let eventData = null;
+        let isInWishlist = false;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+            
+            if (!eventId) {
+                window.location.href = '/events.html';
+                return;
+            }
+            
+            await loadEventDetails(eventId);
+        });
+        
+        async function loadEventDetails(eventId) {
+            try {
+                console.log('Loading event ID:', eventId);
+                const url = `${window.API_BASE_URL}/events/${eventId}/details`;
+                console.log('Fetching URL:', url);
+                
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                const result = await response.json();
+                console.log('API Response:', result);
+                
+                if (result.success && result.data) {
+                    eventData = result.data;
+                    console.log('Event data loaded:', eventData);
+                    
+                    // Check wishlist status if user is logged in
+                    if (window.auth.isAuthenticated()) {
+                        await checkWishlistStatus(eventId);
+                    }
+                    
+                    renderEventDetails();
+                } else {
+                    console.error('Event not found in response');
+                    showError('Event not found');
+                }
+            } catch (error) {
+                console.error('Error loading event:', error);
+                showError('Failed to load event details. Error: ' + error.message);
+            }
+        }
+        
+        async function checkWishlistStatus(eventId) {
+            try {
+                const userId = window.auth.getUserId();
+                const response = await fetch(`${window.API_BASE_URL}/wishlist/check?userId=${userId}&eventId=${eventId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    isInWishlist = result.data;
+                }
+            } catch (error) {
+                console.error('Error checking wishlist status:', error);
+            }
+        }
+        
+        function renderEventDetails() {
+            document.getElementById('loading-container').classList.add('hidden');
+            const container = document.getElementById('event-detail-container');
+            container.classList.remove('hidden');
+            
+            // Get lowest ticket price
+            let lowestPrice = 0;
+            if (eventData.tickets && eventData.tickets.length > 0) {
+                const prices = eventData.tickets.map(t => t.harga || 0).filter(p => p > 0);
+                lowestPrice = prices.length > 0 ? Math.min(...prices) : 0;
+            }
+            
+            container.innerHTML = `
+                <div class="relative h-64 sm:h-80 lg:h-96 bg-gray-900">
+                    <img src="${eventData.posterUrl || eventData.bannerUrl || '/assets/images/placeholder-event.jpg'}" 
+                         alt="${eventData.namaEvent}" 
+                         class="w-full h-full object-cover opacity-80"
+                         onerror="this.src='/assets/images/placeholder-event.jpg'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <a href="/events.html" class="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </a>
+                    ${window.auth.isAuthenticated() ? `
+                    <div class="absolute top-4 right-4 flex items-center space-x-2">
+                        <button id="wishlist-btn" onclick="toggleWishlist()" class="p-2 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-white transition group">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 ${isInWishlist ? 'text-red-500 fill-current' : 'text-gray-900'} group-hover:scale-110 transition" fill="${isInWishlist ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="container mx-auto max-w-7xl px-4 py-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Main Content -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- Event Info -->
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex-1">
+                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 mb-3">
+                                            ${eventData.kategori?.namaKategori || 'Event'}
+                                        </span>
+                                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">${eventData.namaEvent}</h1>
+                                        <p class="text-gray-600">by ${eventData.penyelenggara || 'Event Organizer'}</p>
+                                    </div>
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusClass(eventData.status)}">
+                                        ${eventData.status || 'UPCOMING'}
+                                    </span>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                                    <div class="flex items-start space-x-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Date</p>
+                                            <p class="text-sm font-medium text-gray-900">${formatDate(eventData.tanggalMulai)} - ${formatDate(eventData.tanggalSelesai)}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Venue</p>
+                                            <p class="text-sm font-medium text-gray-900">${eventData.venue?.namaVenue || 'TBA'}</p>
+                                            <p class="text-xs text-gray-600">${eventData.venue?.kota || ''}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Artists -->
+                            ${eventData.artists && eventData.artists.length > 0 ? `
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.08-1.282-.23-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.08-1.282.23-1.857m10.519-2.87A7.5 7.5 0 0012 11c-2.02 0-3.83.74-5.23 1.94" />
+                                    </svg>
+                                    <span>Performing Artists</span>
+                                </h2>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    ${eventData.artists.map(artist => `
+                                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                            <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+                                                <span class="text-lg font-bold text-primary-600">${artist.namaArtis.charAt(0)}</span>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 truncate">${artist.namaArtis}</p>
+                                                <p class="text-xs text-gray-500 truncate">${artist.genre || ''}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            <!-- Description -->
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">About This Event</h2>
+                                <div class="prose prose-gray max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                    ${eventData.deskripsi || 'No description available.'}
+                                </div>
+                            </div>
+                            
+                            <!-- Schedules -->
+                            ${eventData.schedules && eventData.schedules.length > 0 ? `
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Event Schedule</span>
+                                </h2>
+                                <div class="space-y-3">
+                                    ${eventData.schedules.map(schedule => `
+                                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-gray-900">${formatDate(schedule.tanggal)}</p>
+                                                <p class="text-xs text-gray-600">${schedule.jamMulai || ''} - ${schedule.jamSelesai || ''}</p>
+                                                ${schedule.keterangan ? `<p class="text-xs text-gray-500 mt-1">${schedule.keterangan}</p>` : ''}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            <!-- Sponsors -->
+                            ${eventData.sponsors && eventData.sponsors.length > 0 ? `
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Event Sponsors</h2>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                    ${eventData.sponsors.map(sponsor => `
+                                        <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                            <p class="text-sm font-medium text-gray-900">${sponsor.namaSponsor}</p>
+                                            <p class="text-xs text-gray-500 mt-1">${sponsor.jenisSponsor || ''}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- Sidebar -->
+                        <aside class="lg:col-span-1">
+                            <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+                                <div class="mb-6">
+                                    <p class="text-sm text-gray-500 mb-2">Starting from</p>
+                                    <p class="text-3xl font-bold text-primary-600">${formatCurrency(lowestPrice)}</p>
+                                </div>
+                                
+                                ${eventData.tickets && eventData.tickets.length > 0 ? `
+                                <div class="space-y-3 mb-6">
+                                    <h3 class="text-sm font-semibold text-gray-900 flex items-center space-x-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                        </svg>
+                                        <span>Available Tickets</span>
+                                    </h3>
+                                    <div class="space-y-2">
+                                        ${eventData.tickets.map(ticket => `
+                                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900">${ticket.jenisTiket}</p>
+                                                    <p class="text-xs text-gray-500">${ticket.stok || 0} available</p>
+                                                </div>
+                                                <p class="text-sm font-semibold text-primary-600">${formatCurrency(ticket.harga || 0)}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                ` : '<p class="text-sm text-gray-500 text-center mb-6">No tickets available yet</p>'}
+                                
+                                <button onclick="bookTicket()" class="w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold hover:shadow-lg transition transform hover:scale-105">
+                                    Book Tickets
+                                </button>
+                                
+                                <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                    <p class="text-xs text-blue-900">
+                                        <strong>⚡ Quick Booking:</strong> Secure your tickets now. Payment within 15 mins.
+                                    </p>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            `;
+        }
+        
+        async function toggleWishlist() {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+                return;
+            }
+            
+            try {
+                const userId = window.auth.getUserId();
+                const eventId = eventData.idEvent;
+                
+                if (isInWishlist) {
+                    // Remove from wishlist
+                    const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, {
+                        method: 'DELETE'
+                    });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        isInWishlist = false;
+                        updateWishlistButton();
+                        showToast('Removed from wishlist', 'success');
+                    } else {
+                        showToast('Failed to remove from wishlist', 'error');
+                    }
+                } else {
+                    // Add to wishlist
+                    const response = await fetch(`${window.API_BASE_URL}/wishlist?userId=${userId}&eventId=${eventId}`, {
+                        method: 'POST'
+                    });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        isInWishlist = true;
+                        updateWishlistButton();
+                        showToast('Added to wishlist', 'success');
+                    } else {
+                        showToast(result.message || 'Failed to add to wishlist', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling wishlist:', error);
+                showToast('An error occurred', 'error');
+            }
+        }
+        
+        function updateWishlistButton() {
+            const btn = document.getElementById('wishlist-btn');
+            if (btn) {
+                const svg = btn.querySelector('svg');
+                if (isInWishlist) {
+                    svg.classList.add('text-red-500', 'fill-current');
+                    svg.classList.remove('text-gray-900');
+                    svg.setAttribute('fill', 'currentColor');
+                } else {
+                    svg.classList.remove('text-red-500', 'fill-current');
+                    svg.classList.add('text-gray-900');
+                    svg.setAttribute('fill', 'none');
+                }
+            }
+        }
+        
+        function bookTicket() {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const eventId = new URLSearchParams(window.location.search).get('id');
+            if (eventId) {
+                window.location.href = `/booking.html?eventId=${eventId}`;
+            } else {
+                alert('Event ID not found');
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('loading-container').innerHTML = `
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Oops!</h3>
+                    <p class="text-gray-600 mb-6">${message}</p>
+                    <a href="/events.html" class="inline-block px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                        Back to Events
+                    </a>
+                </div>
+            `;
+        }
+        
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 animate-fade-in-up ${
+                type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        function getStatusClass(status) {
+            const statusMap = {
+                'UPCOMING': 'bg-blue-100 text-blue-800',
+                'ONGOING': 'bg-green-100 text-green-800',
+                'COMPLETED': 'bg-gray-100 text-gray-800',
+                'CANCELLED': 'bg-red-100 text-red-800'
+            };
+            return statusMap[status] || 'bg-gray-100 text-gray-800';
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount || 0);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(date);
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking - Event Konser</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            '50': '#f0f9ff',
+                            '100': '#e0f2fe',
+                            '200': '#bae6fd',
+                            '300': '#7dd3fc',
+                            '400': '#38bdf8',
+                            '500': '#0ea5e9',
+                            '600': '#0284c7',
+                            '700': '#0369a1',
+                            '800': '#075985',
+                            '900': '#0c4a6e'
+                        },
+                        secondary: '#4b5563',
+                        accent: '#ec4899'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased" data-page="booking">
+    
+    <header id="navbar-placeholder"></header>
+    
+    <main class="min-h-screen bg-gray-50 pb-16">
+        <div class="container mx-auto max-w-6xl px-4 py-8">
+            <a href="/events.html" class="text-primary-600 hover:text-primary-700 font-medium mb-6 inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Events
+            </a>
+            
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Book Your Tickets</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Event Info Card -->
+                    <div id="event-info" class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-start space-x-4 mb-6">
+                            <img id="event-poster" src="" alt="Event" class="w-24 h-32 object-cover rounded-lg bg-gray-200">
+                            <div class="flex-1">
+                                <h2 id="event-name" class="text-2xl font-bold text-gray-900 mb-2">Loading...</h2>
+                                <div class="space-y-2 text-sm text-gray-600">
+                                    <p id="event-date">📅 Loading...</p>
+                                    <p id="event-venue">📍 Loading...</p>
+                                    <p id="event-organizer">👤 Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ticket Selection -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Select Tickets</h3>
+                        
+                        <div id="tickets-container" class="space-y-3">
+                            <!-- Tickets will be populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Terms & Conditions -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <label class="flex items-start cursor-pointer">
+                            <input type="checkbox" id="terms" class="mt-1 w-4 h-4 text-primary-600">
+                            <span class="ml-3 text-sm text-gray-700">
+                                I have read and agree to the <a href="#" class="text-primary-600 hover:underline">Terms & Conditions</a> and <a href="#" class="text-primary-600 hover:underline">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Booking Summary Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-lg p-6 sticky top-24">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h3>
+                        
+                        <div id="booking-summary" class="space-y-3 mb-4 pb-4 border-b">
+                            <!-- Summary items will be populated by JS -->
+                        </div>
+                        
+                        <div class="space-y-3 mb-6 pb-4 border-b">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span id="subtotal" class="font-medium">Rp0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Admin Fee</span>
+                                <span class="font-medium">Rp15,000</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between mb-6">
+                            <span class="font-semibold text-gray-900">Total</span>
+                            <span id="total" class="text-2xl font-bold text-primary-600">Rp0</span>
+                        </div>
+                        
+                        <button onclick="proceedToCheckout()" id="checkout-btn" disabled class="w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            Proceed to Checkout
+                        </button>
+                        
+                        <p class="text-xs text-gray-500 text-center mt-4">Payment required within 15 minutes of booking</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="footer-placeholder"></footer>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <script>
+        let eventData = null;
+        let selectedTickets = {};
+        const ADMIN_FEE = 15000;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('eventId') || urlParams.get('event');
+            
+            if (!eventId) {
+                window.location.href = '/events.html';
+                return;
+            }
+            
+            await loadEventData(eventId);
+        });
+        
+        async function loadEventData(eventId) {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/events/${eventId}`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    eventData = result.data;
+                    renderEventInfo();
+                    await loadAvailableTickets(eventId);
+                }
+            } catch (error) {
+                console.error('Error loading event:', error);
+                showToast('Failed to load event details', 'error');
+            }
+        }
+        
+        async function loadAvailableTickets(eventId) {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/tickets/event/${eventId}/available`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    let tickets = result.data;
+                    
+                    // Normalize ticket data from backend
+                    tickets = tickets.map(t => ({
+                        id: t.idTiket || t.id,
+                        jenisTiket: t.jenisTiket,
+                        harga: parseFloat(t.harga || 0),
+                        stok: t.stok || 0,
+                        deskripsi: t.deskripsi,
+                        maxPembelian: t.maxPembelian || 5
+                    }));
+                    
+                    renderTickets(tickets);
+                } else {
+                    document.getElementById('tickets-container').innerHTML = '<p class="text-center text-gray-500">No tickets available</p>';
+                }
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                showToast('Failed to load available tickets', 'error');
+            }
+        }
+        
+        function renderEventInfo() {
+            document.getElementById('event-name').textContent = eventData.namaEvent;
+            document.getElementById('event-poster').src = eventData.posterUrl || eventData.bannerUrl || '/assets/images/placeholder-event.jpg';
+            document.getElementById('event-date').textContent = `📅 ${formatDate(eventData.tanggalMulai)} - ${formatDate(eventData.tanggalSelesai)}`;
+            document.getElementById('event-venue').textContent = `📍 ${eventData.venue?.namaVenue || 'TBA'}, ${eventData.venue?.kota || ''}`;
+            document.getElementById('event-organizer').textContent = `👤 ${eventData.penyelenggara || 'Event Organizer'}`;
+        }
+        
+        function renderTickets(tickets) {
+            const container = document.getElementById('tickets-container');
+            
+            container.innerHTML = tickets.map((ticket, index) => {
+                const isOutOfStock = ticket.stok <= 0;
+                
+                return `
+                    <div class="p-4 border border-gray-200 rounded-lg hover:border-primary-400 transition ${isOutOfStock ? 'opacity-50' : ''}" data-ticket-id="${ticket.id}" data-ticket-price="${ticket.harga}" data-ticket-name="${ticket.jenisTiket}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">${ticket.jenisTiket}</p>
+                                ${ticket.deskripsi ? `<p class="text-xs text-gray-500 mt-1">${ticket.deskripsi}</p>` : ''}
+                                <p class="text-sm text-gray-600 mt-2">
+                                    ${isOutOfStock ? '<span class="text-red-600 font-medium">Out of Stock</span>' : `<span class="text-green-600 font-medium">${ticket.stok} available</span>`}
+                                </p>
+                            </div>
+                            
+                            <div class="text-right ml-4">
+                                <p class="text-lg font-bold text-primary-600 mb-3" data-price="${ticket.harga}">${formatCurrency(ticket.harga)}</p>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="decreaseQuantity(${ticket.id})" class="p-1 border border-gray-300 rounded hover:bg-gray-100" ${isOutOfStock ? 'disabled' : ''}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                                        </svg>
+                                    </button>
+                                    <input type="number" id="qty-${ticket.id}" value="0" min="0" max="${ticket.maxPembelian}" class="w-12 text-center border border-gray-300 rounded py-1" onchange="updateQuantity(${ticket.id}, this.value)" ${isOutOfStock ? 'disabled' : ''}>
+                                    <button onclick="increaseQuantity(${ticket.id}, ${ticket.maxPembelian}, ${ticket.stok})" class="p-1 border border-gray-300 rounded hover:bg-gray-100" ${isOutOfStock ? 'disabled' : ''}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateQuantity(ticketId, value) {
+            const qty = Math.max(0, parseInt(value) || 0);
+            selectedTickets[ticketId] = qty;
+            updateSummary();
+            validateForm();
+        }
+        
+        function increaseQuantity(ticketId, max, available) {
+            const current = parseInt(document.getElementById(`qty-${ticketId}`).value) || 0;
+            const newQty = Math.min(current + 1, max, available);
+            document.getElementById(`qty-${ticketId}`).value = newQty;
+            updateQuantity(ticketId, newQty);
+        }
+        
+        function decreaseQuantity(ticketId) {
+            const current = parseInt(document.getElementById(`qty-${ticketId}`).value) || 0;
+            const newQty = Math.max(0, current - 1);
+            document.getElementById(`qty-${ticketId}`).value = newQty;
+            updateQuantity(ticketId, newQty);
+        }
+        
+        function updateSummary() {
+            const summary = document.getElementById('booking-summary');
+            let html = '';
+            let subtotal = 0;
+            
+            const tickets = document.querySelectorAll('[id^="qty-"]');
+            tickets.forEach(input => {
+                const ticketId = input.id.replace('qty-', '');
+                const qty = parseInt(input.value) || 0;
+                
+                if (qty > 0) {
+                    // Find the ticket container using data attribute
+                    const ticketContainer = document.querySelector(`[data-ticket-id="${ticketId}"]`);
+                    if (!ticketContainer) return;
+                    
+                    const ticketName = ticketContainer.getAttribute('data-ticket-name');
+                    const price = parseFloat(ticketContainer.getAttribute('data-ticket-price')) || 0;
+                    
+                    const itemTotal = price * qty;
+                    subtotal += itemTotal;
+                    
+                    html += `
+                        <div class="flex justify-between text-sm">
+                            <span>${ticketName} x${qty}</span>
+                            <span class="font-medium">${formatCurrency(itemTotal)}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            summary.innerHTML = html || '<p class="text-gray-500 text-sm">No tickets selected</p>';
+            
+            const total = subtotal + ADMIN_FEE;
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('total').textContent = formatCurrency(total);
+        }
+        
+        function validateForm() {
+            const hasTickets = Object.values(selectedTickets).some(qty => qty > 0);
+            const termsAccepted = document.getElementById('terms').checked;
+            
+            document.getElementById('checkout-btn').disabled = !hasTickets || !termsAccepted;
+        }
+        
+        document.getElementById('terms').addEventListener('change', validateForm);
+        
+        async function proceedToCheckout() {
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // Prepare booking data using data attributes
+            const items = [];
+            document.querySelectorAll('[id^="qty-"]').forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                if (qty > 0) {
+                    const ticketId = input.id.replace('qty-', '');
+                    const ticketContainer = document.querySelector(`[data-ticket-id="${ticketId}"]`);
+                    
+                    if (!ticketContainer) {
+                        console.warn(`Ticket container not found for ID: ${ticketId}`);
+                        return;
+                    }
+                    
+                    const ticketName = ticketContainer.getAttribute('data-ticket-name');
+                    const price = parseFloat(ticketContainer.getAttribute('data-ticket-price')) || 0;
+                    
+                    items.push({
+                        idTiket: parseInt(ticketId),
+                        jenisTiket: ticketName,
+                        eventName: eventData.namaEvent,
+                        jumlah: qty,
+                        harga: price
+                    });
+                }
+            });
+            
+            if (items.length === 0) {
+                showToast('Please select at least one ticket', 'error');
+                return;
+            }
+            
+            const orderData = {
+                idEvent: eventData.idEvent,
+                namaEvent: eventData.namaEvent,
+                items: items,
+                subtotal: items.reduce((sum, item) => sum + (item.harga * item.jumlah), 0),
+                discount: 0
+            };
+            
+            console.log('Checkout order:', orderData);
+            sessionStorage.setItem('checkout_order', JSON.stringify(orderData));
+            window.location.href = '/checkout.html';
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 px-6 py-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount || 0);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'TBA';
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('id-ID', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(date);
+        }
+    </script>
+</body>
+</html>

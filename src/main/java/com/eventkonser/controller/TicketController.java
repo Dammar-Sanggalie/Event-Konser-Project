@@ -3,10 +3,13 @@ package com.eventkonser.controller;
 import com.eventkonser.model.Ticket;
 import com.eventkonser.service.TicketService;
 import com.eventkonser.dto.ApiResponse;
+import com.eventkonser.dto.TicketAnalyticsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -15,6 +18,29 @@ import java.util.List;
 public class TicketController {
     
     private final TicketService ticketService;
+    
+    /**
+     * GET /api/tickets - Get all tickets (Admin)
+     * Return TicketAnalyticsResponse for analytics dashboard (no circular refs)
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<TicketAnalyticsResponse>>> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTickets();
+        List<TicketAnalyticsResponse> analyticsData = tickets.stream()
+            .map(ticket -> TicketAnalyticsResponse.builder()
+                .idTiket(ticket.getIdTiket())
+                .jenisTiket(ticket.getJenisTiket())
+                .harga(ticket.getHarga())
+                .stok(ticket.getStok())
+                .stokAwal(ticket.getStokAwal())
+                .deskripsi(ticket.getDeskripsi())
+                .idEvent(ticket.getEvent() != null ? ticket.getEvent().getIdEvent() : null)
+                .namaEvent(ticket.getEvent() != null ? ticket.getEvent().getNamaEvent() : null)
+                .status(ticket.getStatus() != null ? ticket.getStatus().toString() : null)
+                .build())
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.success("Success", analyticsData));
+    }
     
     /**
      * GET /api/tickets/event/{eventId} - Get tickets by event
@@ -48,6 +74,7 @@ public class TicketController {
     /**
      * POST /api/tickets - Create new ticket (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<Ticket>> createTicket(@RequestBody Ticket ticket) {
         Ticket createdTicket = ticketService.createTicket(ticket);
@@ -57,6 +84,7 @@ public class TicketController {
     /**
      * PUT /api/tickets/{id} - Update ticket (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Ticket>> updateTicket(
             @PathVariable Long id,
@@ -68,6 +96,7 @@ public class TicketController {
     /**
      * DELETE /api/tickets/{id} - Delete ticket (Admin only)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTicket(@PathVariable Long id) {
         ticketService.deleteTicket(id);

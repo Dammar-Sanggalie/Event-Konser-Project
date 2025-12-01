@@ -2,9 +2,12 @@ package com.eventkonser.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Event {
     
     @Id
@@ -48,23 +52,26 @@ public class Event {
     private EventStatus status = EventStatus.UPCOMING;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_kategori", nullable = false)
+    @JoinColumn(name = "id_kategori", nullable = true)
     private Category kategori;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_venue", nullable = false)
+    @JoinColumn(name = "id_venue", nullable = true)
     private Venue venue;
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Fetch(FetchMode.SUBSELECT)
     private List<Ticket> tickets = new ArrayList<>();
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Fetch(FetchMode.SUBSELECT)
     private List<Schedule> schedules = new ArrayList<>();
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Fetch(FetchMode.SUBSELECT)
     private List<Sponsor> sponsors = new ArrayList<>();
     
     @ManyToMany(fetch = FetchType.LAZY)
@@ -73,6 +80,7 @@ public class Event {
         joinColumns = @JoinColumn(name = "id_event"),
         inverseJoinColumns = @JoinColumn(name = "id_artis")
     )
+    @Fetch(FetchMode.SUBSELECT)
     private List<Artist> artists = new ArrayList<>();
     
     @Column(name = "created_at")
