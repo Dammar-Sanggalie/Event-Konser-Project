@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Tambahkan class 'loaded' ke body untuk transisi fade-in
     document.body.classList.add('loaded');
+    // Update CTA buttons based on auth state (if CTA exists on the page)
+    try { updateCTAAuthState(); } catch (e) { /* function may be added later */ }
 });
 
 /**
@@ -189,6 +191,10 @@ function addLogoutButtonListeners() {
     const handleLogout = () => {
         window.auth.removeUser();
         localStorage.removeItem('authToken');
+        // Update UI state locally
+        try { updateNavbarAuthState(); } catch (e) {}
+        try { updateFooterAuthState(); } catch (e) {}
+        try { updateCTAAuthState(); } catch (e) {}
         alert('Anda telah logout.');
         window.location.href = '/login.html'; // Arahkan ke halaman login
     };
@@ -975,5 +981,28 @@ function setupAdminMenuDropdown() {
                 adminMenuArrowMobile.style.transform = adminSubmenuMobile.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
             }
         });
+    }
+}
+
+/**
+ * Update CTA buttons in the main CTA section according to authentication state.
+ * When authenticated: change "Sign Up Free" to "My Profile" linking to /profile.html and apply primary style.
+ * When not authenticated: restore "Sign Up Free" linking to /register.html with default style.
+ */
+function updateCTAAuthState() {
+    const isAuthenticated = window.auth.isAuthenticated();
+    const ctaSignup = document.getElementById('cta-signup');
+    const ctaExplore = document.getElementById('cta-explore');
+    if (ctaSignup) {
+        // Hide Sign Up CTA when authenticated; show when not
+        ctaSignup.style.display = isAuthenticated ? 'none' : '';
+        if (!isAuthenticated) {
+            ctaSignup.textContent = 'Sign Up Free';
+            ctaSignup.href = '/register.html';
+            ctaSignup.className = 'w-full sm:w-auto px-8 py-3.5 bg-white/20 backdrop-blur-sm text-white border border-white/40 rounded-lg font-semibold hover:bg-white/30 transition transform hover:scale-105';
+        }
+    }
+    if (ctaExplore) {
+        ctaExplore.style.display = '';
     }
 }
