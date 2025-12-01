@@ -30,6 +30,57 @@
                     fontFamily: {
                         // Font modern dan clean
                         sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'fade-in-down': 'fadeInDown 0.6s ease-out forwards',
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'scale-in': 'scaleIn 0.5s ease-out forwards',
+                        'slide-in-left': 'slideInLeft 0.6s ease-out forwards',
+                        'slide-in-right': 'slideInRight 0.6s ease-out forwards',
+                        'bounce-gentle': 'gentleBounce 3s infinite',
+                        'pulse-gentle': 'gentlePulse 2.5s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        gentleBounce: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        gentlePulse: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' }
+                        }
+                    },
+                    transitionDelay: {
+                        '100': '100ms',
+                        '200': '200ms',
+                        '300': '300ms',
+                        '400': '400ms',
+                        '500': '500ms'
                     }
                 }
             }
@@ -47,137 +98,146 @@
     
     <header id="navbar-placeholder"></header>
     
-   <main id="main-content">
+   <main id="main-content" class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
     
-    <section class="relative bg-gradient-to-br from-primary-500 via-primary-600 to-accent/80 text-white overflow-hidden">
-        <div class="container mx-auto max-w-7xl px-4 py-24 md:py-32 text-center">
-            <div class="inline-flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-fade-in-up">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-br from-primary-500 via-primary-600 to-primary-900 text-white overflow-hidden pt-8 pb-16 md:pt-12 md:pb-20">
+        <div class="container mx-auto max-w-7xl px-4 py-20 md:py-28 text-center">
+            <div class="inline-flex items-center space-x-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6 border border-white/30 hover:bg-white/30 transition animate-fade-in-down">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-bounce-gentle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                 <span class="text-sm font-medium">Find Your Next Live Music Experience</span>
             </div>
             
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in-up animation-delay-200">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in-up" style="animation-delay: 100ms;">
                 Discover Amazing <br class="hidden sm:block">
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300">
                     Concert Events
                 </span>
             </h1>
             
-            <p class="text-lg lg:text-xl text-white/90 mb-10 max-w-2xl mx-auto animate-fade-in-up animation-delay-400">
+            <p class="text-lg lg:text-xl text-white/90 mb-12 max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 200ms;">
                 Book tickets for the hottest concerts, festivals, and live performances. 
                 Your unforgettable music experience starts here.
             </p>
             
-            <div class="mb-8 max-w-2xl mx-auto relative animate-fade-in-up animation-delay-600">
-                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <div class="mb-8 max-w-2xl mx-auto relative animate-fade-in-up" style="animation-delay: 300ms;">
+                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                  </span>
                  <input type="text" id="home-search-input" placeholder="Search by artist, event, or venue..."
-                        class="w-full pl-12 pr-4 py-4 border-2 border-transparent bg-white/90 text-gray-900 placeholder-gray-500 rounded-xl focus:outline-none focus:border-primary-300 shadow-lg transition">
+                        class="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 bg-white text-gray-900 placeholder-gray-500 rounded-full focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-200 shadow-lg hover:shadow-xl transition">
             </div>
         </div>
         <div class="absolute inset-0 overflow-hidden -z-10">
-            <div class="absolute -top-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50 animate-pulse-slow"></div>
-            <div class="absolute -bottom-1/4 -right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 animate-pulse-slow animation-delay-1000"></div>
+            <div class="absolute -top-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl opacity-50"></div>
+            <div class="absolute -bottom-1/4 -right-1/4 w-96 h-96 bg-primary-400/10 rounded-full blur-3xl opacity-50"></div>
         </div>
     </section>
 
-    <section class="py-16 bg-white">
+    <!-- Category Section -->
+    <section class="py-16 md:py-20 bg-white">
         <div class="container mx-auto max-w-7xl px-4">
-            <div class="text-center mb-12">
+            <div class="text-center mb-12 animate-fade-in-up">
                 <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">Browse by Category</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Find the perfect event for your music taste</p>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Find the perfect event for your music taste</p>
             </div>
             
             <div id="category-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-                <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
-                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
-                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 p-6 rounded-2xl border border-primary-200 hover:border-primary-400 hover:shadow-lg transition cursor-pointer group animate-scale-in" style="animation-delay: 0ms;">
+                     <div class="w-14 h-14 bg-primary-200 rounded-2xl mb-4 group-hover:bg-primary-300 transition"></div>
+                     <div class="h-5 bg-primary-300 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-primary-200 rounded w-1/2"></div>
                  </div>
-                 <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
-                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
-                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 p-6 rounded-2xl border border-primary-200 hover:border-primary-400 hover:shadow-lg transition cursor-pointer group animate-scale-in" style="animation-delay: 100ms;">
+                     <div class="w-14 h-14 bg-primary-200 rounded-2xl mb-4 group-hover:bg-primary-300 transition"></div>
+                     <div class="h-5 bg-primary-300 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-primary-200 rounded w-1/2"></div>
                  </div>
-                 <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
-                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
-                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 p-6 rounded-2xl border border-primary-200 hover:border-primary-400 hover:shadow-lg transition cursor-pointer group animate-scale-in" style="animation-delay: 200ms;">
+                     <div class="w-14 h-14 bg-primary-200 rounded-2xl mb-4 group-hover:bg-primary-300 transition"></div>
+                     <div class="h-5 bg-primary-300 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-primary-200 rounded w-1/2"></div>
                  </div>
-                 <div class="bg-gray-50 p-6 rounded-2xl animate-pulse">
-                     <div class="w-12 h-12 bg-gray-200 rounded-xl mb-4"></div>
-                     <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                     <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                 <div class="bg-gradient-to-br from-primary-50 to-primary-100/50 p-6 rounded-2xl border border-primary-200 hover:border-primary-400 hover:shadow-lg transition cursor-pointer group animate-scale-in" style="animation-delay: 300ms;">
+                     <div class="w-14 h-14 bg-primary-200 rounded-2xl mb-4 group-hover:bg-primary-300 transition"></div>
+                     <div class="h-5 bg-primary-300 rounded w-3/4 mb-2"></div>
+                     <div class="h-3 bg-primary-200 rounded w-1/2"></div>
                  </div>
             </div>
         </div>
     </section>
     
-    <section class="py-16 bg-gray-50">
+    <!-- Popular Events Section -->
+    <section class="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
         <div class="container mx-auto max-w-7xl px-4">
-            <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center justify-between mb-12 flex-wrap gap-4 animate-fade-in-up">
                 <div>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="p-2.5 bg-primary-100 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                        </div>
                         <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Popular Events</h2>
                     </div>
-                    <p class="text-gray-600">Most booked events this month</p>
+                    <p class="text-gray-600 ml-12">Most booked events this month</p>
                 </div>
-                <a href="/events.html?filter=popular" class="hidden sm:inline-block px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All</a>
+                <a href="/events.html?filter=popular" class="hidden sm:inline-block px-6 py-2.5 border border-primary-300 text-primary-700 rounded-lg text-sm font-semibold hover:bg-primary-50 hover:border-primary-400 transition">View All</a>
             </div>
             
             <div id="popular-event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
-                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
-                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
-                <div class="bg-white p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 100ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 150ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 200ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 250ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
             </div>
             
-            <div class="text-center mt-8 sm:hidden">
-                 <a href="/events.html?filter=popular" class="inline-block w-full px-5 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All Popular Events</a>
+            <div class="text-center mt-10 sm:hidden animate-fade-in-up" style="animation-delay: 300ms;">
+                 <a href="/events.html?filter=popular" class="inline-block w-full px-6 py-3 border border-primary-300 text-primary-700 rounded-lg text-sm font-semibold hover:bg-primary-50 transition">View All Popular Events</a>
             </div>
         </div>
     </section>
     
-    <section class="py-16 bg-white">
+    <!-- Upcoming Events Section -->
+    <section class="py-16 md:py-20 bg-white">
         <div class="container mx-auto max-w-7xl px-4">
-            <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center justify-between mb-12 flex-wrap gap-4">
                 <div>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="p-2.5 bg-primary-100 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        </div>
                         <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Upcoming Events</h2>
                     </div>
-                    <p class="text-gray-600">Don't miss these amazing events</p>
+                    <p class="text-gray-600 ml-12">Don't miss these amazing events</p>
                 </div>
-                 <a href="/events.html?filter=upcoming" class="hidden sm:inline-block px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All</a>
+                 <a href="/events.html?filter=upcoming" class="hidden sm:inline-block px-6 py-2.5 border border-primary-300 text-primary-700 rounded-lg text-sm font-semibold hover:bg-primary-50 hover:border-primary-400 transition">View All</a>
             </div>
             
             <div id="upcoming-event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
-                 <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
-                 <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
-                 <div class="bg-gray-100 p-4 rounded-xl shadow-md animate-pulse"><div class="h-40 bg-gray-200 rounded-lg mb-4"></div><div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div><div class="h-4 bg-gray-200 rounded w-1/3"></div></div>
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 100ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
+                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 150ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
+                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 200ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
+                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg hover:border-primary-200 transition animate-fade-in-up" style="animation-delay: 250ms;"><div class="h-48 bg-gradient-to-r from-primary-200 to-primary-100 rounded-t-2xl"></div><div class="p-4"><div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div><div class="h-4 bg-gray-200 rounded w-full mb-2"></div><div class="h-4 bg-gray-200 rounded w-2/3 mb-4"></div><div class="h-10 bg-gray-200 rounded-lg"></div></div></div>
             </div>
             
-             <div class="text-center mt-8 sm:hidden">
-                 <a href="/events.html?filter=upcoming" class="inline-block w-full px-5 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition">View All Upcoming Events</a>
+             <div class="text-center mt-10 sm:hidden animate-fade-in-up" style="animation-delay: 300ms;">
+                 <a href="/events.html?filter=upcoming" class="inline-block w-full px-6 py-3 border border-primary-300 text-primary-700 rounded-lg text-sm font-semibold hover:bg-primary-50 transition">View All Upcoming Events</a>
             </div>
         </div>
     </section>
     
-    <section class="py-16 lg:py-24 bg-gradient-to-r from-primary-600 to-accent/80">
-        <div class="container mx-auto max-w-3xl px-4 text-center">
-             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Ready for Your Next Adventure?</h2>
-             <p class="text-lg text-white/90 mb-8">
+    <!-- CTA Section -->
+    <section class="py-16 md:py-24 bg-gradient-to-r from-primary-600 to-primary-900">
+        <div class="container mx-auto max-w-3xl px-4 text-center animate-fade-in-up">
+             <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">Ready for Your Next Adventure?</h2>
+             <p class="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto">
                  Join thousands of music lovers and book your tickets today. 
                  Create unforgettable memories at the best live events.
              </p>
              <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                 <a href="/events.html" class="w-full sm:w-auto px-8 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition shadow-md">
+                 <a href="/events.html" class="w-full sm:w-auto px-8 py-3.5 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 hover:shadow-lg transition shadow-lg transform hover:scale-105">
                     Explore All Events
                  </a>
-                 <a href="/register.html" class="w-full sm:w-auto px-8 py-3 bg-white/20 backdrop-blur-sm text-white border border-white/30 rounded-lg font-semibold hover:bg-white/30 transition">
+                 <a href="/register.html" class="w-full sm:w-auto px-8 py-3.5 bg-white/20 backdrop-blur-sm text-white border border-white/40 rounded-lg font-semibold hover:bg-white/30 transition transform hover:scale-105">
                      Sign Up Free
                  </a>
              </div>
@@ -186,6 +246,73 @@
     
 </main>
     
+    <!-- Event Detail Modal -->
+    <div id="eventModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl my-8 animate-scale-in">
+            <!-- Close Button -->
+            <button onclick="closeEventModal()" class="absolute top-4 right-4 z-10 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition transform hover:rotate-90 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+
+            <!-- Modal Content -->
+            <div class="overflow-hidden">
+                <!-- Event Image -->
+                <div id="modalEventImage" class="h-72 bg-gradient-to-r from-primary-200 to-primary-100 relative"></div>
+
+                <!-- Event Details -->
+                <div class="p-8">
+                    <!-- Category Badge -->
+                    <div class="inline-block px-3 py-1 bg-primary-100 text-primary-700 text-sm font-semibold rounded-full mb-4" id="modalEventCategory">Event</div>
+
+                    <!-- Event Title -->
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4" id="modalEventTitle">Event Title</h2>
+
+                    <!-- Date & Location -->
+                    <div class="flex flex-col gap-4 mb-6">
+                        <div class="flex items-start space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            <div>
+                                <p class="text-sm text-gray-600">Date</p>
+                                <p class="text-lg font-semibold text-gray-900" id="modalEventDate">1 Des 2025</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary-600 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            <div>
+                                <p class="text-sm text-gray-600">Location</p>
+                                <p class="text-lg font-semibold text-gray-900" id="modalEventLocation">Jakarta</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="bg-gradient-to-r from-primary-50 to-primary-100 rounded-2xl p-4 mb-6">
+                        <p class="text-sm text-gray-600 mb-1">Starting from</p>
+                        <p class="text-3xl font-bold text-primary-600" id="modalEventPrice">Rp 1.200.000</p>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">About This Event</h3>
+                        <p class="text-gray-600 leading-relaxed" id="modalEventDescription">
+                            Experience an unforgettable evening with world-class performances and amazing atmosphere.
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="/booking.html" id="modalBookButton" class="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-semibold hover:shadow-lg hover:from-primary-600 hover:to-primary-700 transition transform hover:scale-105 text-center">
+                            Book Tickets Now
+                        </a>
+                        <button onclick="closeEventModal()" class="flex-1 px-6 py-3.5 border-2 border-gray-200 text-gray-900 rounded-lg font-semibold hover:border-gray-300 hover:bg-gray-50 transition">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer id="footer-placeholder"></footer>
     
     <script src="/js/api.js"></script>
@@ -193,5 +320,101 @@
     <script src="/js/auth.js"></script>
     
     <script src="/js/app.js"></script>
+
+    <script>
+        // Event Modal Functions
+        function openEventModal(eventData) {
+            const modal = document.getElementById('eventModal');
+            
+            // Set modal content
+            document.getElementById('modalEventCategory').textContent = eventData.category || 'Event';
+            document.getElementById('modalEventTitle').textContent = eventData.title || 'Event Title';
+            document.getElementById('modalEventDate').textContent = eventData.date || '1 Des 2025';
+            document.getElementById('modalEventLocation').textContent = eventData.location || 'Jakarta';
+            document.getElementById('modalEventPrice').textContent = eventData.price || 'Rp 1.200.000';
+            document.getElementById('modalEventDescription').textContent = eventData.description || 'Experience an unforgettable evening with world-class performances and amazing atmosphere.';
+            
+            // Set image if available
+            if (eventData.image) {
+                document.getElementById('modalEventImage').style.backgroundImage = `url('${eventData.image}')`;
+                document.getElementById('modalEventImage').style.backgroundSize = 'cover';
+                document.getElementById('modalEventImage').style.backgroundPosition = 'center';
+            }
+            
+            // Set book button link
+            if (eventData.bookLink) {
+                document.getElementById('modalBookButton').href = eventData.bookLink;
+            }
+            
+            // Show modal with animation
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEventModal() {
+            const modal = document.getElementById('eventModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('eventModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEventModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEventModal();
+            }
+        });
+
+        // Load events and add click handlers
+        function initEventCards() {
+            // Get event cards from the DOM
+            const popularCards = document.querySelectorAll('#popular-event-grid > div');
+            const upcomingCards = document.querySelectorAll('#upcoming-event-grid > div');
+            
+            // Add click handler to popular events
+            popularCards.forEach((card, index) => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function() {
+                    // Extract event data from card or use sample data
+                    const eventData = {
+                        category: this.querySelector('[data-category]')?.textContent || 'Event',
+                        title: this.querySelector('[data-title]')?.textContent || 'Popular Event ' + (index + 1),
+                        date: this.querySelector('[data-date]')?.textContent || '1 Des 2025',
+                        location: this.querySelector('[data-location]')?.textContent || 'Gelora Bung Karno, Jakarta',
+                        price: this.querySelector('[data-price]')?.textContent || 'Rp 1.200.000',
+                        description: this.querySelector('[data-description]')?.textContent || 'Experience an unforgettable evening with world-class performances and amazing atmosphere.',
+                        bookLink: this.querySelector('[data-book-link]')?.href || '/booking.html'
+                    };
+                    openEventModal(eventData);
+                });
+            });
+
+            // Add click handler to upcoming events
+            upcomingCards.forEach((card, index) => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function() {
+                    const eventData = {
+                        category: this.querySelector('[data-category]')?.textContent || 'Event',
+                        title: this.querySelector('[data-title]')?.textContent || 'Upcoming Event ' + (index + 1),
+                        date: this.querySelector('[data-date]')?.textContent || '1 Des 2025',
+                        location: this.querySelector('[data-location]')?.textContent || 'Jakarta',
+                        price: this.querySelector('[data-price]')?.textContent || 'Free',
+                        description: this.querySelector('[data-description]')?.textContent || 'Experience an unforgettable evening with world-class performances and amazing atmosphere.',
+                        bookLink: this.querySelector('[data-book-link]')?.href || '/booking.html'
+                    };
+                    openEventModal(eventData);
+                });
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initEventCards);
+    </script>
 </body>
 </html>
