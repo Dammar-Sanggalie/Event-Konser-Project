@@ -309,17 +309,12 @@ function displayEvents(events) {
                 <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 
                 <!-- Category Badge -->
-                <div class="absolute top-4 right-4 bg-accent text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                <div class="absolute top-4 right-4 bg-white bg-opacity-90 text-gray-700 px-4 py-1.5 rounded-full text-xs font-semibold border border-gray-200">
                     ${event.kategori?.namaKategori || 'Event'}
                 </div>
                 
                 <!-- Status Badge -->
-                <div class="absolute top-4 left-4 px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
-                    event.status === 'UPCOMING' ? 'bg-green-500' :
-                    event.status === 'ONGOING' ? 'bg-blue-500' :
-                    event.status === 'COMPLETED' ? 'bg-gray-500' :
-                    'bg-red-500'
-                }">
+                <div class="absolute top-4 left-4 px-4 py-1.5 rounded-full text-xs font-semibold text-gray-700 bg-white bg-opacity-90 border border-gray-200">
                     ${event.status}
                 </div>
             </div>
