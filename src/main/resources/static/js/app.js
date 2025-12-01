@@ -453,7 +453,27 @@ async function fetchAndRenderEvents() {
         }
         
         // Ambil data event
-        window.allEventsData = await apiFetch(`${endpoint}?${params.toString()}`);
+        let fetchedData = [];
+        try {
+            fetchedData = await apiFetch(`${endpoint}?${params.toString()}`);
+        } catch (apiError) {
+            // Fallback: jika search endpoint tidak ada, ambil semua upcoming dan filter di frontend
+            console.warn('Search endpoint failed, using fallback client-side search:', apiError);
+            if (window.currentFilters.search) {
+                const allEvents = await apiFetch('/events/upcoming');
+                const searchTerm = window.currentFilters.search.toLowerCase();
+                fetchedData = allEvents.filter(event => 
+                    event.namaEvent?.toLowerCase().includes(searchTerm) ||
+                    event.deskripsi?.toLowerCase().includes(searchTerm) ||
+                    event.kategori?.namaKategori?.toLowerCase().includes(searchTerm) ||
+                    event.venue?.namaVenue?.toLowerCase().includes(searchTerm)
+                );
+            } else {
+                fetchedData = await apiFetch('/events/upcoming');
+            }
+        }
+        
+        window.allEventsData = fetchedData;
         
         // Update count
         eventCount.textContent = `${window.allEventsData.length} events found`;
@@ -468,6 +488,7 @@ async function fetchAndRenderEvents() {
         }
 
     } catch (error) {
+        console.error('Error fetching events:', error);
         eventGrid.innerHTML = '<p class="text-red-500 col-span-full">Gagal memuat event.</p>';
         eventCount.textContent = 'Error loading events';
         noEventsMessage.classList.add('hidden');

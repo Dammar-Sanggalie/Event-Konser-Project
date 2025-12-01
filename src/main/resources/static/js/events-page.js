@@ -38,6 +38,18 @@ async function initializeEventsPage() {
         // Setup event listeners
         setupEventListeners();
         
+        // Check for search parameter in URL and apply it
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.value = searchParam;
+                // Apply the search filter
+                await applyFiltersAndSearch();
+            }
+        }
+        
     } catch (error) {
         console.error('Error initializing events page:', error);
         showToast('Error loading events', 'error');
