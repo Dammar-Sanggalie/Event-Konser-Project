@@ -412,7 +412,7 @@
                 // Show loading
                 const payButton = document.getElementById('pay-button');
                 payButton.disabled = true;
-                payButton.innerHTML = '<span class="animate-spin">⏳</span> Processing Payment...';
+                payButton.innerHTML = '<span class="animate-spin"></span> Processing Payment...';
                 
                 let paymentOrderId = orderId;
                 
@@ -474,7 +474,7 @@
                 
                 // Payment SUCCESS - instant!
                 sessionStorage.removeItem('checkout_order');
-                showToast('✅ Payment Successful! Redirecting...', 'success');
+                showToast('Payment Successful! Redirecting...', 'success');
                 
                 // Redirect to orders page
                 setTimeout(() => {

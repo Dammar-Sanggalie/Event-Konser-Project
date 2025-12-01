@@ -337,18 +337,85 @@ async function cancelOrder(orderId) {
  * Download ticket
  */
 function downloadTicket(orderId) {
-    if (!window.selectedOrder || !window.selectedOrder.qrCode) {
-        showToast('QR Code not available', 'warning');
+    if (!window.selectedOrder) {
+        showToast('Order not found', 'error');
         return;
     }
     
-    // Generate PDF or image download
-    const link = document.createElement('a');
-    link.href = `data:image/png;base64,${window.selectedOrder.qrCode}`;
-    link.download = `ticket-${orderId}.png`;
-    link.click();
+    const order = window.selectedOrder;
+    const qrUrl = order.qrCode ? order.qrCode : `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(order.idPembelian)}`;
     
-    showToast('Ticket downloaded', 'success');
+    // Create a canvas-based ticket with QR code
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+    
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Border
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+    
+    // Title
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('TICKET', canvas.width / 2, 40);
+    
+    // Event info
+    ctx.font = 'bold 16px Arial';
+    ctx.fillStyle = '#374151';
+    ctx.fillText(order.eventName || 'Event', canvas.width / 2, 80);
+    
+    ctx.font = '12px Arial';
+    ctx.fillStyle = '#6b7280';
+    ctx.fillText(`Order #${order.idPembelian}`, canvas.width / 2, 110);
+    
+    // Event details
+    ctx.font = '11px Arial';
+    ctx.fillStyle = '#4b5563';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Type: ${order.ticketType || 'Standard'}`, 30, 150);
+    ctx.fillText(`Qty: ${order.jumlah || 1} ticket(s)`, 30, 175);
+    ctx.fillText(`Price: ${formatCurrency(order.totalHarga || 0)}`, 30, 200);
+    ctx.fillText(`Date: ${formatDate(order.tanggalPembelian)}`, 30, 225);
+    ctx.fillText(`Status: ${order.status}`, 30, 250);
+    
+    // QR Code area
+    ctx.fillStyle = '#e5e7eb';
+    ctx.fillRect(50, 280, 300, 300);
+    
+    // Load and draw QR code image
+    const qrImage = new Image();
+    qrImage.onload = function() {
+        ctx.drawImage(qrImage, 60, 290, 280, 280);
+        downloadCanvasAsImage(canvas, `ticket-${orderId}.png`);
+    };
+    qrImage.onerror = function() {
+        // Fallback: draw text if QR fails
+        ctx.fillStyle = '#000000';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('QR Code', canvas.width / 2, 430);
+        downloadCanvasAsImage(canvas, `ticket-${orderId}.png`);
+    };
+    qrImage.crossOrigin = 'anonymous';
+    qrImage.src = qrUrl;
+}
+
+/**
+ * Download canvas as image
+ */
+function downloadCanvasAsImage(canvas, filename) {
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = filename;
+    link.click();
+    showToast('Ticket downloaded successfully!', 'success');
 }
 
 /**

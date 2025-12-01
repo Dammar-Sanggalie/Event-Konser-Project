@@ -1,4 +1,5 @@
 // Base URL backend Anda
+
 if (typeof window.API_BASE_URL === 'undefined') {
     window.API_BASE_URL = 'http://localhost:8081/api'; // Export to window for use in other files
 }
