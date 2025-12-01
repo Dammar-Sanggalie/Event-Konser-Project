@@ -43,6 +43,14 @@ public class ScheduleController {
     }
     
     /**
+     * GET /api/schedules/{id} - Get schedule by ID
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Schedule>> getScheduleById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success("Success", scheduleService.getScheduleById(id)));
+    }
+    
+    /**
      * POST /api/schedules - Create new schedule (Admin only)
      */
     @PreAuthorize("hasRole('ADMIN')")

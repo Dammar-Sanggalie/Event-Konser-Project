@@ -18,7 +18,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByEvent_IdEventOrderByHargaAsc(Long eventId);
     
     // Find available tickets for event
-    List<Ticket> findByEvent_IdEventAndStatusOrderByHargaAsc(Long eventId, TicketStatus status);
+    @Query("SELECT t FROM Ticket t WHERE t.event.idEvent = :eventId AND t.status = 'AVAILABLE' ORDER BY t.harga ASC")
+    List<Ticket> findByEvent_IdEventAndStatusOrderByHargaAsc(@Param("eventId") Long eventId);
     
     // Find by ticket type
     List<Ticket> findByJenisTiket(String jenisTiket);
@@ -39,4 +40,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     // Count sold tickets by event
     @Query("SELECT SUM(o.jumlah) FROM Order o WHERE o.ticket.event.idEvent = :eventId AND o.status = 'PAID'")
     Long countSoldTicketsByEvent(@Param("eventId") Long eventId);
+    
+    // Find all tickets with their associated event data
+    @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.event e ORDER BY e.namaEvent, t.jenisTiket")
+    List<Ticket> findAllWithEvent();
+    
+    // Find minimum ticket price by event
+    @Query("SELECT MIN(t.harga) FROM Ticket t WHERE t.event.idEvent = :eventId AND t.status = 'AVAILABLE'")
+    Double findMinimumPriceByEvent(@Param("eventId") Long eventId);
 }

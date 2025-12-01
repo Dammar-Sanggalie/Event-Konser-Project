@@ -453,7 +453,7 @@
                 
                 // Step 2: Process payment menggunakan MOCK PAYMENT
                 console.log('Step 2: Processing mock payment for order:', paymentOrderId);
-                const paymentResponse = await fetch(`${window.API_BASE_URL}/payments/process-mock?orderId=${paymentOrderId}`, {
+                const paymentResponse = await fetch(`${window.API_BASE_URL}/payments/process-mock?orderId=${paymentOrderId}&paymentMethod=${selectedMethod}`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',

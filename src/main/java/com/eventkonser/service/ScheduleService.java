@@ -17,7 +17,7 @@ public class ScheduleService {
     
     @Transactional(readOnly = true)
     public List<Schedule> getAllSchedules() {
-        return scheduleRepository.findAll();
+        return scheduleRepository.findAllWithEvent();
     }
     
     @Transactional(readOnly = true)

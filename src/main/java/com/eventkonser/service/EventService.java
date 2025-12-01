@@ -17,10 +17,24 @@ import java.util.List;
 public class EventService {
     
     private final EventRepository eventRepository;
+    private final TicketService ticketService;
     
     @Transactional(readOnly = true)
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        List<Event> events = eventRepository.findAll();
+        // Set starting price for each event
+        events.forEach(event -> {
+            log.debug("Processing event: {} (ID: {})", event.getNamaEvent(), event.getIdEvent());
+            try {
+                Double startingPrice = ticketService.getStartingPriceByEvent(event.getIdEvent());
+                log.debug("Starting price for event {}: {}", event.getIdEvent(), startingPrice);
+                event.setStartingPrice(startingPrice != null ? startingPrice : 0.0);
+            } catch (Exception e) {
+                log.error("Error getting starting price for event {}: {}", event.getIdEvent(), e.getMessage());
+                event.setStartingPrice(0.0);
+            }
+        });
+        return events;
     }
     
     @Transactional(readOnly = true)
@@ -38,7 +52,20 @@ public class EventService {
     
     @Transactional(readOnly = true)
     public List<Event> getUpcomingEvents() {
-        return eventRepository.findByTanggalMulaiGreaterThanEqualOrderByTanggalMulaiAsc(LocalDate.now());
+        List<Event> events = eventRepository.findByTanggalMulaiGreaterThanEqualOrderByTanggalMulaiAsc(LocalDate.now());
+        // Set starting price for each event
+        events.forEach(event -> {
+            log.debug("Processing upcoming event: {} (ID: {})", event.getNamaEvent(), event.getIdEvent());
+            try {
+                Double startingPrice = ticketService.getStartingPriceByEvent(event.getIdEvent());
+                log.debug("Starting price for upcoming event {}: {}", event.getIdEvent(), startingPrice);
+                event.setStartingPrice(startingPrice != null ? startingPrice : 0.0);
+            } catch (Exception e) {
+                log.error("Error getting starting price for upcoming event {}: {}", event.getIdEvent(), e.getMessage());
+                event.setStartingPrice(0.0);
+            }
+        });
+        return events;
     }
     
     @Transactional(readOnly = true)
@@ -57,6 +84,10 @@ public class EventService {
         eventRepository.findByIdWithTickets(id).ifPresent(e -> {
             event.setTickets(e.getTickets());
         });
+        
+        // Set starting price for the event
+        Double startingPrice = ticketService.getStartingPriceByEvent(id);
+        event.setStartingPrice(startingPrice != null ? startingPrice : 0.0);
         
         return event;
     }
@@ -100,7 +131,20 @@ public class EventService {
     
     @Transactional(readOnly = true)
     public List<Event> getPopularEvents() {
-        return eventRepository.findPopularEvents();
+        List<Event> events = eventRepository.findPopularEvents();
+        // Set starting price for each event
+        events.forEach(event -> {
+            log.debug("Processing popular event: {} (ID: {})", event.getNamaEvent(), event.getIdEvent());
+            try {
+                Double startingPrice = ticketService.getStartingPriceByEvent(event.getIdEvent());
+                log.debug("Starting price for popular event {}: {}", event.getIdEvent(), startingPrice);
+                event.setStartingPrice(startingPrice != null ? startingPrice : 0.0);
+            } catch (Exception e) {
+                log.error("Error getting starting price for popular event {}: {}", event.getIdEvent(), e.getMessage());
+                event.setStartingPrice(0.0);
+            }
+        });
+        return events;
     }
     
     @Transactional(readOnly = true)

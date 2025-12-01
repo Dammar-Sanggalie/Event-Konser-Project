@@ -1,8 +1,8 @@
 package com.eventkonser.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +21,8 @@ public class Order {
     @Column(name = "id_pembelian")
     private Long idPembelian;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_pengguna")
-    @JsonBackReference
     private User user;
     
     @ManyToOne(fetch = FetchType.EAGER)

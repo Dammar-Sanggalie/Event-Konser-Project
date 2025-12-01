@@ -40,4 +40,13 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
            "(COUNT(CASE WHEN p.statusPembayaran = 'SUCCESS' THEN 1 END) * 100.0 / COUNT(p)) " +
            "FROM Payment p")
     Double getSuccessRate();
+    
+    // Find all payments with order, user, ticket, and event data
+    @Query("SELECT p FROM Payment p " +
+           "LEFT JOIN FETCH p.order o " +
+           "LEFT JOIN FETCH o.user u " +
+           "LEFT JOIN FETCH o.ticket t " +
+           "LEFT JOIN FETCH t.event e " +
+           "ORDER BY p.tanggalBayar DESC")
+    List<Payment> findAllWithOrderAndEvent();
 }

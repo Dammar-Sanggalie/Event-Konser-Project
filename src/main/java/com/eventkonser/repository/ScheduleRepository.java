@@ -29,4 +29,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                                              @Param("tanggal") LocalDate tanggal,
                                              @Param("jamMulai") java.time.LocalTime jamMulai,
                                              @Param("jamSelesai") java.time.LocalTime jamSelesai);
+                                             
+    // Find all schedules with event data
+    @Query("SELECT s FROM Schedule s LEFT JOIN FETCH s.event e LEFT JOIN FETCH e.venue ORDER BY s.tanggal, s.jamMulai")
+    List<Schedule> findAllWithEvent();
 }

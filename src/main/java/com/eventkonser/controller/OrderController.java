@@ -10,11 +10,14 @@ import com.eventkonser.dto.BookingRequest;
 import com.eventkonser.dto.UpdateOrderStatusRequest;
 import com.eventkonser.dto.OrderAnalyticsResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
@@ -54,8 +57,7 @@ public class OrderController {
             }
             return ResponseEntity.badRequest().body(ApiResponse.error("Items tidak boleh kosong"));
         } catch (Exception e) {
-            System.out.println("❌ Error in bookTicket: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error in bookTicket: {}", e.getMessage(), e);
             throw e;
         }
     }
@@ -137,23 +139,77 @@ public class OrderController {
     public ResponseEntity<ApiResponse<List<OrderAnalyticsResponse>>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
         List<OrderAnalyticsResponse> analyticsData = orders.stream()
-            .map(order -> OrderAnalyticsResponse.builder()
-                .idPembelian(order.getIdPembelian())
-                .idPengguna(order.getUser() != null ? order.getUser().getIdPengguna() : null)
-                .jumlah(order.getJumlah())
-                .totalHarga(order.getTotalHarga())
-                .subtotal(order.getSubtotal())
-                .discountAmount(order.getDiscountAmount())
-                .status(order.getStatus() != null ? order.getStatus().toString() : null)
-                .tanggalPembelian(order.getTanggalPembelian())
-                .eventName(order.getEventName())
-                .ticketType(order.getTicketType())
-                .statusPembayaran(order.getPayment() != null && order.getPayment().getStatusPembayaran() != null 
-                    ? order.getPayment().getStatusPembayaran().toString() : null)
-                .tanggalBayar(order.getPayment() != null ? order.getPayment().getTanggalBayar() : null)
-                .build())
+            .map(order -> {
+                OrderAnalyticsResponse response = OrderAnalyticsResponse.builder()
+                    .idPembelian(order.getIdPembelian())
+                    .idPengguna(order.getUser() != null ? order.getUser().getIdPengguna() : null)
+                    .userName(order.getUser() != null ? order.getUser().getNama() : null)
+                    .userEmail(order.getUser() != null ? order.getUser().getEmail() : null)
+                    .userPhone(order.getUser() != null ? order.getUser().getNoHp() : null)
+                    .jumlah(order.getJumlah())
+                    .totalHarga(order.getTotalHarga())
+                    .subtotal(order.getSubtotal())
+                    .discountAmount(order.getDiscountAmount())
+                    .status(order.getStatus() != null ? order.getStatus().toString() : null)
+                    .tanggalPembelian(order.getTanggalPembelian())
+                    .ticketId(order.getTicket() != null ? order.getTicket().getIdTiket() : null)
+                    .ticketType(order.getTicket() != null ? order.getTicket().getJenisTiket() : null)
+                    .build();
+                
+                // Add event information if available
+                if (order.getTicket() != null && order.getTicket().getEvent() != null) {
+                    response.setEventName(order.getTicket().getEvent().getNamaEvent());
+                } else {
+                    response.setEventName(order.getEventName());
+                }
+                
+                // Add payment information
+                if (order.getPayment() != null) {
+                    response.setStatusPembayaran(order.getPayment().getStatusPembayaran() != null ? 
+                        order.getPayment().getStatusPembayaran().toString() : null);
+                    response.setTanggalBayar(order.getPayment().getTanggalBayar());
+                }
+                
+                return response;
+            })
             .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success("Success", analyticsData));
+    }
+    
+    /**
+     * PATCH /api/orders/{orderId}/status - Update order status (Admin only)
+     */
+    @PatchMapping("/{orderId}/status")
+    public ResponseEntity<ApiResponse<Order>> updateOrderStatus(
+            @PathVariable Long orderId,
+            @RequestBody Map<String, String> request) {
+        try {
+            if (!request.containsKey("status")) {
+                return ResponseEntity.badRequest()
+                    .body(ApiResponse.error("Status is required"));
+            }
+            
+            String status = request.get("status").toUpperCase();
+            Order order = orderService.getOrderById(orderId);
+            
+            if (order == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            try {
+                OrderStatus newStatus = OrderStatus.valueOf(status);
+                Order updatedOrder = orderService.updateOrderStatus(orderId, newStatus);
+                return ResponseEntity.ok(ApiResponse.success("Order status updated successfully", updatedOrder));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest()
+                    .body(ApiResponse.error("Invalid status. Allowed: PENDING, PAID, CANCELLED, COMPLETED"));
+            }
+            
+        } catch (Exception e) {
+            log.error("Error updating order status: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest()
+                .body(ApiResponse.error("Failed to update order status: " + e.getMessage()));
+        }
     }
     
     /**
@@ -189,8 +245,7 @@ public class OrderController {
             Order updatedOrder = orderService.getOrderById(id);
             return ResponseEntity.ok(ApiResponse.success("Order status updated successfully", updatedOrder));
         } catch (Exception e) {
-            System.out.println("❌ Error updating order status: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error updating order status: {}", e.getMessage(), e);
             return ResponseEntity.badRequest()
                 .body(ApiResponse.error("Failed to update order: " + e.getMessage()));
         }

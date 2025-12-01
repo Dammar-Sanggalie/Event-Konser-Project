@@ -20,7 +20,7 @@ public class Payment {
     @Column(name = "id_pembayaran")
     private Long idPembayaran;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_pembelian", nullable = false, unique = true)
     @JsonBackReference
     private Order order;

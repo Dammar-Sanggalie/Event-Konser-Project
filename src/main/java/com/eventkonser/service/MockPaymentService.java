@@ -34,7 +34,7 @@ public class MockPaymentService {
      * @return Map berisi mock payment response
      */
     @Transactional
-    public Map<String, Object> processMockPayment(Long orderId) {
+    public Map<String, Object> processMockPayment(Long orderId, String paymentMethod) {
         Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new ResourceNotFoundException("Order tidak ditemukan dengan ID: " + orderId));
         
@@ -46,6 +46,9 @@ public class MockPaymentService {
         
         // INSTANTLY mark payment as SUCCESS (ini yang magic dari mock payment!)
         payment.setStatusPembayaran(PaymentStatus.SUCCESS);
+        if (paymentMethod != null && !paymentMethod.isEmpty()) {
+            payment.setMetodePembayaran(paymentMethod);
+        }
         payment.setPaymentGatewayId(mockTransactionId);
         payment.setTanggalBayar(LocalDateTime.now());
         paymentRepository.save(payment);

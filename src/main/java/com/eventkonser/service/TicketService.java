@@ -5,19 +5,21 @@ import com.eventkonser.model.TicketStatus;
 import com.eventkonser.repository.TicketRepository;
 import com.eventkonser.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TicketService {
     
     private final TicketRepository ticketRepository;
     
     @Transactional(readOnly = true)
     public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+        return ticketRepository.findAllWithEvent();
     }
     
     @Transactional(readOnly = true)
@@ -33,7 +35,15 @@ public class TicketService {
     
     @Transactional(readOnly = true)
     public List<Ticket> getAvailableTicketsByEvent(Long eventId) {
-        return ticketRepository.findByEvent_IdEventAndStatusOrderByHargaAsc(eventId, TicketStatus.AVAILABLE);
+        return ticketRepository.findByEvent_IdEventAndStatusOrderByHargaAsc(eventId);
+    }
+    
+    @Transactional(readOnly = true)
+    public Double getStartingPriceByEvent(Long eventId) {
+        log.debug("Getting starting price for event ID: {}", eventId);
+        Double price = ticketRepository.findMinimumPriceByEvent(eventId);
+        log.debug("Found starting price for event {}: {}", eventId, price);
+        return price;
     }
     
     @Transactional
@@ -73,5 +83,10 @@ public class TicketService {
     public Long countSoldTicketsByEvent(Long eventId) {
         Long count = ticketRepository.countSoldTicketsByEvent(eventId);
         return count != null ? count : 0L;
+    }
+    
+    @Transactional(readOnly = true)
+    public Double getMinimumPriceByEvent(Long eventId) {
+        return ticketRepository.findMinimumPriceByEvent(eventId);
     }
 }

@@ -280,6 +280,7 @@ function applySorting(sortBy) {
  * Display events in grid
  */
 function displayEvents(events) {
+    console.log('Events data:', events); // Debug log
     const eventGrid = document.getElementById('event-grid');
     const noEventsMsg = document.getElementById('no-events-message');
     const eventCount = document.getElementById('event-count');
@@ -363,9 +364,17 @@ function displayEvents(events) {
                 </div>
                 
                 <!-- Organizer -->
-                <p class="text-xs text-gray-500 mb-4 font-medium">
-                    By <span class="text-primary-600 font-semibold">${event.penyelenggara || 'Unknown Organizer'}</span>
-                </p>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-xs text-gray-500 font-medium">
+                        By <span class="text-primary-600 font-semibold">${event.penyelenggara || 'Unknown Organizer'}</span>
+                    </p>
+                    ${event.startingPrice > 0 ? `
+                        <div class="text-right">
+                            <p class="text-xs text-gray-500">Mulai dari</p>
+                            <p class="text-sm font-bold text-primary-600">Rp ${event.startingPrice.toLocaleString('id-ID')}</p>
+                        </div>
+                    ` : ''}
+                </div>
                 
                 <!-- CTA Button -->
                 <button class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-2.5 rounded-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2"

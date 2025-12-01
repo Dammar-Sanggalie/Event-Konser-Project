@@ -512,12 +512,9 @@ function renderEventGrid(events, gridSelector) {
             ? new Date(event.tanggalMulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
             : 'TBA';
             
-        // Harga terendah
-        const lowestPrice = event.tickets?.length > 0 
-            ? Math.min(...event.tickets.map(t => t.harga)) 
-            : 0;
-        const formattedPrice = lowestPrice > 0 
-            ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(lowestPrice)
+        // Use startingPrice from API response
+        const formattedPrice = event.startingPrice > 0 
+            ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(event.startingPrice)
             : 'Free';
 
         return `

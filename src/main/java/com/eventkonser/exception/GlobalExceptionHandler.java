@@ -37,6 +37,13 @@ public class GlobalExceptionHandler {
             .body(ApiResponse.error(ex.getMessage()));
     }
     
+    @ExceptionHandler(jakarta.persistence.EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFound(jakarta.persistence.EntityNotFoundException ex) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(ApiResponse.error("Entity not found: " + ex.getMessage()));
+    }
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
         return ResponseEntity

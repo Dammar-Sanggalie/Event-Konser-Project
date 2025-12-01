@@ -59,4 +59,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            "GROUP BY DATE(o.tanggalPembelian) " +
            "ORDER BY date DESC")
     List<Object[]> getDailySalesStats(@Param("startDate") LocalDateTime startDate);
+    
+    // Find all orders with user, ticket, and event data
+    @Query("SELECT o FROM Order o " +
+           "LEFT JOIN FETCH o.user u " +
+           "LEFT JOIN FETCH o.ticket t " +
+           "LEFT JOIN FETCH t.event e " +
+           "ORDER BY o.tanggalPembelian DESC")
+    List<Order> findAllWithUserAndEvent();
 }

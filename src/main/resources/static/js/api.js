@@ -50,10 +50,17 @@ async function apiFetch(endpoint, options = {}) {
             throw new Error(data.message || 'Terjadi kesalahan pada server');
         }
         
-        // Di backend, Anda membungkus semua respons di { success: true, message: "...", data: {...} }
-        // Kita langsung kembalikan 'data'-nya saja agar mudah.
+        // Handle response format from the backend
         if (data.success) {
-            return data.data;
+            // For endpoints that return the data directly in the response (like /events/upcoming)
+            // we need to check if the data is in the root or in data.data
+            if (Array.isArray(data) || (data.data === undefined && data.success === true)) {
+                return data; // Return the entire response for arrays or responses without a data property
+            } else if (data.data !== undefined) {
+                return data.data; // Return the data property for object responses
+            } else {
+                return data; // Fallback to returning the entire response
+            }
         } else {
             throw new Error(data.message || 'Respons API tidak sukses');
         }

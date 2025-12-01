@@ -1,402 +1,729 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management - Event Konser</title>
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Management - Event Konser Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            '50': '#f0f9ff',
-                            '100': '#e0f2fe',
-                            '200': '#bae6fd',
-                            '300': '#7dd3fc',
-                            '400': '#38bdf8',
-                            '500': '#0ea5e9',
-                            '600': '#0284c7',
-                            '700': '#0369a1',
-                            '800': '#075985',
-                            '900': '#0c4a6e'
-                        },
-                        secondary: '#4b5563',
-                        accent: '#ec4899'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+              secondary: "#4b5563",
+              accent: "#ec4899",
+            },
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
     </script>
-
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-
-<body class="bg-gray-50 font-sans antialiased" data-page="order-management">
-    <div class="flex">
-        <div id="admin-sidebar-placeholder"></div>
-        <div class="flex-1 flex flex-col">
-            <header id="navbar-placeholder"></header>
-
-            <main class="flex-1 min-h-screen pb-16 container mx-auto max-w-7xl px-4 py-8">
-        <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Order Management</h1>
-            <p class="text-gray-600 mt-1">Kelola pesanan tiket dari pelanggan</p>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50 font-sans antialiased" data-page="order-management">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
+        <!-- ...existing code... -->
+        <div class="p-6 border-b border-gray-800">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold">⚡</div>
+            <div>
+              <h1 class="text-lg font-bold">EventKonser</h1>
+              <p class="text-xs text-gray-400">Admin Panel</p>
+            </div>
+          </div>
         </div>
 
-        <!-- Filters & Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <div class="text-3xl font-bold text-primary-600" id="stat-total">0</div>
-                <div class="text-sm text-gray-600 mt-1">Total Orders</div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <div class="text-3xl font-bold text-blue-600" id="stat-pending">0</div>
-                <div class="text-sm text-gray-600 mt-1">Pending Payment</div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <div class="text-3xl font-bold text-green-600" id="stat-completed">0</div>
-                <div class="text-sm text-gray-600 mt-1">Completed</div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <div class="text-3xl font-bold text-red-600" id="stat-cancelled">0</div>
-                <div class="text-sm text-gray-600 mt-1">Cancelled</div>
-            </div>
-        </div>
+        <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+          <div>
+            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Main Menu</p>
+            <a href="/admin-dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📊</span> Dashboard</a>
+            <a href="/analytics.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📈</span> Analytics</a>
+          </div>
+          <div>
+            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Event Management</p>
+            <a href="/event-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📅</span> Events</a>
+            <a href="/schedule-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🕒</span> Schedules</a>
+            <a href="/ticket-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🎟️</span> Tickets</a>
+          </div>
+          <div>
+            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Transactions</p>
+            <a href="/order-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"><span>🛒</span> Orders</a>
+            <a href="/payment-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>💳</span> Payments</a>
+            <a href="/promo-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🏷️</span> Promos</a>
+          </div>
+          <div>
+            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Master Data</p>
+            <a href="/user-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>👥</span> Users</a>
+            <a href="/category-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📂</span> Categories</a>
+            <a href="/artist-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🎤</span> Artists</a>
+            <a href="/venue-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📍</span> Venues</a>
+            <a href="/sponsor-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🤝</span> Sponsors</a>
+          </div>
+        </nav>
 
-        <!-- Search & Filter -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div class="p-4 border-t border-gray-800">
+          <button onclick="handleLogout()" class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium">🚪 Logout</button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col min-h-screen">
+        <header class="bg-white shadow-sm">
+          <div class="px-8 py-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900">Order Management</h2>
+                <p class="text-gray-600 mt-1">View and manage customer orders</p>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="refreshOrders()" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">🔄 Refresh</button>
+              </div>
+            </div>
+
+            <!-- Statistics Bar -->
+            <div class="grid grid-cols-4 gap-4 mb-4">
+              <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p class="text-xs text-gray-600 uppercase font-semibold">Total Orders</p>
+                <p class="text-2xl font-bold text-blue-600" id="stat-total">0</p>
+              </div>
+              <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <p class="text-xs text-gray-600 uppercase font-semibold">Pending</p>
+                <p class="text-2xl font-bold text-yellow-600" id="stat-pending">0</p>
+              </div>
+              <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-xs text-gray-600 uppercase font-semibold">Paid</p>
+                <p class="text-2xl font-bold text-green-600" id="stat-paid">0</p>
+              </div>
+            </div>
+
+            <!-- Filters -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input type="text" id="search-order" placeholder="Search by Order ID or Email..." class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                
-                <select id="filter-status" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                    <option value="">All Status</option>
-                    <option value="PENDING">Pending Payment</option>
-                    <option value="PAID">Paid</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="CANCELLED">Cancelled</option>
-                    <option value="REFUNDED">Refunded</option>
-                </select>
-
-                <input type="date" id="filter-date" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-
-                <button id="btn-search" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">Filter</button>
+              <div class="relative">
+                <input type="text" id="search-input" placeholder="Cari order ID, nama, atau event..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" oninput="filterOrders()" />
+                <div class="absolute left-3 top-2.5 text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+              <select id="filter-status" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" onchange="filterOrders()">
+                <option value="">Semua Status Order</option>
+                <option value="PENDING">Menunggu Pembayaran</option>
+                <option value="PAID">Sudah Dibayar</option>
+                <option value="COMPLETED">Selesai</option>
+                <option value="USED">Digunakan</option>
+                <option value="CANCELLED">Dibatalkan</option>
+              </select>
+              <select id="filter-payment" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" onchange="filterOrders()">
+                <option value="">Semua Status Pembayaran</option>
+                <option value="PENDING">Pending</option>
+                <option value="SUCCESS">Success</option>
+                <option value="FAILED">Failed</option>
+                <option value="EXPIRED">Expired</option>
+              </select>
+              <select id="filter-rows" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" onchange="changeRowsPerPage()">
+                <option value="10">10 per halaman</option>
+                <option value="25">25 per halaman</option>
+                <option value="50">50 per halaman</option>
+                <option value="100">100 per halaman</option>
+              </select>
             </div>
-        </div>
+          </div>
+        </header>
 
-        <!-- Orders Table -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-100 border-b">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Order ID</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Customer</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Event</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Total</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Payment Status</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Order Status</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
-                        <th class="px-6 py-3 text-center text-sm font-semibold text-gray-900">Actions</th>
-                    </tr>
+        <main class="flex-1 p-8">
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <input type="checkbox" id="select-all" onclick="toggleSelectAll()" class="rounded" />
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="sortTable('idPembelian')">Order ID ↕️</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="sortTable('tanggalPembelian')">Date ↕️</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="sortTable('totalHarga')">Amount ↕️</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
                 </thead>
-                <tbody id="orders-table-body" class="divide-y">
-                    <tr class="hover:bg-gray-50">
-                        <td colspan="8" class="px-6 py-8 text-center text-gray-500">
-                            <svg class="w-8 h-8 animate-spin mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </td>
-                    </tr>
+                <tbody class="bg-white divide-y divide-gray-200" id="orders-table-body">
+                  <tr>
+                    <td colspan="9" class="px-6 py-8 text-center text-gray-500">Loading orders...</td>
+                  </tr>
                 </tbody>
-            </table>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mt-6 flex items-center justify-between">
+            <p class="text-sm text-gray-600" id="pagination-info">Menampilkan 0 dari 0 orders</p>
+            <div class="flex gap-2" id="pagination-buttons"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="order-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-800 text-white p-6 flex items-center justify-between">
+          <h3 class="text-2xl font-bold">Order Details</h3>
+          <button onclick="closeOrderModal()" class="text-2xl hover:text-gray-200">✕</button>
         </div>
-            </main>
-
-            <!-- Update Status Modal -->
-            <div id="update-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div class="border-b px-6 py-4 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-gray-900">Update Order Status</h2>
-                <button id="btn-close-update" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <form id="update-status-form" class="p-6 space-y-4">
-                <input type="hidden" id="update-order-id">
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Status</label>
-                    <select id="input-payment-status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="">Select Payment Status</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="SUCCESS">Success</option>
-                        <option value="FAILED">Failed</option>
-                        <option value="EXPIRED">Expired</option>
-                        <option value="REFUNDED">Refunded</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Order Status</label>
-                    <select id="input-order-status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="">Select Order Status</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="CONFIRMED">Confirmed</option>
-                        <option value="COMPLETED">Completed</option>
-                        <option value="CANCELLED">Cancelled</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                    <textarea id="input-notes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
-                </div>
-
-                <div class="flex gap-3 pt-4">
-                    <button type="button" id="btn-cancel-update" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">Update</button>
-                </div>
-            </form>
-            </div>
-            </div>
-
-            <footer id="footer-placeholder"></footer>
+        <div class="p-6" id="order-detail-content">
+          <!-- Content will be populated by JavaScript -->
         </div>
+        <div class="sticky bottom-0 bg-gray-50 p-6 border-t flex gap-2 justify-end">
+          <button onclick="closeOrderModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div id="status-update-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <div class="bg-gradient-to-r from-primary-600 to-primary-800 text-white p-6">
+          <h3 class="text-xl font-bold">Update Order Status</h3>
+        </div>
+        <div class="p-6">
+          <p class="text-gray-700 mb-4">Order #<span id="update-order-id"></span></p>
+
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Order Status</label>
+            <select id="new-order-status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+              <option value="PENDING">Pending</option>
+              <option value="PAID">Paid</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="USED">Used</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Payment Status</label>
+            <select id="new-payment-status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+              <option value="">Keep Current</option>
+              <option value="PENDING">Pending</option>
+              <option value="SUCCESS">Success</option>
+              <option value="FAILED">Failed</option>
+              <option value="EXPIRED">Expired</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Notes (Optional)</label>
+            <textarea id="update-notes" placeholder="Add notes..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 h-20 resize-none"></textarea>
+          </div>
+        </div>
+        <div class="bg-gray-50 p-6 border-t flex gap-2 justify-end">
+          <button onclick="closeStatusModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium">Cancel</button>
+          <button onclick="saveStatusUpdate()" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">Update</button>
+        </div>
+      </div>
     </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/admin.js"></script>
-    <script src="/js/app.js"></script>
-
     <script>
-        let ordersData = [];
-        let filteredOrders = [];
-        let currentOrderId = null;
+      // State management
+      let allOrders = [];
+      let filteredOrders = [];
+      let currentPage = 1;
+      let rowsPerPage = 10;
+      let sortField = 'idPembelian';
+      let sortDirection = 'asc';
+      let selectedOrderId = null;
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.auth.isAuthenticated() || !window.auth.isAdmin()) {
-                window.location.href = '/login.html';
-                return;
-            }
+      window.addEventListener("load", async () => {
+        if (typeof window.admin !== "undefined") window.admin.protectAdminPage();
+        await loadOrders();
+      });
 
-            await loadOrders();
-            initializeEventListeners();
-            updateStats();
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.auth.removeUser();
+          localStorage.removeItem("authToken");
+          window.location.href = "/login.html";
+        }
+      }
+
+      async function loadOrders() {
+        try {
+          console.log("🔄 Loading orders from:", `${window.API_BASE_URL}/orders`);
+          const tbody = document.getElementById("orders-table-body");
+          tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-500">Loading orders...</td></tr>';
+
+          const response = await fetch(`${window.API_BASE_URL}/orders`);
+          if (!response.ok) throw new Error(`API returned status ${response.status}`);
+
+          const result = await response.json();
+          console.log("✅ Orders API response:", result);
+
+          if (result.data && Array.isArray(result.data)) {
+            allOrders = result.data;
+            filteredOrders = [...allOrders];
+            console.log(`✅ Loaded ${allOrders.length} orders successfully`);
+            updateStatistics();
+            displayPage();
+            updatePagination();
+          } else {
+            console.warn("⚠️ No order data in response");
+            tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-orange-500">No orders data available</td></tr>';
+          }
+        } catch (error) {
+          console.error("❌ Error loading orders:", error);
+          document.getElementById("orders-table-body").innerHTML = `<tr><td colspan="9" class="px-6 py-8 text-center text-red-500">Error loading orders: ${error.message}</td></tr>`;
+        }
+      }
+
+      function updateStatistics() {
+        const stats = {
+          total: allOrders.length,
+          pending: allOrders.filter(o => o.status === 'PENDING').length,
+          paid: allOrders.filter(o => o.status === 'PAID').length
+        };
+
+        document.getElementById('stat-total').textContent = stats.total;
+        document.getElementById('stat-pending').textContent = stats.pending;
+        document.getElementById('stat-paid').textContent = stats.paid;
+      }
+
+      function displayPage() {
+        const tbody = document.getElementById("orders-table-body");
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageOrders = filteredOrders.slice(start, end);
+
+        if (pageOrders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-500">No orders found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = pageOrders.map((order) => {
+          const status = order.status || "PENDING";
+          return `
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-6 py-4">
+                <input type="checkbox" class="order-checkbox rounded" data-order-id="${order.idPembelian}" />
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-900">#${order.idPembelian}</td>
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-gray-900">${order.userName || 'Unknown'}</div>
+                <div class="text-xs text-gray-500">ID: ${order.idPengguna || 'N/A'}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-gray-900">${order.userEmail || 'N/A'}</div>
+                <div class="text-xs text-gray-500">${order.userPhone || 'No contact'}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-gray-900">${order.eventName || 'N/A'}</div>
+                <div class="text-xs text-gray-500">${order.ticketType || 'N/A'}</div>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-500">${formatDate(order.tanggalPembelian)}</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                ${formatCurrency(order.totalHarga)}
+                <div class="text-xs text-gray-500">Qty: ${order.jumlah || 1}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex gap-1">
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(status)}">${status}</span>
+                  ${order.statusPembayaran ? `<span class="px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusClass(order.statusPembayaran)}">${order.statusPembayaran}</span>` : ''}
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium">
+                <div class="flex flex-col gap-1">
+                  <button onclick="openOrderModal(${order.idPembelian})" class="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">Detail</button>
+                  <button onclick="openStatusModal(${order.idPembelian})" class="px-3 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition">Update</button>
+                  ${status === 'PENDING' ? `<button onclick="cancelOrder(${order.idPembelian})" class="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition">Cancel</button>` : ''}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function updatePagination() {
+        const totalPages = Math.ceil(filteredOrders.length / rowsPerPage);
+        const start = (currentPage - 1) * rowsPerPage + 1;
+        const end = Math.min(start + rowsPerPage - 1, filteredOrders.length);
+
+        document.getElementById('pagination-info').textContent = `Menampilkan ${start} hingga ${end} dari ${filteredOrders.length} orders`;
+
+        const paginationDiv = document.getElementById('pagination-buttons');
+        paginationDiv.innerHTML = '';
+
+        if (currentPage > 1) {
+          paginationDiv.innerHTML += `<button onclick="goToPage(${currentPage - 1})" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Previous</button>`;
+        }
+
+        for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+          const isActive = i === currentPage;
+          paginationDiv.innerHTML += `<button onclick="goToPage(${i})" class="px-3 py-2 ${isActive ? 'bg-primary-600 text-white' : 'border border-gray-300 hover:bg-gray-50'} rounded-lg">${i}</button>`;
+        }
+
+        if (currentPage < totalPages) {
+          paginationDiv.innerHTML += `<button onclick="goToPage(${currentPage + 1})" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Next</button>`;
+        }
+      }
+
+      function goToPage(page) {
+        currentPage = page;
+        displayPage();
+        updatePagination();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function changeRowsPerPage() {
+        rowsPerPage = parseInt(document.getElementById('filter-rows').value);
+        currentPage = 1;
+        displayPage();
+        updatePagination();
+      }
+
+      function sortTable(field) {
+        if (sortField === field) {
+          sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortField = field;
+          sortDirection = 'asc';
+        }
+
+        filteredOrders.sort((a, b) => {
+          let aVal = a[field];
+          let bVal = b[field];
+
+          if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+          if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+
+          if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+          if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+          return 0;
         });
 
-        // Load orders
-        async function loadOrders() {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/orders`);
-                const result = await response.json();
+        currentPage = 1;
+        displayPage();
+        updatePagination();
+      }
 
-                if (result.success && result.data) {
-                    ordersData = result.data;
-                    filteredOrders = ordersData;
-                    renderTable();
-                }
-            } catch (error) {
-                console.error('Error loading orders:', error);
-                showToast('Failed to load orders', 'error');
+      function filterOrders() {
+        const searchInput = document.getElementById("search-input").value.toLowerCase();
+        const statusFilter = document.getElementById("filter-status").value;
+        const paymentFilter = document.getElementById("filter-payment").value;
+
+        filteredOrders = allOrders.filter((order) => {
+          const searchMatch = !searchInput ||
+            (order.idPembelian && order.idPembelian.toString().includes(searchInput)) ||
+            (order.userName && order.userName.toLowerCase().includes(searchInput)) ||
+            (order.eventName && order.eventName.toLowerCase().includes(searchInput));
+
+          const statusMatch = !statusFilter || order.status === statusFilter;
+          const paymentMatch = !paymentFilter || order.statusPembayaran === paymentFilter;
+
+          return searchMatch && statusMatch && paymentMatch;
+        });
+
+        currentPage = 1;
+        displayPage();
+        updatePagination();
+      }
+
+      function openOrderModal(orderId) {
+        const order = allOrders.find(o => o.idPembelian === orderId);
+        if (!order) return;
+
+        const content = `
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-xs text-gray-600 font-semibold">Order ID</p>
+                <p class="text-lg font-bold text-gray-900">#${order.idPembelian}</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-600 font-semibold">Order Date</p>
+                <p class="text-lg font-bold text-gray-900">${formatDate(order.tanggalPembelian)}</p>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div>
+              <p class="text-sm font-semibold text-gray-900 mb-2">👤 Customer Information</p>
+              <div class="bg-gray-50 p-3 rounded-lg space-y-2">
+                <div><span class="text-gray-600">Name:</span> <span class="font-semibold">${order.userName || 'N/A'}</span></div>
+                <div><span class="text-gray-600">Email:</span> <span class="font-semibold">${order.userEmail || 'N/A'}</span></div>
+                <div><span class="text-gray-600">Phone:</span> <span class="font-semibold">${order.userPhone || 'N/A'}</span></div>
+                <div><span class="text-gray-600">User ID:</span> <span class="font-semibold">${order.idPengguna || 'N/A'}</span></div>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-900 mb-2">🎟️ Event & Ticket Information</p>
+              <div class="bg-gray-50 p-3 rounded-lg space-y-2">
+                <div><span class="text-gray-600">Event:</span> <span class="font-semibold">${order.eventName || 'N/A'}</span></div>
+                <div><span class="text-gray-600">Ticket Type:</span> <span class="font-semibold">${order.ticketType || 'N/A'}</span></div>
+                <div><span class="text-gray-600">Ticket ID:</span> <span class="font-semibold">${order.ticketId || 'N/A'}</span></div>
+                <div><span class="text-gray-600">Quantity:</span> <span class="font-semibold">${order.jumlah || 1}</span></div>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-900 mb-2">💰 Payment Information</p>
+              <div class="bg-gray-50 p-3 rounded-lg space-y-2">
+                <div><span class="text-gray-600">Subtotal:</span> <span class="font-semibold">${formatCurrency(order.subtotal)}</span></div>
+                <div><span class="text-gray-600">Discount:</span> <span class="font-semibold">${formatCurrency(order.discountAmount)}</span></div>
+                <div class="pt-2 border-t"><span class="text-gray-600">Total:</span> <span class="font-bold text-lg">${formatCurrency(order.totalHarga)}</span></div>
+                <div><span class="text-gray-600">Payment Status:</span> <span class="font-semibold px-2 py-1 rounded-full text-xs ${getPaymentStatusClass(order.statusPembayaran)}">${order.statusPembayaran || 'N/A'}</span></div>
+                ${order.tanggalBayar ? `<div><span class="text-gray-600">Paid Date:</span> <span class="font-semibold">${formatDate(order.tanggalBayar)}</span></div>` : ''}
+              </div>
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-900 mb-2">📊 Order Status</p>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <span class="font-semibold px-3 py-1 rounded-full text-sm ${getStatusClass(order.status)}">${order.status || 'PENDING'}</span>
+              </div>
+            </div>
+
+            ${order.qrCode ? `
+              <div>
+                <p class="text-sm font-semibold text-gray-900 mb-2">🔐 QR Code</p>
+                <p class="text-xs text-gray-600 bg-gray-50 p-3 rounded-lg font-mono break-all">${order.qrCode}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        document.getElementById('order-detail-content').innerHTML = content;
+        document.getElementById('order-detail-modal').classList.remove('hidden');
+      }
+
+      function closeOrderModal() {
+        document.getElementById('order-detail-modal').classList.add('hidden');
+      }
+
+      function openStatusModal(orderId) {
+        selectedOrderId = orderId;
+        const order = allOrders.find(o => o.idPembelian === orderId);
+        if (!order) return;
+
+        document.getElementById('update-order-id').textContent = orderId;
+        document.getElementById('new-order-status').value = order.status || 'PENDING';
+        document.getElementById('new-payment-status').value = '';
+        document.getElementById('update-notes').value = '';
+        document.getElementById('status-update-modal').classList.remove('hidden');
+      }
+
+      function closeStatusModal() {
+        document.getElementById('status-update-modal').classList.add('hidden');
+        selectedOrderId = null;
+      }
+
+      async function saveStatusUpdate() {
+        if (!selectedOrderId) {
+          alert('❌ Error: No order selected');
+          return;
+        }
+
+        const newOrderStatus = document.getElementById('new-order-status').value;
+        const newPaymentStatus = document.getElementById('new-payment-status').value;
+
+        // Validasi input
+        if (!newOrderStatus) {
+          alert('❌ Please select an order status');
+          return;
+        }
+
+        try {
+          // Show loading state
+          const updateBtn = event.target;
+          const originalText = updateBtn.textContent;
+          updateBtn.disabled = true;
+          updateBtn.textContent = '⏳ Updating...';
+
+          const body = {
+            orderStatus: newOrderStatus
+          };
+
+          if (newPaymentStatus && newPaymentStatus.trim()) {
+            body.statusPembayaran = newPaymentStatus;
+          }
+
+          console.log('📤 Updating order with data:', body);
+
+          const response = await fetch(`${window.API_BASE_URL}/orders/${selectedOrderId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify(body)
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Failed to update: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (result.success) {
+            console.log('✅ Order updated successfully');
+            alert(`✅ Order #${selectedOrderId} updated successfully`);
+            closeStatusModal();
+            await loadOrders();
+          } else {
+            throw new Error(result.message || 'Update failed');
+          }
+        } catch (error) {
+          console.error('❌ Error updating status:', error);
+          alert(`❌ Error: ${error.message}`);
+        } finally {
+          // Restore button state
+          const updateBtn = event.target;
+          updateBtn.disabled = false;
+          updateBtn.textContent = 'Update';
+        }
+      }
+
+      async function cancelOrder(orderId) {
+        if (!orderId) {
+          alert('❌ Error: No order ID provided');
+          return;
+        }
+
+        if (!confirm(`Are you sure you want to cancel order #${orderId}? This action cannot be undone.`)) {
+          return;
+        }
+
+        try {
+          console.log('📤 Cancelling order:', orderId);
+
+          const response = await fetch(`${window.API_BASE_URL}/orders/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Failed: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          if (result.success) {
+            console.log('✅ Order cancelled successfully');
+            alert(`✅ Order #${orderId} has been cancelled successfully`);
+            await loadOrders();
+          } else {
+            throw new Error(result.message || 'Cancel failed');
+          }
+        } catch (error) {
+          console.error('❌ Error cancelling order:', error);
+          alert(`❌ Error: ${error.message}`);
         }
+      }
 
-        // Update stats
-        function updateStats() {
-            const stats = {
-                total: ordersData.length,
-                pending: ordersData.filter(o => o.orderStatus === 'PENDING').length,
-                completed: ordersData.filter(o => o.orderStatus === 'COMPLETED').length,
-                cancelled: ordersData.filter(o => o.orderStatus === 'CANCELLED').length
-            };
+      function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.order-checkbox');
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+      }
 
-            document.getElementById('stat-total').textContent = stats.total;
-            document.getElementById('stat-pending').textContent = stats.pending;
-            document.getElementById('stat-completed').textContent = stats.completed;
-            document.getElementById('stat-cancelled').textContent = stats.cancelled;
+      function getSelectedOrderIds() {
+        const checkboxes = document.querySelectorAll('.order-checkbox:checked');
+        return Array.from(checkboxes).map(cb => cb.getAttribute('data-order-id'));
+      }
+
+      function refreshOrders() {
+        console.log('🔄 Refreshing orders...');
+        currentPage = 1;
+        loadOrders();
+      }
+
+      // ... existing code...
+
+      function formatDate(dateString) {
+        if (!dateString) return "-";
+        try {
+          const date = new Date(dateString);
+          if (isNaN(date.getTime())) return "-";
+
+          return new Intl.DateTimeFormat("id-ID", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(date);
+        } catch (error) {
+          console.error('Error formatting date:', dateString, error);
+          return "-";
         }
+      }
 
-        // Render table
-        function renderTable() {
-            const tbody = document.getElementById('orders-table-body');
-            tbody.innerHTML = '';
-
-            if (filteredOrders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No orders found</td></tr>';
-                return;
-            }
-
-            filteredOrders.forEach(order => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-                row.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">#${order.idPembelian}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">
-                        <div>${order.user?.nama || 'N/A'}</div>
-                        <div class="text-xs text-gray-500">${order.user?.email || 'N/A'}</div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${order.eventName || 'N/A'}</td>
-                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp ${(order.totalHarga || 0).toLocaleString('id-ID')}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(order.payment?.statusPembayaran)}">
-                            ${order.payment?.statusPembayaran || 'N/A'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getOrderStatusColor(order.status)}">
-                            ${order.status || 'N/A'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${formatDate(order.tanggalPembelian)}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="openUpdateModal(${order.idPembelian})" class="text-primary-600 hover:text-primary-800">Update</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+      function formatCurrency(amount) {
+        try {
+          const num = parseFloat(amount) || 0;
+          return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+          }).format(num);
+        } catch (error) {
+          console.error('Error formatting currency:', amount, error);
+          return "Rp 0";
         }
+      }
 
-        function getPaymentStatusColor(status) {
-            const colors = {
-                'PENDING': 'bg-yellow-100 text-yellow-800',
-                'SUCCESS': 'bg-green-100 text-green-800',
-                'FAILED': 'bg-red-100 text-red-800',
-                'EXPIRED': 'bg-gray-100 text-gray-800',
-                'REFUNDED': 'bg-orange-100 text-orange-800'
-            };
-            return colors[status] || 'bg-gray-100 text-gray-800';
-        }
+      function getStatusClass(status) {
+        const classes = {
+          PAID: "bg-green-100 text-green-800",
+          PENDING: "bg-yellow-100 text-yellow-800",
+          CANCELLED: "bg-red-100 text-red-800",
+          COMPLETED: "bg-blue-100 text-blue-800",
+          USED: "bg-purple-100 text-purple-800",
+          EXPIRED: "bg-gray-100 text-gray-800",
+          REFUNDED: "bg-orange-100 text-orange-800",
+        };
+        return classes[status] || "bg-gray-100 text-gray-800";
+      }
 
-        function getOrderStatusColor(status) {
-            const colors = {
-                'PENDING': 'bg-yellow-100 text-yellow-800',
-                'CONFIRMED': 'bg-blue-100 text-blue-800',
-                'COMPLETED': 'bg-green-100 text-green-800',
-                'CANCELLED': 'bg-red-100 text-red-800'
-            };
-            return colors[status] || 'bg-gray-100 text-gray-800';
-        }
-
-        // Open update modal
-        function openUpdateModal(orderId) {
-            const order = ordersData.find(o => o.idPembelian === orderId);
-            if (!order) return;
-
-            currentOrderId = orderId;
-            document.getElementById('update-order-id').value = orderId;
-            document.getElementById('input-payment-status').value = order.payment?.statusPembayaran || '';
-            document.getElementById('input-order-status').value = order.status || '';
-            document.getElementById('input-notes').value = '';
-
-            document.getElementById('update-modal').classList.remove('hidden');
-        }
-
-        // Initialize event listeners
-        function initializeEventListeners() {
-            document.getElementById('btn-close-update').addEventListener('click', closeUpdateModal);
-            document.getElementById('btn-cancel-update').addEventListener('click', closeUpdateModal);
-
-            document.getElementById('update-status-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await updateOrderStatus();
-            });
-
-            document.getElementById('btn-search').addEventListener('click', applyFilters);
-            document.getElementById('search-order').addEventListener('input', applyFilters);
-            document.getElementById('filter-status').addEventListener('change', applyFilters);
-            document.getElementById('filter-date').addEventListener('change', applyFilters);
-
-            document.getElementById('search-order').addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') applyFilters();
-            });
-        }
-
-        // Apply filters
-        function applyFilters() {
-            const searchQuery = document.getElementById('search-order').value.toLowerCase();
-            const statusFilter = document.getElementById('filter-status').value;
-            const dateFilter = document.getElementById('filter-date').value;
-
-            filteredOrders = ordersData.filter(order => {
-                const matchesSearch = !searchQuery || 
-                    order.idPembelian.toString().includes(searchQuery) ||
-                    (order.user?.email || '').toLowerCase().includes(searchQuery);
-                
-                const matchesStatus = !statusFilter || order.status === statusFilter;
-                
-                const matchesDate = !dateFilter || formatDate(order.tanggalPembelian) === dateFilter;
-
-                return matchesSearch && matchesStatus && matchesDate;
-            });
-
-            renderTable();
-        }
-
-        // Update order status
-        async function updateOrderStatus() {
-            const formData = {
-                statusPembayaran: document.getElementById('input-payment-status').value,
-                orderStatus: document.getElementById('input-order-status').value
-            };
-
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/orders/${currentOrderId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast('Order status updated successfully', 'success');
-                    closeUpdateModal();
-                    await loadOrders();
-                    updateStats();
-                } else {
-                    showToast(result.message || 'Failed to update order', 'error');
-                }
-            } catch (error) {
-                console.error('Error updating order:', error);
-                showToast('An error occurred', 'error');
-            }
-        }
-
-        function closeUpdateModal() {
-            document.getElementById('update-modal').classList.add('hidden');
-            currentOrderId = null;
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function showToast(message, type = 'info') {
-            console.log(`[${type.toUpperCase()}] ${message}`);
-            alert(message);
-        }
+      function getPaymentStatusClass(status) {
+        const classes = {
+          SUCCESS: "bg-green-100 text-green-800",
+          PENDING: "bg-yellow-100 text-yellow-800",
+          FAILED: "bg-red-100 text-red-800",
+          EXPIRED: "bg-orange-100 text-orange-800",
+          REFUNDED: "bg-blue-100 text-blue-800",
+        };
+        return classes[status] || "bg-gray-100 text-gray-800";
+      }
     </script>
-</body>
-</html>

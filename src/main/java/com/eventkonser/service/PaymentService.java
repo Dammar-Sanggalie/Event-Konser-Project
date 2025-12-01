@@ -71,9 +71,9 @@ public class PaymentService {
      * Mock payment instantly mark order sebagai PAID tanpa external service call
      */
     @Transactional
-    public java.util.Map<String, Object> processPaymentWithMock(Long orderId) {
+    public java.util.Map<String, Object> processPaymentWithMock(Long orderId, String paymentMethod) {
         // Delegate ke MockPaymentService yang handle instant success
-        return mockPaymentService.processMockPayment(orderId);
+        return mockPaymentService.processMockPayment(orderId, paymentMethod);
     }
     
     @Transactional

@@ -1,374 +1,470 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venue Management - Event Konser</title>
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Venue Management - Event Konser Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            '50': '#f0f9ff',
-                            '100': '#e0f2fe',
-                            '200': '#bae6fd',
-                            '300': '#7dd3fc',
-                            '400': '#38bdf8',
-                            '500': '#0ea5e9',
-                            '600': '#0284c7',
-                            '700': '#0369a1',
-                            '800': '#075985',
-                            '900': '#0c4a6e'
-                        },
-                        secondary: '#4b5563',
-                        accent: '#ec4899'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+              secondary: "#4b5563",
+              accent: "#ec4899",
+            },
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
     </script>
-
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-
-<body class="bg-gray-50 font-sans antialiased" data-page="venue-management">
-    
-    <div class="flex">
-        <div id="admin-sidebar-placeholder"></div>
-        
-        <div class="flex-1 flex flex-col">
-            <header id="navbar-placeholder"></header>
-
-            <main class="flex-1 min-h-screen bg-gray-50 pb-16">
-                <div class="container mx-auto max-w-7xl px-4 py-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50 font-sans antialiased" data-page="venue-management">
+    <div class="flex min-h-screen">
+      <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
+        <div class="p-6 border-b border-gray-800">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold"
+            >
+              ⚡
+            </div>
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Venue Management</h1>
-                <p class="text-gray-600 mt-1">Kelola venue untuk event Anda</p>
+              <h1 class="text-lg font-bold">EventKonser</h1>
+              <p class="text-xs text-gray-400">Admin Panel</p>
             </div>
-            <button id="btn-add-venue" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold hover:shadow-lg transition">
-                + Add Venue
-            </button>
+          </div>
         </div>
 
-        <!-- Search & Filter -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-            <div class="flex gap-4">
-                <input type="text" id="search-venue" placeholder="Search venue by name..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                <button class="px-6 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition">Search</button>
-            </div>
-        </div>
+        <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Main Menu
+            </p>
+            <a
+              href="/admin-dashboard.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📊</span> Dashboard</a
+            >
+            <a
+              href="/analytics.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📈</span> Analytics</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Event Management
+            </p>
+            <a
+              href="/event-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📅</span> Events</a
+            >
+            <a
+              href="/schedule-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🕒</span> Schedules</a
+            >
+            <a
+              href="/ticket-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🎟️</span> Tickets</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Transactions
+            </p>
+            <a
+              href="/order-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🛒</span> Orders</a
+            >
+            <a
+              href="/payment-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>💳</span> Payments</a
+            >
+            <a
+              href="/promo-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🏷️</span> Promos</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Master Data
+            </p>
+            <a
+              href="/user-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>👥</span> Users</a
+            >
+            <a
+              href="/category-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📂</span> Categories</a
+            >
+            <a
+              href="/artist-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🎤</span> Artists</a
+            >
+            <a
+              href="/venue-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"
+              ><span>📍</span> Venues</a
+            >
+            <a
+              href="/sponsor-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🤝</span> Sponsors</a
+            >
+          </div>
+        </nav>
 
-        <!-- Venues Table -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-100 border-b">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">ID</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Nama Venue</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Kota</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Kapasitas</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
-                        <th class="px-6 py-3 text-center text-sm font-semibold text-gray-900">Actions</th>
-                    </tr>
+        <div class="p-4 border-t border-gray-800">
+          <button
+            onclick="handleLogout()"
+            class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium"
+          >
+            🚪 Logout
+          </button>
+        </div>
+      </aside>
+
+      <div class="flex-1 flex flex-col min-h-screen">
+        <header class="bg-white shadow-sm">
+          <div class="px-8 py-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900">
+                  Venue Management
+                </h2>
+                <p class="text-gray-600 mt-1">Manage event venues</p>
+              </div>
+              <button
+                onclick="showModal()"
+                class="px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-md"
+              >
+                + Add New Venue
+              </button>
+            </div>
+          </div>
+        </header>
+        <main class="flex-1 p-8">
+          <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      ID
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Name
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      City
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Capacity
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Actions
+                    </th>
+                  </tr>
                 </thead>
-                <tbody id="venues-table-body" class="divide-y">
-                    <!-- Data akan diisi dari API -->
-                    <tr class="hover:bg-gray-50">
-                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                            <div class="flex justify-center">
-                                <svg class="w-8 h-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody class="divide-y divide-gray-200" id="venues-table-body">
+                  <tr>
+                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                      Loading...
+                    </td>
+                  </tr>
                 </tbody>
-            </table>
-        </div>
-    </main>
-
-    <!-- Add/Edit Venue Modal -->
-    <div id="venue-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-                <h2 id="modal-title" class="text-2xl font-bold text-gray-900">Add Venue</h2>
-                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+              </table>
             </div>
+          </div>
+        </main>
+      </div>
+    </div>
 
-            <form id="venue-form" class="p-6 space-y-4">
-                <input type="hidden" id="venue-id">
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Venue *</label>
-                        <input type="text" id="input-nama-venue" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kota *</label>
-                        <input type="text" id="input-kota" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kapasitas *</label>
-                        <input type="number" id="input-kapasitas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" min="0" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-                        <select id="input-status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" required>
-                            <option value="">Select Status</option>
-                            <option value="AVAILABLE">Available</option>
-                            <option value="UNAVAILABLE">Unavailable</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                    <textarea id="input-alamat" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fasilitas</label>
-                    <textarea id="input-fasilitas" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Pisahkan dengan koma"></textarea>
-                </div>
-
-                <div class="flex gap-3 pt-4">
-                    <button type="button" id="btn-cancel" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">Save</button>
-                </div>
-            </form>
+    <div
+      id="venue-modal"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-xl max-w-md w-full">
+        <div class="p-6 border-b border-gray-200">
+          <h3 class="text-xl font-bold text-gray-900" id="modal-title">
+            Add New Venue
+          </h3>
         </div>
-                </div>
-            </main>
-
-            <footer id="footer-placeholder"></footer>
-        </div>
+        <form id="venue-form" class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Venue Name *</label
+            ><input
+              type="text"
+              id="namaVenue"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >City *</label
+            ><input
+              type="text"
+              id="kota"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Address *</label
+            ><textarea
+              id="alamat"
+              rows="2"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+            ></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Capacity</label
+            ><input
+              type="number"
+              id="kapasitas"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+            />
+          </div>
+          <div class="flex gap-4 pt-4">
+            <button
+              type="submit"
+              class="flex-1 px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition"
+            >
+              <span id="submit-btn-text">Create</span></button
+            ><button
+              type="button"
+              onclick="hideModal()"
+              class="flex-1 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/admin.js"></script>
-    <script src="/js/app.js"></script>
-
     <script>
-        let venuesData = [];
-        let isEditMode = false;
-        let currentVenueId = null;
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.auth.isAuthenticated() || !window.auth.isAdmin()) {
-                window.location.href = '/login.html';
-                return;
-            }
-
-            await loadVenues();
-            initializeEventListeners();
-        });
-
-        // Load venues
-        async function loadVenues() {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/venues`);
-                const result = await response.json();
-
-                if (result.success && result.data) {
-                    venuesData = result.data;
-                    renderTable();
-                }
-            } catch (error) {
-                console.error('Error loading venues:', error);
-                showToast('Failed to load venues', 'error');
-            }
+      let editingId = null;
+      window.addEventListener("load", async () => {
+        if (typeof window.admin !== "undefined")
+          window.admin.protectAdminPage();
+        await loadVenues();
+        document
+          .getElementById("venue-form")
+          .addEventListener("submit", handleSubmit);
+      });
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.auth.removeUser();
+          localStorage.removeItem("authToken");
+          window.location.href = "/login.html";
         }
+      }
+      async function loadVenues() {
+        try {
+          console.log("Loading venues from:", `${window.API_BASE_URL}/venues`);
+          const response = await fetch(`${window.API_BASE_URL}/venues`);
+          console.log("Venues response status:", response.status);
 
-        // Render table
-        function renderTable() {
-            const tbody = document.getElementById('venues-table-body');
-            tbody.innerHTML = '';
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
 
-            if (venuesData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No venues found</td></tr>';
-                return;
-            }
+          const result = await response.json();
+          console.log("Venues data received:", result);
 
-            venuesData.forEach(venue => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-                row.innerHTML = `
-                    <td class="px-6 py-4 text-sm text-gray-900">${venue.idVenue}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900 font-medium">${venue.namaVenue}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${venue.kota || '-'}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${venue.kapasitas?.toLocaleString('id-ID') || '-'}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${venue.status === 'AVAILABLE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                            ${venue.status || 'N/A'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="editVenue(${venue.idVenue})" class="text-primary-600 hover:text-primary-800 mr-3">Edit</button>
-                        <button onclick="deleteVenue(${venue.idVenue})" class="text-red-600 hover:text-red-800">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+          const tbody = document.getElementById("venues-table-body");
+          if (result.success && result.data && result.data.length > 0) {
+            console.log("Rendering", result.data.length, "venues");
+            tbody.innerHTML = result.data
+              .map(
+                (venue) =>
+                  `<tr class="hover:bg-gray-50 transition"><td class="px-6 py-4 text-sm text-gray-500">#${
+                    venue.idVenue
+                  }</td><td class="px-6 py-4 font-medium text-gray-900">${
+                    venue.namaVenue
+                  }</td><td class="px-6 py-4 text-sm text-gray-500">${
+                    venue.kota
+                  }</td><td class="px-6 py-4 text-sm text-gray-500">${
+                    venue.kapasitas || "-"
+                  }</td><td class="px-6 py-4 text-sm"><button onclick="editVenue(${
+                    venue.idVenue
+                  })" class="text-primary-600 hover:text-primary-700 font-medium mr-3">Edit</button><button onclick="deleteVenue(${
+                    venue.idVenue
+                  })" class="text-red-600 hover:text-red-700 font-medium">Delete</button></td></tr>`
+              )
+              .join("");
+          } else {
+            console.warn(
+              "No venues found or invalid response structure:",
+              result
+            );
+            tbody.innerHTML =
+              '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No venues found</td></tr>';
+          }
+        } catch (error) {
+          console.error("Error loading venues:", error);
+          document.getElementById("venues-table-body").innerHTML =
+            '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading venues: ' +
+            error.message +
+            "</td></tr>";
         }
+      }
+      function showModal() {
+        editingId = null;
+        document.getElementById("modal-title").textContent = "Add New Venue";
+        document.getElementById("submit-btn-text").textContent = "Create";
+        document.getElementById("venue-form").reset();
+        document.getElementById("venue-modal").classList.remove("hidden");
+      }
+      function hideModal() {
+        document.getElementById("venue-modal").classList.add("hidden");
+      }
+      async function editVenue(id) {
+        editingId = id;
+        document.getElementById("modal-title").textContent = "Edit Venue";
+        document.getElementById("submit-btn-text").textContent = "Update";
+        try {
+          console.log("Loading venue by ID:", id);
+          const response = await fetch(`${window.API_BASE_URL}/venues/${id}`);
+          console.log("Edit venue response status:", response.status);
 
-        // Edit venue
-        function editVenue(venueId) {
-            const venue = venuesData.find(v => v.idVenue === venueId);
-            if (!venue) return;
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
 
-            isEditMode = true;
-            currentVenueId = venueId;
+          const result = await response.json();
+          console.log("Venue data:", result);
 
-            document.getElementById('modal-title').textContent = 'Edit Venue';
-            document.getElementById('venue-id').value = venue.idVenue;
-            document.getElementById('input-nama-venue').value = venue.namaVenue;
-            document.getElementById('input-kota').value = venue.kota || '';
-            document.getElementById('input-kapasitas').value = venue.kapasitas || '';
-            document.getElementById('input-status').value = venue.status || '';
-            document.getElementById('input-alamat').value = venue.alamat || '';
-            document.getElementById('input-fasilitas').value = venue.fasilitas || '';
-
-            document.getElementById('venue-modal').classList.remove('hidden');
+          if (result.success && result.data) {
+            document.getElementById("namaVenue").value = result.data.namaVenue;
+            document.getElementById("kota").value = result.data.kota;
+            document.getElementById("alamat").value = result.data.alamat;
+            document.getElementById("kapasitas").value =
+              result.data.kapasitas || "";
+            document.getElementById("venue-modal").classList.remove("hidden");
+          }
+        } catch (error) {
+          console.error("Error loading venue:", error);
+          alert("Error loading venue: " + error.message);
         }
+      }
+      async function deleteVenue(id) {
+        if (!confirm("Delete this venue?")) return;
+        try {
+          console.log("Deleting venue:", id);
+          const token = localStorage.getItem("authToken");
+          const response = await fetch(`${window.API_BASE_URL}/venues/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("Delete response status:", response.status);
 
-        // Delete venue
-        async function deleteVenue(venueId) {
-            if (!confirm('Are you sure you want to delete this venue?')) return;
-
-            try {
-                const token = localStorage.getItem('authToken');
-                const response = await fetch(`${window.API_BASE_URL}/venues/${venueId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast('Venue deleted successfully', 'success');
-                    await loadVenues();
-                } else {
-                    showToast(result.message || 'Failed to delete venue', 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting venue:', error);
-                showToast('An error occurred', 'error');
-            }
+          if (response.ok) {
+            alert("Deleted successfully");
+            loadVenues();
+          } else {
+            alert("Failed to delete");
+          }
+        } catch (error) {
+          console.error("Error deleting venue:", error);
+          alert("Error deleting: " + error.message);
         }
+      }
+      async function handleSubmit(e) {
+        e.preventDefault();
+        const data = {
+          namaVenue: document.getElementById("namaVenue").value,
+          kota: document.getElementById("kota").value,
+          alamat: document.getElementById("alamat").value,
+          kapasitas: document.getElementById("kapasitas").value,
+        };
+        try {
+          const url = editingId
+            ? `${window.API_BASE_URL}/venues/${editingId}`
+            : `${window.API_BASE_URL}/venues`;
+          const method = editingId ? "PUT" : "POST";
+          const token = localStorage.getItem("authToken");
+          console.log("Submitting venue:", method, url, data);
 
-        // Initialize event listeners
-        function initializeEventListeners() {
-            document.getElementById('btn-add-venue').addEventListener('click', () => {
-                isEditMode = false;
-                document.getElementById('modal-title').textContent = 'Add Venue';
-                document.getElementById('venue-form').reset();
-                document.getElementById('venue-id').value = '';
-                document.getElementById('venue-modal').classList.remove('hidden');
-            });
+          const response = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+          });
+          console.log("Submit response status:", response.status);
 
-            document.getElementById('btn-close-modal').addEventListener('click', closeModal);
-            document.getElementById('btn-cancel').addEventListener('click', closeModal);
-
-            document.getElementById('venue-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await saveVenue();
-            });
-
-            document.getElementById('search-venue').addEventListener('keyup', (e) => {
-                const query = e.target.value.toLowerCase();
-                const filtered = venuesData.filter(v => v.namaVenue.toLowerCase().includes(query));
-                venuesData = filtered;
-                renderTable();
-                loadVenues();
-            });
+          if (response.ok) {
+            alert("Saved successfully");
+            hideModal();
+            loadVenues();
+          } else {
+            const error = await response.text();
+            console.error("Save error response:", error);
+            alert("Failed to save: " + error);
+          }
+        } catch (error) {
+          console.error("Error saving venue:", error);
+          alert("Error saving: " + error.message);
         }
-
-        // Save venue
-        async function saveVenue() {
-            const formData = {
-                namaVenue: document.getElementById('input-nama-venue').value,
-                kota: document.getElementById('input-kota').value,
-                kapasitas: parseInt(document.getElementById('input-kapasitas').value),
-                status: document.getElementById('input-status').value,
-                alamat: document.getElementById('input-alamat').value,
-                fasilitas: document.getElementById('input-fasilitas').value
-            };
-
-            try {
-                const token = localStorage.getItem('authToken');
-                let response;
-                if (isEditMode) {
-                    response = await fetch(`${window.API_BASE_URL}/venues/${currentVenueId}`, {
-                        method: 'PUT',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(formData)
-                    });
-                } else {
-                    response = await fetch(`${window.API_BASE_URL}/venues`, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(formData)
-                    });
-                }
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast(isEditMode ? 'Venue updated successfully' : 'Venue added successfully', 'success');
-                    closeModal();
-                    await loadVenues();
-                } else {
-                    showToast(result.message || 'Failed to save venue', 'error');
-                }
-            } catch (error) {
-                console.error('Error saving venue:', error);
-                showToast('An error occurred', 'error');
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('venue-modal').classList.add('hidden');
-            isEditMode = false;
-            currentVenueId = null;
-        }
-
-        function showToast(message, type = 'info') {
-            // Simple toast - dapat diganti dengan toast component yang lebih kompleks
-            console.log(`[${type.toUpperCase()}] ${message}`);
-            alert(message);
-        }
+      }
     </script>
-</body>
+  </body>
 </html>

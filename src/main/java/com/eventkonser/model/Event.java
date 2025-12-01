@@ -1,8 +1,9 @@
 package com.eventkonser.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -60,17 +61,17 @@ public class Event {
     private Venue venue;
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     @Fetch(FetchMode.SUBSELECT)
     private List<Ticket> tickets = new ArrayList<>();
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     @Fetch(FetchMode.SUBSELECT)
     private List<Schedule> schedules = new ArrayList<>();
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     @Fetch(FetchMode.SUBSELECT)
     private List<Sponsor> sponsors = new ArrayList<>();
     
@@ -82,6 +83,10 @@ public class Event {
     )
     @Fetch(FetchMode.SUBSELECT)
     private List<Artist> artists = new ArrayList<>();
+    
+    @Transient
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private Double startingPrice;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

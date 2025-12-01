@@ -3,8 +3,10 @@ package com.eventkonser.controller;
 import com.eventkonser.model.Event;
 import com.eventkonser.model.EventStatus;
 import com.eventkonser.service.EventService;
+import com.eventkonser.service.TicketService;
 import com.eventkonser.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,7 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/events")
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ import java.util.List;
 public class EventController {
     
     private final EventService eventService;
+    private final TicketService ticketService;
     
     /**
      * GET /api/events - Get all events
@@ -36,6 +40,10 @@ public class EventController {
     @GetMapping("/upcoming")
     public ResponseEntity<ApiResponse<List<Event>>> getUpcomingEvents() {
         List<Event> events = eventService.getUpcomingEvents();
+        // Debug log the first event's startingPrice
+        if (!events.isEmpty()) {
+            log.debug("First event startingPrice: {}", events.get(0).getStartingPrice());
+        }
         return ResponseEntity.ok(ApiResponse.success("Success", events));
     }
     
@@ -45,6 +53,10 @@ public class EventController {
     @GetMapping("/popular")
     public ResponseEntity<ApiResponse<List<Event>>> getPopularEvents() {
         List<Event> events = eventService.getPopularEvents();
+        // Debug log the first event's startingPrice
+        if (!events.isEmpty()) {
+            log.debug("First popular event startingPrice: {}", events.get(0).getStartingPrice());
+        }
         return ResponseEntity.ok(ApiResponse.success("Success", events));
     }
     
@@ -64,6 +76,18 @@ public class EventController {
     public ResponseEntity<ApiResponse<Event>> getEventDetails(@PathVariable Long id) {
         Event event = eventService.getEventWithDetails(id);
         return ResponseEntity.ok(ApiResponse.success("Success", event));
+    }
+    
+    /**
+     * GET /api/events/{id}/starting-price - Get starting price for an event
+     */
+    @GetMapping("/{id}/starting-price")
+    public ResponseEntity<ApiResponse<Double>> getStartingPrice(@PathVariable Long id) {
+        Double startingPrice = ticketService.getStartingPriceByEvent(id);
+        if (startingPrice == null) {
+            return ResponseEntity.ok(ApiResponse.success("No tickets available", 0.0));
+        }
+        return ResponseEntity.ok(ApiResponse.success("Success", startingPrice));
     }
     
     /**

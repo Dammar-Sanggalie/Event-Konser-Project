@@ -20,7 +20,7 @@ public class Schedule {
     @Column(name = "id_jadwal")
     private Long idJadwal;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_event", nullable = false)
     @JsonBackReference
     private Event event;

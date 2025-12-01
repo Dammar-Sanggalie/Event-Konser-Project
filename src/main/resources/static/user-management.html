@@ -1,417 +1,381 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management - Event Konser</title>
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management - Event Konser Admin</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            '50': '#f0f9ff',
-                            '100': '#e0f2fe',
-                            '200': '#bae6fd',
-                            '300': '#7dd3fc',
-                            '400': '#38bdf8',
-                            '500': '#0ea5e9',
-                            '600': '#0284c7',
-                            '700': '#0369a1',
-                            '800': '#075985',
-                            '900': '#0c4a6e'
-                        },
-                        secondary: '#4b5563',
-                        accent: '#ec4899'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+              secondary: "#4b5563",
+              accent: "#ec4899",
+            },
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-
-<body class="bg-gray-50 font-sans antialiased" data-page="user-management">
-    <div class="flex">
-        <div id="admin-sidebar-placeholder"></div>
-        <div class="flex-1 flex flex-col">
-            <header id="navbar-placeholder"></header>
-
-            <main class="flex-1 min-h-screen pb-16 container mx-auto max-w-7xl px-4 py-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
+  <body class="bg-gray-50 font-sans antialiased" data-page="user-management">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
+        <div class="p-6 border-b border-gray-800">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold"
+            >
+              ⚡
+            </div>
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
-                <p class="text-gray-600 mt-1">Kelola pengguna dan kontrol akses</p>
+              <h1 class="text-lg font-bold">EventKonser</h1>
+              <p class="text-xs text-gray-400">Admin Panel</p>
             </div>
+          </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-primary-500">
-                <p class="text-gray-600 text-sm">Total Users</p>
-                <p id="stat-total" class="text-2xl font-bold text-gray-900">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
-                <p class="text-gray-600 text-sm">Admins</p>
-                <p id="stat-admins" class="text-2xl font-bold text-gray-900">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
-                <p class="text-gray-600 text-sm">Active</p>
-                <p id="stat-active" class="text-2xl font-bold text-gray-900">0</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-red-500">
-                <p class="text-gray-600 text-sm">Banned</p>
-                <p id="stat-banned" class="text-2xl font-bold text-gray-900">0</p>
-            </div>
-        </div>
+        <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Main Menu
+            </p>
+            <a
+              href="/admin-dashboard.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📊</span> Dashboard</a
+            >
+            <a
+              href="/analytics.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📈</span> Analytics</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Event Management
+            </p>
+            <a
+              href="/event-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📅</span> Events</a
+            >
+            <a
+              href="/schedule-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🕒</span> Schedules</a
+            >
+            <a
+              href="/ticket-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🎟️</span> Tickets</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Transactions
+            </p>
+            <a
+              href="/order-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🛒</span> Orders</a
+            >
+            <a
+              href="/payment-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>💳</span> Payments</a
+            >
+            <a
+              href="/promo-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🏷️</span> Promos</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Master Data
+            </p>
+            <a
+              href="/user-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"
+              ><span>👥</span> Users</a
+            >
+            <a
+              href="/category-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📂</span> Categories</a
+            >
+            <a
+              href="/artist-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🎤</span> Artists</a
+            >
+            <a
+              href="/venue-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📍</span> Venues</a
+            >
+            <a
+              href="/sponsor-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🤝</span> Sponsors</a
+            >
+          </div>
+        </nav>
 
-        <!-- Search & Filter -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-            <div class="flex gap-4 flex-wrap">
-                <input type="text" id="search-user" placeholder="Search by name or email..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" min-width="200">
-                <select id="filter-role" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <div class="p-4 border-t border-gray-800">
+          <button
+            onclick="handleLogout()"
+            class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium"
+          >
+            🚪 Logout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col min-h-screen">
+        <header class="bg-white shadow-sm">
+          <div class="px-8 py-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-bold text-gray-900">
+                  User Management
+                </h2>
+                <p class="text-gray-600 mt-1">Manage system users and roles</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main class="flex-1 p-8">
+          <div class="max-w-7xl mx-auto">
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Search</label
+                  ><input
+                    type="text"
+                    id="search-input"
+                    placeholder="Search users..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Role</label
+                  ><select
+                    id="filter-role"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  >
                     <option value="">All Roles</option>
-                    <option value="ADMIN">Admin</option>
                     <option value="USER">User</option>
-                    <option value="ORGANIZER">Organizer</option>
-                </select>
-                <button class="px-6 py-2 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition">Search</button>
+                    <option value="ADMIN">Admin</option>
+                  </select>
+                </div>
+              </div>
             </div>
-        </div>
 
-        <!-- Users Table -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-100 border-b">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">User ID</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Email</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Role</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Join Date</th>
-                        <th class="px-6 py-3 text-center text-sm font-semibold text-gray-900">Actions</th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        User
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Email
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Phone
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Role
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Joined
+                      </th>
                     </tr>
-                </thead>
-                <tbody id="users-table-body" class="divide-y">
-                    <tr class="hover:bg-gray-50">
-                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                            <svg class="w-8 h-8 animate-spin mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </td>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200" id="users-table-body">
+                    <tr>
+                      <td
+                        colspan="5"
+                        class="px-6 py-8 text-center text-gray-500"
+                      >
+                        Loading...
+                      </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-            </main>
-
-            <!-- User Detail Modal -->
-            <div id="user-detail-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-gray-900">User Details</h2>
-                <button id="btn-close-detail-modal" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+                  </tbody>
+                </table>
+              </div>
             </div>
-
-            <div class="p-6 space-y-6">
-                <!-- User Info -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600">Name</p>
-                            <p id="detail-nama" class="text-gray-900 font-medium">-</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Email</p>
-                            <p id="detail-email" class="text-gray-900 font-medium">-</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Phone</p>
-                            <p id="detail-phone" class="text-gray-900 font-medium">-</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Join Date</p>
-                            <p id="detail-join-date" class="text-gray-900 font-medium">-</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Account Control -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Account Control</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-medium text-gray-900">Role</p>
-                                <p class="text-sm text-gray-600">Current: <span id="detail-role-current">User</span></p>
-                            </div>
-                            <select id="detail-role-select" class="px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="USER">User</option>
-                                <option value="ADMIN">Admin</option>
-                            </select>
-                        </div>
-
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                                <p class="font-medium text-gray-900">Status</p>
-                                <p class="text-sm text-gray-600">Current: <span id="detail-status-current">Active</span></p>
-                            </div>
-                            <button id="btn-toggle-status" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Ban User</button>
-                        </div>
-
-                        <div class="flex gap-2 pt-4">
-                            <button id="btn-save-changes" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">Save Changes</button>
-                            <button id="btn-close-detail" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-            </div>
-
-            <footer id="footer-placeholder"></footer>
-        </div>
+          </div>
+        </main>
+      </div>
     </div>
 
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/admin.js"></script>
-    <script src="/js/app.js"></script>
-
     <script>
-        let usersData = [];
-        let currentDetailUserId = null;
-        let currentDetailUserRole = null;
-        let currentDetailUserStatus = null;
+      let allUsers = [];
+      window.addEventListener("load", async () => {
+        if (typeof window.admin !== "undefined")
+          window.admin.protectAdminPage();
+        await loadUsers();
+        document
+          .getElementById("search-input")
+          .addEventListener("input", filterUsers);
+        document
+          .getElementById("filter-role")
+          .addEventListener("change", filterUsers);
+      });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.auth.isAuthenticated() || !window.auth.isAdmin()) {
-                window.location.href = '/login.html';
-                return;
-            }
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.auth.removeUser();
+          localStorage.removeItem("authToken");
+          window.location.href = "/login.html";
+        }
+      }
 
-            await loadUsers();
-            initializeEventListeners();
+      async function loadUsers() {
+        try {
+          console.log("🔄 Loading users from:", `${window.API_BASE_URL}/users`);
+
+          const tbody = document.getElementById("users-table-body");
+          tbody.innerHTML =
+            '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading users...</td></tr>';
+
+          const response = await fetch(`${window.API_BASE_URL}/users`);
+
+          if (!response.ok) {
+            throw new Error(`API returned status ${response.status}`);
+          }
+
+          const result = await response.json();
+          console.log("✅ Users API response:", result);
+
+          if (result.data && Array.isArray(result.data)) {
+            allUsers = result.data;
+            console.log(`✅ Loaded ${allUsers.length} users successfully`);
+            displayUsers(allUsers);
+          } else {
+            console.warn("⚠️ No user data in response, result:", result);
+            tbody.innerHTML =
+              '<tr><td colspan="5" class="px-6 py-8 text-center text-orange-500">No users data available</td></tr>';
+          }
+        } catch (error) {
+          console.error("❌ Error loading users:", error);
+          console.error("Stack trace:", error.stack);
+          document.getElementById(
+            "users-table-body"
+          ).innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading users: ${error.message}</td></tr>`;
+        }
+      }
+
+      function displayUsers(users) {
+        const tbody = document.getElementById("users-table-body");
+        if (!users || users.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No users found</td></tr>';
+          return;
+        }
+        tbody.innerHTML = users
+          .map(
+            (user) =>
+              `<tr class="hover:bg-gray-50 transition"><td class="px-6 py-4"><div class="flex items-center"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent flex items-center justify-center text-white font-bold">${(
+                user.nama ||
+                user.name ||
+                "U"
+              )
+                .charAt(0)
+                .toUpperCase()}</div><div class="ml-3"><div class="font-medium text-gray-900">${
+                user.nama || user.name || ""
+              }</div></div></div></td><td class="px-6 py-4 text-sm text-gray-500">${
+                user.email || "-"
+              }</td><td class="px-6 py-4 text-sm text-gray-500">${
+                user.noTelepon || user.noHp || "-"
+              }</td><td class="px-6 py-4"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full ${
+                user.role === "ADMIN"
+                  ? "bg-purple-100 text-purple-800"
+                  : "bg-gray-100 text-gray-800"
+              }">${
+                user.role || "USER"
+              }</span></td><td class="px-6 py-4 text-sm text-gray-500">${formatDate(
+                user.createdAt
+              )}</td></tr>`
+          )
+          .join("");
+      }
+
+      function filterUsers() {
+        const search = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const role = document.getElementById("filter-role").value;
+        let filtered = allUsers.filter((user) => {
+          const matchSearch =
+            !search ||
+            (user.nama && user.nama.toLowerCase().includes(search)) ||
+            (user.email && user.email.toLowerCase().includes(search));
+          const matchRole = !role || user.role === role;
+          return matchSearch && matchRole;
         });
+        displayUsers(filtered);
+      }
 
-        // Load users
-        async function loadUsers() {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/users`);
-                const result = await response.json();
-
-                if (result.success && result.data) {
-                    usersData = result.data;
-                    updateStats();
-                    renderTable();
-                }
-            } catch (error) {
-                console.error('Error loading users:', error);
-                showToast('Failed to load users', 'error');
-            }
-        }
-
-        // Update statistics
-        function updateStats() {
-            const totalUsers = usersData.length;
-            const admins = usersData.filter(u => u.role === 'ADMIN').length;
-            const organizers = usersData.filter(u => u.role === 'ORGANIZER').length;
-            const regularUsers = usersData.filter(u => u.role === 'USER').length;
-
-            document.getElementById('stat-total').textContent = totalUsers;
-            document.getElementById('stat-admins').textContent = admins;
-            document.getElementById('stat-active').textContent = organizers;
-            document.getElementById('stat-banned').textContent = regularUsers;
-        }
-
-        // Render table
-        function renderTable() {
-            const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = '';
-
-            if (usersData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No users found</td></tr>';
-                return;
-            }
-
-            usersData.forEach(user => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-                const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('id-ID') : 'N/A';
-
-                row.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-medium text-primary-600">#${user.idPengguna}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${user.nama}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${user.email}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${user.role === 'ADMIN' ? 'bg-blue-100 text-blue-800' : user.role === 'ORGANIZER' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">
-                            ${user.role}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            ACTIVE
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${joinDate}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="viewUserDetail(${user.idPengguna})" class="text-primary-600 hover:text-primary-800">View</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // View user detail
-        function viewUserDetail(userId) {
-            const user = usersData.find(u => u.idPengguna === userId);
-            if (!user) return;
-
-            currentDetailUserId = userId;
-            currentDetailUserRole = user.role;
-
-            const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('id-ID') : 'N/A';
-
-            document.getElementById('detail-nama').textContent = user.nama;
-            document.getElementById('detail-email').textContent = user.email;
-            document.getElementById('detail-phone').textContent = user.noHp || '-';
-            document.getElementById('detail-join-date').textContent = joinDate;
-            document.getElementById('detail-role-current').textContent = user.role;
-            document.getElementById('detail-role-select').value = user.role;
-            document.getElementById('detail-status-current').textContent = 'ACTIVE';
-
-            const banBtn = document.getElementById('btn-toggle-status');
-            banBtn.textContent = 'Change Role';
-            banBtn.className = 'px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition';
-
-            document.getElementById('user-detail-modal').classList.remove('hidden');
-        }
-
-        // Initialize event listeners
-        function initializeEventListeners() {
-            document.getElementById('btn-close-detail-modal').addEventListener('click', closeDetailModal);
-            document.getElementById('btn-close-detail').addEventListener('click', closeDetailModal);
-
-            document.getElementById('btn-toggle-status').addEventListener('click', () => {
-                const newRole = document.getElementById('detail-role-select').value;
-                updateUserRole(currentDetailUserId, newRole);
-            });
-
-            document.getElementById('btn-save-changes').addEventListener('click', async () => {
-                await saveUserChanges();
-            });
-
-            // Search and filter
-            document.getElementById('search-user').addEventListener('keyup', applyFilters);
-            document.getElementById('filter-role').addEventListener('change', applyFilters);
-        }
-
-        // Update user role
-        async function updateUserRole(userId, newRole) {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/users/${userId}/role`, {
-                    method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${window.auth.getToken()}`
-                    },
-                    body: JSON.stringify({ role: newRole })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast('User role updated successfully', 'success');
-                    closeDetailModal();
-                    await loadUsers();
-                } else {
-                    showToast(result.message || 'Failed to update user', 'error');
-                }
-            } catch (error) {
-                console.error('Error updating user:', error);
-                showToast('An error occurred', 'error');
-            }
-        }
-
-        // Apply filters
-        function applyFilters() {
-            const searchQuery = document.getElementById('search-user').value.toLowerCase();
-            const roleFilter = document.getElementById('filter-role').value;
-
-            const filteredUsers = usersData.filter(user => {
-                const matchesSearch = !searchQuery || 
-                    user.nama.toLowerCase().includes(searchQuery) ||
-                    user.email.toLowerCase().includes(searchQuery);
-                const matchesRole = !roleFilter || user.role === roleFilter;
-
-                return matchesSearch && matchesRole;
-            });
-
-            // Re-render table with filtered data
-            const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = '';
-
-            if (filteredUsers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No users found</td></tr>';
-                return;
-            }
-
-            filteredUsers.forEach(user => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-                const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('id-ID') : 'N/A';
-
-                row.innerHTML = `
-                    <td class="px-6 py-4 text-sm font-medium text-primary-600">#${user.idPengguna}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${user.nama}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${user.email}</td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${user.role === 'ADMIN' ? 'bg-blue-100 text-blue-800' : user.role === 'ORGANIZER' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}">
-                            ${user.role}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            ACTIVE
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${joinDate}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="viewUserDetail(${user.idPengguna})" class="text-primary-600 hover:text-primary-800">View</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function closeDetailModal() {
-            document.getElementById('user-detail-modal').classList.add('hidden');
-            currentDetailUserId = null;
-        }
-
-        function showToast(message, type = 'info') {
-            console.log(`[${type.toUpperCase()}] ${message}`);
-            alert(message);
-        }
+      function formatDate(dateString) {
+        if (!dateString) return "-";
+        return new Intl.DateTimeFormat("id-ID", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }).format(new Date(dateString));
+      }
     </script>
-</body>
+  </body>
 </html>

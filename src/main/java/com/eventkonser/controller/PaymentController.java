@@ -5,7 +5,7 @@ import com.eventkonser.service.PaymentService;
 import com.eventkonser.service.MockPaymentService;
 import com.eventkonser.dto.ApiResponse;
 import com.eventkonser.dto.PaymentRequest;
-import com.eventkonser.dto.PaymentDetailResponse;
+
 import com.eventkonser.dto.PaymentAnalyticsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -64,9 +64,11 @@ public class PaymentController {
      * Mock payment instantly mark order sebagai PAID
      */
     @PostMapping("/process-mock")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> processMockPayment(@RequestParam Long orderId) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> processMockPayment(
+            @RequestParam Long orderId,
+            @RequestParam(required = false) String paymentMethod) {
         try {
-            Map<String, Object> result = paymentService.processPaymentWithMock(orderId);
+            Map<String, Object> result = paymentService.processPaymentWithMock(orderId, paymentMethod);
             return ResponseEntity.ok(ApiResponse.success("Payment processed successfully", result));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
