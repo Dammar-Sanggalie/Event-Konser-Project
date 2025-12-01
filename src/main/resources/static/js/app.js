@@ -195,8 +195,10 @@ function addLogoutButtonListeners() {
         try { updateNavbarAuthState(); } catch (e) {}
         try { updateFooterAuthState(); } catch (e) {}
         try { updateCTAAuthState(); } catch (e) {}
-        alert('Anda telah logout.');
-        window.location.href = '/login.html'; // Arahkan ke halaman login
+        showAppToast('Anda telah logout.', 'success');
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 1000);
     };
 
     if (logoutDesktop) {
@@ -742,8 +744,10 @@ async function initializeEventDetailPage() {
                  if (window.auth.isAuthenticated()) {
                      window.location.href = `/booking.html?eventId=${eventId}`; // Arahkan ke halaman booking
                  } else {
-                     alert('Please login to book tickets.');
-                     window.location.href = '/login.html'; // Arahkan ke login
+                     showAppToast('Please login to book tickets.', 'warning');
+                     setTimeout(() => {
+                         window.location.href = '/login.html';
+                     }, 1000);
                  }
              });
         } else {
@@ -860,8 +864,10 @@ async function setupWishlistButton(button, eventId) {
     // Tambah event listener
     button.addEventListener('click', async () => {
         if (!window.auth.isAuthenticated()) {
-            alert('Please login to add to wishlist.');
-            window.location.href = '/login.html';
+            showAppToast('Please login to add to wishlist.', 'warning');
+            setTimeout(() => {
+                window.location.href = '/login.html';
+            }, 1000);
             return;
         }
         
@@ -930,7 +936,7 @@ function setupShareButton(button, eventData) {
              } else {
                  // Fallback for browsers that don't support Web Share API
                  await navigator.clipboard.writeText(shareData.url);
-                 alert('Link copied to clipboard!');
+                 showAppToast('Link copied to clipboard!', 'success');
              }
          } catch (err) {
              console.error('Share failed:', err);
@@ -1026,4 +1032,61 @@ function updateCTAAuthState() {
     if (ctaExplore) {
         ctaExplore.style.display = '';
     }
+}
+
+/**
+ * Show app-wide toast notification (used across pages)
+ */
+function showAppToast(message, type = 'info') {
+    let toastContainer = document.getElementById('app-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'app-toast-container';
+        toastContainer.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999; max-width: 400px;';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    let borderColor = '#3b82f6';
+    let icon = 'ℹ';
+    
+    if (type === 'success') {
+        icon = '✓';
+        borderColor = '#10b981';
+    } else if (type === 'error') {
+        icon = '✕';
+        borderColor = '#ef4444';
+    } else if (type === 'warning') {
+        icon = '⚠';
+        borderColor = '#f59e0b';
+    }
+    
+    toast.style.cssText = `
+        background: white;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.3s ease-out;
+        min-width: 300px;
+        border-left: 4px solid ${borderColor};
+    `;
+    
+    toast.innerHTML = `
+        <div style="font-size: 18px; font-weight: bold; color: ${borderColor};">${icon}</div>
+        <div style="flex: 1;">
+            <p style="margin: 0; color: #111; font-size: 14px; font-weight: 500;">${message}</p>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }

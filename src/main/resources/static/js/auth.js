@@ -138,8 +138,10 @@ async function handleLoginSubmit(event) {
                 role: response.role
             });
             
-            alert('Login berhasil!');
-            window.location.href = '/'; 
+            showToast('Login berhasil! Mengalihkan...', 'success');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500); 
         } else {
             throw new Error('Invalid login response');
         }
@@ -262,11 +264,15 @@ async function handleRegisterSubmit(event) {
                 role: response.role
             });
             
-            alert('Registrasi berhasil! Anda sudah login.');
-            window.location.href = '/'; 
+            showToast('Registrasi berhasil! Anda sudah login.', 'success');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
         } else {
-            alert('Registrasi berhasil! Silakan login.');
-            window.location.href = '/login.html'; 
+            showToast('Registrasi berhasil! Silakan login.', 'success');
+            setTimeout(() => {
+                window.location.href = '/login.html';
+            }, 1500); 
         }
 
     } catch (error) {
@@ -279,9 +285,66 @@ async function handleRegisterSubmit(event) {
             document.getElementById('email-error').classList.remove('hidden');
             emailInput.classList.add('border-red-500');
         } else {
-            alert("Registrasi Gagal: " + error.message);
+            showToast('Registrasi Gagal: ' + error.message, 'error');
         }
     }
+}
+
+/**
+ * Show toast notification
+ */
+function showToast(message, type = 'info') {
+    let toastContainer = document.getElementById('auth-toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'auth-toast-container';
+        toastContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    let borderColor = '#3b82f6';
+    let icon = 'ℹ';
+    
+    if (type === 'success') {
+        icon = '✓';
+        borderColor = '#10b981';
+    } else if (type === 'error') {
+        icon = '✕';
+        borderColor = '#ef4444';
+    } else if (type === 'warning') {
+        icon = '⚠';
+        borderColor = '#f59e0b';
+    }
+    
+    toast.style.cssText = `
+        background: white;
+        padding: 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.3s ease-out;
+        min-width: 300px;
+        border-left: 4px solid ${borderColor};
+    `;
+    
+    toast.innerHTML = `
+        <div style="font-size: 18px; font-weight: bold; color: ${borderColor};">${icon}</div>
+        <div style="flex: 1;">
+            <p style="margin: 0; color: #111; font-size: 14px; font-weight: 500;">${message}</p>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
 /**
