@@ -138,7 +138,7 @@ async function handleLoginSubmit(event) {
                 role: response.role
             });
             
-            showToast('Login berhasil! Mengalihkan...', 'success');
+            showToast('Login berhasil', 'success');
             setTimeout(() => {
                 window.location.href = '/';
             }, 1500); 
