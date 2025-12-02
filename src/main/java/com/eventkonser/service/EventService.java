@@ -174,6 +174,12 @@ public class EventService {
         event.setBannerUrl(eventDetails.getBannerUrl());
         event.setPosterUrl(eventDetails.getPosterUrl());
         event.setStatus(eventDetails.getStatus());
+        
+        log.info("✅ Updated event: ID={}, Kategori={}, Venue={}", 
+            id, 
+            eventDetails.getKategori() != null ? eventDetails.getKategori().getIdKategori() : "null",
+            eventDetails.getVenue() != null ? eventDetails.getVenue().getIdVenue() : "null");
+        
         return eventRepository.save(event);
     }
     

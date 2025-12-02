@@ -1,7 +1,7 @@
 package com.eventkonser.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class Schedule {
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_event", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "schedules", "tickets", "sponsors"})
     private Event event;
     
     @Column(nullable = false)
