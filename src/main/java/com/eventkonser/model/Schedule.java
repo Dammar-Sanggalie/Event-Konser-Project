@@ -30,7 +30,7 @@ public class Schedule {
     
     @Column(name = "jam_mulai", nullable = false)
     private LocalTime jamMulai;
-    
+
     @Column(name = "jam_selesai", nullable = false)
     private LocalTime jamSelesai;
     

@@ -2,6 +2,7 @@ package com.eventkonser.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,10 @@ public class Sponsor {
     @JsonBackReference
     private Event event;
     
+    @Transient
+    @JsonProperty("idEvent")
+    private Long idEvent;
+    
     @Column(name = "nama_sponsor", nullable = false, length = 100)
     private String namaSponsor;
     
@@ -34,4 +39,11 @@ public class Sponsor {
     
     @Column(name = "logo_url")
     private String logoUrl;
+    
+    @PostLoad
+    public void postLoad() {
+        if (this.event != null) {
+            this.idEvent = this.event.getIdEvent();
+        }
+    }
 }

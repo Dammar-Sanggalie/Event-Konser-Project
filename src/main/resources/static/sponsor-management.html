@@ -178,6 +178,52 @@
         </header>
         <main class="flex-1 p-8">
           <div class="max-w-7xl mx-auto">
+            <!-- Search & Filter -->
+            <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Search by Name</label
+                  >
+                  <input
+                    type="text"
+                    id="search-sponsor"
+                    placeholder="Search sponsor..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    onkeyup="filterSponsors()"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Filter by Event</label
+                  >
+                  <select
+                    id="filter-event"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    onchange="filterSponsors()"
+                  >
+                    <option value="">All Events</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Filter by Tier</label
+                  >
+                  <select
+                    id="filter-tier"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    onchange="filterSponsors()"
+                  >
+                    <option value="">All Tiers</option>
+                    <option value="PLATINUM">Platinum</option>
+                    <option value="GOLD">Gold</option>
+                    <option value="SILVER">Silver</option>
+                    <option value="BRONZE">Bronze</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
               <table class="w-full">
                 <thead class="bg-gray-50">
@@ -195,7 +241,17 @@
                     <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Logo
+                      Event
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Tier
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Contact
                     </th>
                     <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -214,7 +270,7 @@
                   id="sponsors-table-body"
                 >
                   <tr>
-                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                    <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                       Loading...
                     </td>
                   </tr>
@@ -230,13 +286,29 @@
       id="sponsor-modal"
       class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
     >
-      <div class="bg-white rounded-xl max-w-md w-full">
-        <div class="p-6 border-b border-gray-200">
+      <div
+        class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div class="p-6 border-b border-gray-200 sticky top-0 bg-white">
           <h3 class="text-xl font-bold text-gray-900" id="modal-title">
             Add New Sponsor
           </h3>
         </div>
         <form id="sponsor-form" class="p-6 space-y-4">
+          <input type="hidden" id="sponsorId" />
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Event *</label
+            ><select
+              id="idEvent"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+            >
+              <option value="">Select Event</option>
+            </select>
+          </div>
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Sponsor Name *</label
@@ -247,6 +319,35 @@
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
             />
           </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Tier (Jenis Sponsor) *</label
+              ><select
+                id="jenisSponsor"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              >
+                <option value="">Select Tier</option>
+                <option value="PLATINUM">Platinum</option>
+                <option value="GOLD">Gold</option>
+                <option value="SILVER">Silver</option>
+                <option value="BRONZE">Bronze</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Contact Person</label
+              ><input
+                type="text"
+                id="kontak"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+              />
+            </div>
+          </div>
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Logo URL</label
@@ -256,15 +357,7 @@
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
             />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Website URL</label
-            ><input
-              type="url"
-              id="websiteUrl"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-            />
-          </div>
+
           <div class="flex gap-4 pt-4">
             <button
               type="submit"
@@ -288,14 +381,20 @@
     <script src="/js/admin.js"></script>
     <script>
       let editingId = null;
+      let sponsorsData = [];
+      let eventsData = [];
+      let displayedSponsors = [];
+
       window.addEventListener("load", async () => {
         if (typeof window.admin !== "undefined")
           window.admin.protectAdminPage();
+        await loadEvents();
         await loadSponsors();
         document
           .getElementById("sponsor-form")
           .addEventListener("submit", handleSubmit);
       });
+
       function handleLogout() {
         if (confirm("Are you sure you want to logout?")) {
           window.auth.removeUser();
@@ -303,6 +402,96 @@
           window.location.href = "/login.html";
         }
       }
+
+      async function loadEvents() {
+        try {
+          console.log(
+            "🔄 Loading events from:",
+            `${window.API_BASE_URL}/events`
+          );
+          const response = await fetch(`${window.API_BASE_URL}/events`);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const result = await response.json();
+          console.log("📨 Events response:", result);
+
+          if (result.success && result.data && result.data.length > 0) {
+            eventsData = result.data;
+            console.log("✅ Events loaded:", eventsData.length, "events");
+
+            const eventSelect = document.getElementById("idEvent");
+            eventSelect.innerHTML = '<option value="">Select Event</option>';
+            eventsData.forEach((event) => {
+              const option = document.createElement("option");
+              option.value = event.idEvent;
+              option.textContent = event.namaEvent;
+              eventSelect.appendChild(option);
+              console.log(
+                "  ✓ Added event:",
+                event.namaEvent,
+                "(id:",
+                event.idEvent + ")"
+              );
+            });
+
+            // Load filter events
+            const filterEvent = document.getElementById("filter-event");
+            if (filterEvent) {
+              filterEvent.innerHTML = '<option value="">All Events</option>';
+              eventsData.forEach((event) => {
+                const option = document.createElement("option");
+                option.value = event.idEvent;
+                option.textContent = event.namaEvent;
+                filterEvent.appendChild(option);
+              });
+            }
+          } else {
+            console.warn("⚠️ No events data in response");
+          }
+        } catch (error) {
+          console.error("❌ Error loading events:", error);
+        }
+      }
+
+      function getEventName(eventIdOrSponsor) {
+        // Handle both eventId (number) and sponsor object with nested event
+        let eventId = eventIdOrSponsor;
+
+        // If it's an object with event property, extract eventId from nested event
+        if (typeof eventIdOrSponsor === "object" && eventIdOrSponsor !== null) {
+          if (eventIdOrSponsor.event && eventIdOrSponsor.event.idEvent) {
+            eventId = eventIdOrSponsor.event.idEvent;
+          } else if (
+            eventIdOrSponsor.event &&
+            typeof eventIdOrSponsor.event === "number"
+          ) {
+            eventId = eventIdOrSponsor.event;
+          } else if (eventIdOrSponsor.idEvent) {
+            eventId = eventIdOrSponsor.idEvent;
+          }
+        }
+
+        console.log(
+          "🔍 getEventName - searching for eventId:",
+          eventId,
+          "in",
+          eventsData.length,
+          "events"
+        );
+        const event = eventsData.find((e) => e.idEvent == eventId);
+
+        if (event) {
+          console.log("✓ Found event:", event.namaEvent);
+          return event.namaEvent;
+        }
+
+        console.log("✗ Event not found for ID:", eventId);
+        return "Unknown Event";
+      }
+
       async function loadSponsors() {
         try {
           console.log(
@@ -310,98 +499,169 @@
             `${window.API_BASE_URL}/sponsors`
           );
           const response = await fetch(`${window.API_BASE_URL}/sponsors`);
-          console.log("Sponsors response status:", response.status);
-
-          if (!response.ok) {
+          if (!response.ok)
             throw new Error(`HTTP error! status: ${response.status}`);
-          }
 
           const result = await response.json();
-          console.log("Sponsors data received:", result);
+          console.log("📨 Sponsors response:", result);
 
-          const tbody = document.getElementById("sponsors-table-body");
-          if (result.success && result.data && result.data.length > 0) {
-            console.log("Rendering", result.data.length, "sponsors");
-            tbody.innerHTML = result.data
-              .map(
-                (sponsor) =>
-                  `<tr class="hover:bg-gray-50 transition"><td class="px-6 py-4 text-sm text-gray-500">#${
-                    sponsor.idSponsor
-                  }</td><td class="px-6 py-4 font-medium text-gray-900">${
-                    sponsor.namaSponsor
-                  }</td><td class="px-6 py-4 text-sm text-gray-500"><img src="${
-                    sponsor.logoUrl || "https://via.placeholder.com/50"
-                  }" class="h-8 w-auto object-contain"></td><td class="px-6 py-4 text-sm text-blue-600 hover:underline"><a href="${
-                    sponsor.websiteUrl
-                  }" target="_blank">${
-                    sponsor.websiteUrl || "-"
-                  }</a></td><td class="px-6 py-4 text-sm"><button onclick="editSponsor(${
-                    sponsor.idSponsor
-                  })" class="text-primary-600 hover:text-primary-700 font-medium mr-3">Edit</button><button onclick="deleteSponsor(${
-                    sponsor.idSponsor
-                  })" class="text-red-600 hover:text-red-700 font-medium">Delete</button></td></tr>`
-              )
-              .join("");
+          if (result.success && result.data) {
+            sponsorsData = result.data;
+            displayedSponsors = result.data;
+
+            // Debug: Log first sponsor structure
+            if (sponsorsData.length > 0) {
+              console.log("📋 First sponsor structure:", sponsorsData[0]);
+              console.log("  - idEvent:", sponsorsData[0].idEvent);
+              console.log("  - event object:", sponsorsData[0].event);
+            }
+
+            renderTable();
           } else {
-            console.warn(
-              "No sponsors found or invalid response structure:",
-              result
-            );
-            tbody.innerHTML =
-              '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No sponsors found</td></tr>';
+            document.getElementById("sponsors-table-body").innerHTML =
+              '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No sponsors found</td></tr>';
           }
         } catch (error) {
           console.error("Error loading sponsors:", error);
           document.getElementById("sponsors-table-body").innerHTML =
-            '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading sponsors: ' +
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading sponsors: ' +
             error.message +
             "</td></tr>";
         }
       }
+
+      function renderTable() {
+        const tbody = document.getElementById("sponsors-table-body");
+        if (!displayedSponsors || displayedSponsors.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No sponsors found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = displayedSponsors
+          .map(
+            (sponsor) => `
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-6 py-4 text-sm text-gray-500">#${
+                sponsor.idSponsor
+              }</td>
+              <td class="px-6 py-4 font-medium text-gray-900">${
+                sponsor.namaSponsor
+              }</td>
+              <td class="px-6 py-4 text-sm text-gray-600">${getEventName(
+                sponsor
+              )}</td>
+              <td class="px-6 py-4 text-sm">
+                <span class="px-3 py-1 rounded-full text-xs font-medium ${getTierColor(
+                  sponsor.jenisSponsor
+                )}">
+                  ${sponsor.jenisSponsor || "-"}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-600">
+                <div>${sponsor.kontak || "-"}</div>
+                <div class="text-xs text-gray-500">${sponsor.email || "-"}</div>
+              </td>
+              <td class="px-6 py-4 text-sm text-blue-600 hover:underline">
+                <a href="${sponsor.website || "#"}" target="_blank">
+                  ${
+                    sponsor.website
+                      ? sponsor.website.substring(0, 20) + "..."
+                      : "-"
+                  }
+                </a>
+              </td>
+              <td class="px-6 py-4 text-sm">
+                <button onclick="editSponsor(${
+                  sponsor.idSponsor
+                })" class="text-primary-600 hover:text-primary-700 font-medium mr-3">Edit</button>
+                <button onclick="deleteSponsor(${
+                  sponsor.idSponsor
+                })" class="text-red-600 hover:text-red-700 font-medium">Delete</button>
+              </td>
+            </tr>`
+          )
+          .join("");
+      }
+
+      function getTierColor(tier) {
+        const colors = {
+          PLATINUM: "bg-slate-300 text-slate-900",
+          GOLD: "bg-yellow-200 text-yellow-900",
+          SILVER: "bg-gray-300 text-gray-900",
+          BRONZE: "bg-orange-200 text-orange-900",
+        };
+        return colors[tier] || "bg-gray-100 text-gray-800";
+      }
+
+      function filterSponsors() {
+        const searchText = document
+          .getElementById("search-sponsor")
+          .value.toLowerCase();
+        const eventFilter = document.getElementById("filter-event").value;
+        const tierFilter = document.getElementById("filter-tier").value;
+
+        displayedSponsors = sponsorsData.filter((sponsor) => {
+          const matchSearch =
+            !searchText ||
+            sponsor.namaSponsor.toLowerCase().includes(searchText) ||
+            (sponsor.kontak &&
+              sponsor.kontak.toLowerCase().includes(searchText));
+          const matchEvent = !eventFilter || sponsor.idEvent == eventFilter;
+          const matchTier = !tierFilter || sponsor.jenisSponsor === tierFilter;
+
+          return matchSearch && matchEvent && matchTier;
+        });
+
+        renderTable();
+      }
+
       function showModal() {
+        // Check if events are loaded
+        const eventSelect = document.getElementById("idEvent");
+        if (eventSelect.options.length <= 1) {
+          alert(
+            "❌ Events not loaded yet. Please wait a moment and try again."
+          );
+          return;
+        }
+
         editingId = null;
         document.getElementById("modal-title").textContent = "Add New Sponsor";
         document.getElementById("submit-btn-text").textContent = "Create";
         document.getElementById("sponsor-form").reset();
+        document.getElementById("sponsorId").value = "";
         document.getElementById("sponsor-modal").classList.remove("hidden");
       }
+
       function hideModal() {
         document.getElementById("sponsor-modal").classList.add("hidden");
       }
-      async function editSponsor(id) {
+
+      function editSponsor(id) {
         editingId = id;
         document.getElementById("modal-title").textContent = "Edit Sponsor";
         document.getElementById("submit-btn-text").textContent = "Update";
-        try {
-          console.log("Loading sponsor by ID:", id);
-          const response = await fetch(`${window.API_BASE_URL}/sponsors/${id}`);
-          console.log("Edit sponsor response status:", response.status);
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const result = await response.json();
-          console.log("Sponsor data:", result);
-
-          if (result.success && result.data) {
-            document.getElementById("namaSponsor").value =
-              result.data.namaSponsor;
-            document.getElementById("logoUrl").value =
-              result.data.logoUrl || "";
-            document.getElementById("websiteUrl").value =
-              result.data.websiteUrl || "";
-            document.getElementById("sponsor-modal").classList.remove("hidden");
-          }
-        } catch (error) {
-          console.error("Error loading sponsor:", error);
-          alert("Error loading sponsor: " + error.message);
+        const sponsor = sponsorsData.find((s) => s.idSponsor === id);
+        if (!sponsor) {
+          alert("Sponsor not found");
+          return;
         }
+
+        document.getElementById("sponsorId").value = sponsor.idSponsor;
+        document.getElementById("idEvent").value = sponsor.idEvent;
+        document.getElementById("namaSponsor").value = sponsor.namaSponsor;
+        document.getElementById("jenisSponsor").value = sponsor.jenisSponsor;
+        document.getElementById("kontak").value = sponsor.kontak || "";
+        document.getElementById("logoUrl").value = sponsor.logoUrl || "";
+
+        document.getElementById("sponsor-modal").classList.remove("hidden");
       }
+
       async function deleteSponsor(id) {
         if (!confirm("Delete this sponsor?")) return;
         try {
-          console.log("Deleting sponsor:", id);
           const token = localStorage.getItem("authToken");
           const response = await fetch(
             `${window.API_BASE_URL}/sponsors/${id}`,
@@ -410,33 +670,67 @@
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log("Delete response status:", response.status);
 
           if (response.ok) {
-            alert("Deleted successfully");
+            alert("✅ Deleted successfully");
             loadSponsors();
           } else {
-            alert("Failed to delete");
+            alert("❌ Failed to delete");
           }
         } catch (error) {
           console.error("Error deleting sponsor:", error);
-          alert("Error deleting: " + error.message);
+          alert("❌ Error: " + error.message);
         }
       }
+
       async function handleSubmit(e) {
         e.preventDefault();
+
+        const idEventEl = document.getElementById("idEvent");
+        const namaSponsorEl = document.getElementById("namaSponsor");
+        const jenisSponsorEl = document.getElementById("jenisSponsor");
+
+        console.log("📋 Form values:");
+        console.log("  - idEvent element:", idEventEl);
+        console.log("  - idEvent value:", idEventEl.value);
+        console.log("  - namaSponsor:", namaSponsorEl.value);
+        console.log("  - jenisSponsor:", jenisSponsorEl.value);
+
+        const idEvent = idEventEl.value;
+        if (!idEvent || idEvent === "") {
+          alert("❌ Please select an event first");
+          return;
+        }
+
+        const namaSponsor = namaSponsorEl.value;
+        const jenisSponsor = jenisSponsorEl.value;
+        if (!namaSponsor || !jenisSponsor) {
+          alert("❌ Nama Sponsor and Jenis Sponsor are required");
+          return;
+        }
+
+        // Only send fields that exist in database
         const data = {
-          namaSponsor: document.getElementById("namaSponsor").value,
-          logoUrl: document.getElementById("logoUrl").value,
-          websiteUrl: document.getElementById("websiteUrl").value,
+          idEvent: parseInt(idEvent), // Convert to number/Long
+          namaSponsor: namaSponsor,
+          jenisSponsor: jenisSponsor,
+          kontak: document.getElementById("kontak").value || "",
+          logoUrl: document.getElementById("logoUrl").value || "",
         };
+
+        console.log("📤 Data to submit:", data);
+        console.log("  - idEvent type:", typeof data.idEvent);
+        console.log("  - idEvent value:", data.idEvent);
+
         try {
           const url = editingId
             ? `${window.API_BASE_URL}/sponsors/${editingId}`
             : `${window.API_BASE_URL}/sponsors`;
           const method = editingId ? "PUT" : "POST";
           const token = localStorage.getItem("authToken");
-          console.log("Submitting sponsor:", method, url, data);
+
+          console.log("🚀 Submitting:", method, url);
+          console.log("📦 Request body:", JSON.stringify(data));
 
           const response = await fetch(url, {
             method: method,
@@ -446,20 +740,24 @@
             },
             body: JSON.stringify(data),
           });
-          console.log("Submit response status:", response.status);
+
+          console.log("✅ Response status:", response.status);
+          const responseData = await response.json();
+          console.log("📨 Response data:", responseData);
 
           if (response.ok) {
-            alert("Saved successfully");
+            alert("✅ Saved successfully");
             hideModal();
-            loadSponsors();
+            await loadSponsors();
           } else {
-            const error = await response.text();
-            console.error("Save error response:", error);
-            alert("Failed to save: " + error);
+            console.error("❌ Save error:", responseData);
+            alert(
+              "❌ Failed to save: " + (responseData.message || "Unknown error")
+            );
           }
         } catch (error) {
-          console.error("Error saving sponsor:", error);
-          alert("Error saving: " + error.message);
+          console.error("❌ Error saving sponsor:", error);
+          alert("❌ Error: " + error.message);
         }
       }
     </script>

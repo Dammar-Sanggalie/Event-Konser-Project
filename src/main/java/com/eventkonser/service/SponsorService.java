@@ -1,7 +1,10 @@
 package com.eventkonser.service;
 
 import com.eventkonser.model.Sponsor;
+import com.eventkonser.model.Event;
+import com.eventkonser.dto.SponsorDTO;
 import com.eventkonser.repository.SponsorRepository;
+import com.eventkonser.repository.EventRepository;
 import com.eventkonser.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import java.util.List;
 public class SponsorService {
     
     private final SponsorRepository sponsorRepository;
+    private final EventRepository eventRepository;
     
     @Transactional(readOnly = true)
     public List<Sponsor> getSponsorsByEvent(Long eventId) {
@@ -42,6 +46,43 @@ public class SponsorService {
     
     @Transactional
     public Sponsor createSponsor(Sponsor sponsor) {
+        return sponsorRepository.save(sponsor);
+    }
+
+    @Transactional
+    public Sponsor createSponsorFromDTO(SponsorDTO dto) {
+        if (dto.getIdEvent() == null) {
+            throw new IllegalArgumentException("idEvent tidak boleh null");
+        }
+        
+        Event event = eventRepository.findById(dto.getIdEvent())
+            .orElseThrow(() -> new ResourceNotFoundException("Event tidak ditemukan dengan ID: " + dto.getIdEvent()));
+        
+        Sponsor sponsor = new Sponsor();
+        sponsor.setEvent(event);
+        sponsor.setNamaSponsor(dto.getNamaSponsor());
+        sponsor.setKontak(dto.getKontak());
+        sponsor.setJenisSponsor(dto.getJenisSponsor());
+        sponsor.setLogoUrl(dto.getLogoUrl());
+        
+        return sponsorRepository.save(sponsor);
+    }
+
+    @Transactional
+    public Sponsor updateSponsorFromDTO(Long id, SponsorDTO dto) {
+        Sponsor sponsor = getSponsorById(id);
+        
+        if (dto.getIdEvent() != null) {
+            Event event = eventRepository.findById(dto.getIdEvent())
+                .orElseThrow(() -> new ResourceNotFoundException("Event tidak ditemukan dengan ID: " + dto.getIdEvent()));
+            sponsor.setEvent(event);
+        }
+        
+        sponsor.setNamaSponsor(dto.getNamaSponsor());
+        sponsor.setKontak(dto.getKontak());
+        sponsor.setJenisSponsor(dto.getJenisSponsor());
+        sponsor.setLogoUrl(dto.getLogoUrl());
+        
         return sponsorRepository.save(sponsor);
     }
     

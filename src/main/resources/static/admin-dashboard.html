@@ -1,325 +1,526 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard - Event Konser</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            '50': '#f0f9ff',
-                            '100': '#e0f2fe',
-                            '200': '#bae6fd',
-                            '300': '#7dd3fc',
-                            '400': '#38bdf8',
-                            '500': '#0ea5e9',
-                            '600': '#0284c7',
-                            '700': '#0369a1',
-                            '800': '#075985',
-                            '900': '#0c4a6e'
-                        },
-                        secondary: '#4b5563',
-                        accent: '#ec4899'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
 
-<body class="bg-gray-50 font-sans antialiased" data-page="admin">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+              },
+              secondary: "#4b5563",
+              accent: "#ec4899",
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gray-50 font-sans antialiased" data-page="admin">
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
-            <div class="p-6 border-b border-gray-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold">
-                        ⚡
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold">EventKonser</h1>
-                        <p class="text-xs text-gray-400">Admin Panel</p>
-                    </div>
-                </div>
+      <!-- Sidebar -->
+      <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
+        <div class="p-6 border-b border-gray-800">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold"
+            >
+              ⚡
             </div>
-            
-            <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
-                <div>
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Main Menu</p>
-                    <a href="/admin-dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"><span>📊</span> Dashboard</a>
-                    <a href="/analytics.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📈</span> Analytics</a>
-                </div>
-                <div>
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Event Management</p>
-                    <a href="/event-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📅</span> Events</a>
-                    <a href="/schedule-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🕒</span> Schedules</a>
-                    <a href="/ticket-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🎟️</span> Tickets</a>
-                </div>
-                <div>
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Transactions</p>
-                    <a href="/order-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🛒</span> Orders</a>
-                    <a href="/payment-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>💳</span> Payments</a>
-                    <a href="/promo-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🏷️</span> Promos</a>
-                </div>
-                <div>
-                    <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Master Data</p>
-                    <a href="/user-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>👥</span> Users</a>
-                    <a href="/category-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📂</span> Categories</a>
-                    <a href="/artist-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🎤</span> Artists</a>
-                    <a href="/venue-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>📍</span> Venues</a>
-                    <a href="/sponsor-management.html" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"><span>🤝</span> Sponsors</a>
-                </div>
-            </nav>
-            
-            <div class="p-4 border-t border-gray-800">
-                <button onclick="handleLogout()"  class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium">
-                    🚪 Logout
-                </button>
+            <div>
+              <h1 class="text-lg font-bold">EventKonser</h1>
+              <p class="text-xs text-gray-400">Admin Panel</p>
             </div>
-        </aside>
-        
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-h-screen">
-            <!-- Header -->
-            <header class="bg-white shadow-sm">
-                <div class="px-8 py-6 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-900">Dashboard Overview</h2>
-                        <p class="text-gray-600 mt-1">Welcome back! Here's what's happening today.</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent flex items-center justify-center text-white font-bold" id="user-avatar">
-                            A
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-900" id="user-name">Admin</p>
-                            <p class="text-xs text-gray-500">Administrator</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            
-            <!-- Content -->
-            <main class="flex-1 p-8">
-                <div class="max-w-7xl mx-auto space-y-8">
-                    
-                    <!-- Stats Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="p-3 bg-blue-50 rounded-lg">
-                                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500">Total Events</p>
-                            <p class="text-3xl font-bold text-gray-900" id="total-events">0</p>
-                        </div>
-                        
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="p-3 bg-green-50 rounded-lg">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500">Upcoming Events</p>
-                            <p class="text-3xl font-bold text-gray-900" id="upcoming-events">0</p>
-                        </div>
-                        
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="p-3 bg-purple-50 rounded-lg">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500">Total Orders</p>
-                            <p class="text-3xl font-bold text-gray-900" id="total-orders">0</p>
-                        </div>
-                        
-                        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="p-3 bg-orange-50 rounded-lg">
-                                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500">Total Revenue</p>
-                            <p class="text-2xl font-bold text-gray-900" id="total-revenue">Rp0</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Recent Events Table -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Recent Events</h3>
-                                <p class="text-sm text-gray-500 mt-1">Manage and view all events</p>
-                            </div>
-                            <a href="/event-management.html" class="px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-md">
-                                + Add New Event
-                            </a>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200" id="events-table">
-                                    <tr>
-                                        <td colspan="4" class="px-6 py-8 text-center text-gray-500">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                </div>
-            </main>
+          </div>
         </div>
+
+        <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Main Menu
+            </p>
+            <a
+              href="/admin-dashboard.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"
+              ><span>📊</span> Dashboard</a
+            >
+            <a
+              href="/analytics.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📈</span> Analytics</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Event Management
+            </p>
+            <a
+              href="/event-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📅</span> Events</a
+            >
+            <a
+              href="/schedule-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🕒</span> Schedules</a
+            >
+            <a
+              href="/ticket-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🎟️</span> Tickets</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Transactions
+            </p>
+            <a
+              href="/order-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🛒</span> Orders</a
+            >
+            <a
+              href="/payment-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>💳</span> Payments</a
+            >
+            <a
+              href="/promo-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🏷️</span> Promos</a
+            >
+          </div>
+          <div>
+            <p
+              class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2"
+            >
+              Master Data
+            </p>
+            <a
+              href="/user-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>👥</span> Users</a
+            >
+            <a
+              href="/category-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📂</span> Categories</a
+            >
+            <a
+              href="/artist-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🎤</span> Artists</a
+            >
+            <a
+              href="/venue-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>📍</span> Venues</a
+            >
+            <a
+              href="/sponsor-management.html"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+              ><span>🤝</span> Sponsors</a
+            >
+          </div>
+        </nav>
+
+        <div class="p-4 border-t border-gray-800">
+          <button
+            onclick="handleLogout()"
+            class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium"
+          >
+            🚪 Logout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+          <div class="px-8 py-6 flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">
+                Dashboard Overview
+              </h2>
+              <p class="text-gray-600 mt-1">
+                Welcome back! Here's what's happening today.
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent flex items-center justify-center text-white font-bold"
+                id="user-avatar"
+              >
+                A
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900" id="user-name">
+                  Admin
+                </p>
+                <p class="text-xs text-gray-500">Administrator</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <main class="flex-1 p-8">
+          <div class="max-w-7xl mx-auto space-y-8">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <div class="p-3 bg-blue-50 rounded-lg">
+                    <svg
+                      class="w-6 h-6 text-primary-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-500">Total Events</p>
+                <p class="text-3xl font-bold text-gray-900" id="total-events">
+                  0
+                </p>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <div class="p-3 bg-green-50 rounded-lg">
+                    <svg
+                      class="w-6 h-6 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-500">Upcoming Events</p>
+                <p
+                  class="text-3xl font-bold text-gray-900"
+                  id="upcoming-events"
+                >
+                  0
+                </p>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <div class="p-3 bg-purple-50 rounded-lg">
+                    <svg
+                      class="w-6 h-6 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-500">Total Orders</p>
+                <p class="text-3xl font-bold text-gray-900" id="total-orders">
+                  0
+                </p>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <div class="p-3 bg-orange-50 rounded-lg">
+                    <svg
+                      class="w-6 h-6 text-orange-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-500">Total Revenue</p>
+                <p class="text-2xl font-bold text-gray-900" id="total-revenue">
+                  Rp0
+                </p>
+              </div>
+            </div>
+
+            <!-- Recent Events Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div
+                class="px-6 py-4 border-b border-gray-200 flex items-center justify-between"
+              >
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    Recent Events
+                  </h3>
+                  <p class="text-sm text-gray-500 mt-1">
+                    Manage and view all events
+                  </p>
+                </div>
+                <a
+                  href="/event-management.html"
+                  class="px-6 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition shadow-md"
+                >
+                  + Add New Event
+                </a>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Event Name
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Date
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Status
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200" id="events-table">
+                    <tr>
+                      <td
+                        colspan="4"
+                        class="px-6 py-8 text-center text-gray-500"
+                      >
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
-    
+
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/admin.js"></script>
-    
+
     <script>
-        console.log('Admin dashboard loading...');
-        
-        window.addEventListener('load', async () => {
-            console.log('Page loaded');
-            
-            // Check authentication
-            if (typeof window.auth !== 'undefined') {
-                const user = window.auth.getUser();
-                if (user) {
-                    document.getElementById('user-name').textContent = user.nama || user.name || 'Admin';
-                    document.getElementById('user-avatar').textContent = (user.nama || user.name || 'A').charAt(0).toUpperCase();
-                }
-            }
-            
-            // Load dashboard data
-            try {
-                await loadDashboardStats();
-                await loadEvents();
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-            }
-            
-            console.log('Dashboard loaded successfully');
-        });
-        
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.auth.removeUser();
-                localStorage.removeItem('authToken');
-                window.location.href = '/login.html';
-            }
+      console.log("Admin dashboard loading...");
+
+      window.addEventListener("load", async () => {
+        console.log("Page loaded");
+
+        // Check authentication
+        if (typeof window.auth !== "undefined") {
+          const user = window.auth.getUser();
+          if (user) {
+            document.getElementById("user-name").textContent =
+              user.nama || user.name || "Admin";
+            document.getElementById("user-avatar").textContent = (
+              user.nama ||
+              user.name ||
+              "A"
+            )
+              .charAt(0)
+              .toUpperCase();
+          }
         }
-        
-        async function loadDashboardStats() {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/admin/dashboard`);
-                const result = await response.json();
-                
-                if (result.success && result.data) {
-                    const stats = result.data;
-                    document.getElementById('total-events').textContent = stats.totalEvents || 0;
-                    document.getElementById('upcoming-events').textContent = stats.upcomingEvents || 0;
-                    document.getElementById('total-orders').textContent = stats.totalOrders || 0;
-                    document.getElementById('total-revenue').textContent = formatCurrency(stats.totalRevenue || 0);
-                }
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
+
+        // Load dashboard data
+        try {
+          await loadDashboardStats();
+          await loadEvents();
+        } catch (error) {
+          console.error("Error loading dashboard:", error);
         }
-        
-        async function loadEvents() {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/events`);
-                const result = await response.json();
-                
-                let html = '';
-                if (result.data && result.data.length > 0) {
-                    html = result.data.slice(0, 5).map(event => `
+
+        console.log("Dashboard loaded successfully");
+      });
+
+      function handleLogout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.auth.removeUser();
+          localStorage.removeItem("authToken");
+          window.location.href = "/login.html";
+        }
+      }
+
+      async function loadDashboardStats() {
+        try {
+          const response = await fetch(
+            `${window.API_BASE_URL}/admin/dashboard`
+          );
+          const result = await response.json();
+
+          if (result.success && result.data) {
+            const stats = result.data;
+            document.getElementById("total-events").textContent =
+              stats.totalEvents || 0;
+            document.getElementById("upcoming-events").textContent =
+              stats.upcomingEvents || 0;
+            document.getElementById("total-orders").textContent =
+              stats.totalOrders || 0;
+            document.getElementById("total-revenue").textContent =
+              formatCurrency(stats.totalRevenue || 0);
+          }
+        } catch (error) {
+          console.error("Error loading stats:", error);
+        }
+      }
+
+      async function loadEvents() {
+        try {
+          const response = await fetch(`${window.API_BASE_URL}/events`);
+          const result = await response.json();
+
+          let html = "";
+          if (result.data && result.data.length > 0) {
+            html = result.data
+              .slice(0, 5)
+              .map(
+                (event) => `
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4">
-                                <div class="font-medium text-gray-900">${event.namaEvent || ''}</div>
-                                <div class="text-sm text-gray-500">${event.kategori?.namaKategori || 'Event'}</div>
+                                <div class="font-medium text-gray-900">${
+                                  event.namaEvent || ""
+                                }</div>
+                                <div class="text-sm text-gray-500">${
+                                  event.kategori?.namaKategori || "Event"
+                                }</div>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500">${formatDateOnly(event.tanggalMulai)}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">${formatDateOnly(
+                              event.tanggalMulai
+                            )}</td>
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusClass(event.status)}">
-                                    ${event.status || 'UPCOMING'}
+                                <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusClass(
+                                  event.status
+                                )}">
+                                    ${event.status || "UPCOMING"}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm">
-                                <a href="/event-management.html?id=${event.idEvent}" class="text-primary-600 hover:text-primary-700 font-medium">Edit</a>
+                                <a href="/event-management.html?id=${
+                                  event.idEvent
+                                }" class="text-primary-600 hover:text-primary-700 font-medium">Edit</a>
                             </td>
                         </tr>
-                    `).join('');
-                } else {
-                    html = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No events found</td></tr>';
-                }
-                
-                document.getElementById('events-table').innerHTML = html;
-            } catch (error) {
-                console.error('Error loading events:', error);
-                document.getElementById('events-table').innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-red-500">Error loading events</td></tr>';
-            }
+                    `
+              )
+              .join("");
+          } else {
+            html =
+              '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No events found</td></tr>';
+          }
+
+          document.getElementById("events-table").innerHTML = html;
+        } catch (error) {
+          console.error("Error loading events:", error);
+          document.getElementById("events-table").innerHTML =
+            '<tr><td colspan="4" class="px-6 py-8 text-center text-red-500">Error loading events</td></tr>';
         }
-        
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(amount || 0);
-        }
-        
-        function formatDateOnly(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return new Intl.DateTimeFormat('id-ID', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            }).format(date);
-        }
-        
-        function getStatusClass(status) {
-            const classes = {
-                'UPCOMING': 'bg-blue-100 text-blue-800',
-                'ONGOING': 'bg-green-100 text-green-800',
-                'COMPLETED': 'bg-gray-100 text-gray-800',
-                'CANCELLED': 'bg-red-100 text-red-800'
-            };
-            return classes[status] || 'bg-gray-100 text-gray-800';
-        }
+      }
+
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          minimumFractionDigits: 0,
+        }).format(amount || 0);
+      }
+
+      function formatDateOnly(dateString) {
+        if (!dateString) return "-";
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat("id-ID", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }).format(date);
+      }
+
+      function getStatusClass(status) {
+        const classes = {
+          UPCOMING: "bg-blue-100 text-blue-800",
+          ONGOING: "bg-green-100 text-green-800",
+          COMPLETED: "bg-gray-100 text-gray-800",
+          CANCELLED: "bg-red-100 text-red-800",
+        };
+        return classes[status] || "bg-gray-100 text-gray-800";
+      }
     </script>
-</body>
+  </body>
 </html>

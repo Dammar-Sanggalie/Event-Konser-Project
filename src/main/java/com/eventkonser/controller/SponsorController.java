@@ -3,6 +3,7 @@ package com.eventkonser.controller;
 import com.eventkonser.model.Sponsor;
 import com.eventkonser.service.SponsorService;
 import com.eventkonser.dto.ApiResponse;
+import com.eventkonser.dto.SponsorDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,8 +39,9 @@ public class SponsorController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ApiResponse<Sponsor>> createSponsor(@RequestBody Sponsor sponsor) {
-        return ResponseEntity.ok(ApiResponse.success("Sponsor berhasil ditambahkan", sponsorService.createSponsor(sponsor)));
+    public ResponseEntity<ApiResponse<Sponsor>> createSponsor(@RequestBody SponsorDTO sponsorDTO) {
+        Sponsor sponsor = sponsorService.createSponsorFromDTO(sponsorDTO);
+        return ResponseEntity.ok(ApiResponse.success("Sponsor berhasil ditambahkan", sponsor));
     }
     
     /**
@@ -49,8 +51,9 @@ public class SponsorController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Sponsor>> updateSponsor(
             @PathVariable Long id,
-            @RequestBody Sponsor sponsorDetails) {
-        return ResponseEntity.ok(ApiResponse.success("Sponsor berhasil diupdate", sponsorService.updateSponsor(id, sponsorDetails)));
+            @RequestBody SponsorDTO sponsorDTO) {
+        Sponsor sponsor = sponsorService.updateSponsorFromDTO(id, sponsorDTO);
+        return ResponseEntity.ok(ApiResponse.success("Sponsor berhasil diupdate", sponsor));
     }
     
     /**
