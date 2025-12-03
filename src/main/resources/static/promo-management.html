@@ -43,9 +43,9 @@
         <div class="p-6 border-b border-gray-800">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold"
+              
             >
-              ⚡
+              
             </div>
             <div>
               <h1 class="text-lg font-bold">EventKonser</h1>
@@ -63,12 +63,12 @@
             <a
               href="/admin-dashboard.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📊</span> Dashboard</a
+              ><span></span> Dashboard</a
             >
             <a
               href="/analytics.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📈</span> Analytics</a
+              ><span></span> Analytics</a
             >
           </div>
           <div>
@@ -80,17 +80,17 @@
             <a
               href="/event-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📅</span> Events</a
+              ><span></span> Events</a
             >
             <a
               href="/schedule-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🕒</span> Schedules</a
+              ><span></span> Schedules</a
             >
             <a
               href="/ticket-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🎟️</span> Tickets</a
+              ><span></span> Tickets</a
             >
           </div>
           <div>
@@ -102,17 +102,17 @@
             <a
               href="/order-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🛒</span> Orders</a
+              ><span></span> Orders</a
             >
             <a
               href="/payment-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>💳</span> Payments</a
+              ><span></span> Payments</a
             >
             <a
               href="/promo-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"
-              ><span>🏷️</span> Promos</a
+              ><span></span> Promos</a
             >
           </div>
           <div>
@@ -124,27 +124,27 @@
             <a
               href="/user-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>👥</span> Users</a
+              ><span></span> Users</a
             >
             <a
               href="/category-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📂</span> Categories</a
+              ><span></span> Categories</a
             >
             <a
               href="/artist-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🎤</span> Artists</a
+              ><span></span> Artists</a
             >
             <a
               href="/venue-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📍</span> Venues</a
+              ><span></span> Venues</a
             >
             <a
               href="/sponsor-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🤝</span> Sponsors</a
+              ><span></span> Sponsors</a
             >
           </div>
         </nav>
@@ -153,7 +153,7 @@
             onclick="handleLogout()"
             class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium"
           >
-            🚪 Logout
+            Logout
           </button>
         </div>
       </aside>
@@ -508,11 +508,11 @@
           }
         } catch (error) {
           console.error("Error loading promo:", error);
-          alert("❌ Error loading promo: " + error.message);
+          alert("Error loading promo: " + error.message);
         }
       }
       async function deletePromo(id) {
-        if (!confirm("❓ Are you sure you want to delete this promo?")) return;
+        if (!confirm("Are you sure you want to delete this promo?")) return;
         try {
           console.log("Deleting promo:", id);
           const token = localStorage.getItem("authToken");
@@ -527,16 +527,16 @@
 
           if (response.ok || response.status === 204) {
             const result = response.status === 204 ? {} : await response.json();
-            alert(result.message || "✅ Promo deleted successfully");
+            alert(result.message || "Promo deleted successfully");
             await loadPromos();
           } else {
             const error = await response.text();
             console.error("Delete error:", error);
-            alert("❌ Failed to delete: " + error);
+            alert("Failed to delete: " + error);
           }
         } catch (error) {
           console.error("Error deleting promo:", error);
-          alert("❌ Error deleting: " + error.message);
+          alert("Error deleting: " + error.message);
         }
       }
       async function handleSubmit(e) {
@@ -560,7 +560,7 @@
           !tanggalMulai ||
           !tanggalBerakhir
         ) {
-          alert("❌ Please fill all required fields");
+          alert("Please fill all required fields");
           return;
         }
 
@@ -601,17 +601,17 @@
           if (response.ok) {
             const result = await response.json();
             console.log("Submit response:", result);
-            alert(result.message || "✅ Promo saved successfully");
+            alert(result.message || "Promo saved successfully");
             hideModal();
             await loadPromos();
           } else {
             const error = await response.text();
             console.error("Save error response:", error);
-            alert("❌ Failed to save: " + error);
+            alert("Failed to save: " + error);
           }
         } catch (error) {
           console.error("Error saving promo:", error);
-          alert("❌ Error saving: " + error.message);
+          alert("Error saving: " + error.message);
         }
       }
       function formatDiscountValue(value, type) {

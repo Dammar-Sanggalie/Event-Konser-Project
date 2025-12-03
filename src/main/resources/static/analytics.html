@@ -44,9 +44,9 @@
         <div class="p-6 border-b border-gray-800">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold"
+             
             >
-              ⚡
+              
             </div>
             <div>
               <h1 class="text-lg font-bold">EventKonser</h1>
@@ -65,12 +65,12 @@
             <a
               href="/admin-dashboard.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📊</span> Dashboard</a
+              ><span></span> Dashboard</a
             >
             <a
               href="/analytics.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"
-              ><span>📈</span> Analytics</a
+              ><span></span> Analytics</a
             >
           </div>
           <div>
@@ -82,17 +82,17 @@
             <a
               href="/event-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📅</span> Events</a
+              ><span></span> Events</a
             >
             <a
               href="/schedule-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🕒</span> Schedules</a
+              ><span></span> Schedules</a
             >
             <a
               href="/ticket-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🎟️</span> Tickets</a
+              ><span></span> Tickets</a
             >
           </div>
           <div>
@@ -104,17 +104,17 @@
             <a
               href="/order-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🛒</span> Orders</a
+              ><span></span> Orders</a
             >
             <a
               href="/payment-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>💳</span> Payments</a
+              ><span></span> Payments</a
             >
             <a
               href="/promo-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🏷️</span> Promos</a
+              ><span></span> Promos</a
             >
           </div>
           <div>
@@ -126,27 +126,27 @@
             <a
               href="/user-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>👥</span> Users</a
+              ><span></span> Users</a
             >
             <a
               href="/category-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📂</span> Categories</a
+              ><span></span> Categories</a
             >
             <a
               href="/artist-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🎤</span> Artists</a
+              ><span></span> Artists</a
             >
             <a
               href="/venue-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📍</span> Venues</a
+              ><span></span> Venues</a
             >
             <a
               href="/sponsor-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🤝</span> Sponsors</a
+              ><span></span> Sponsors</a
             >
           </div>
         </nav>
@@ -156,7 +156,7 @@
             onclick="handleLogout()"
             class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium"
           >
-            🚪 Logout
+            Logout
           </button>
         </div>
       </aside>
@@ -187,7 +187,7 @@
                   </h3>
                   <span
                     class="p-3 bg-green-200 text-green-700 rounded-lg text-xl"
-                    >💰</span
+                    ></span
                   >
                 </div>
                 <p class="text-3xl font-bold text-green-900" id="total-revenue">
@@ -207,7 +207,7 @@
                     Total Orders
                   </h3>
                   <span class="p-3 bg-blue-200 text-blue-700 rounded-lg text-xl"
-                    >🛒</span
+                    ></span
                   >
                 </div>
                 <p class="text-3xl font-bold text-blue-900" id="total-orders">
@@ -228,7 +228,7 @@
                   </h3>
                   <span
                     class="p-3 bg-purple-200 text-purple-700 rounded-lg text-xl"
-                    >👥</span
+                    ></span
                   >
                 </div>
                 <p class="text-3xl font-bold text-purple-900" id="total-users">
@@ -249,7 +249,7 @@
                   </h3>
                   <span
                     class="p-3 bg-orange-200 text-orange-700 rounded-lg text-xl"
-                    >📅</span
+                    ></span
                   >
                 </div>
                 <p class="text-3xl font-bold text-orange-900" id="total-events">
@@ -354,8 +354,8 @@
       }
       async function loadAnalytics() {
         try {
-          console.log("🔄 Starting loadAnalytics...");
-          console.log("📍 API Base URL:", window.API_BASE_URL);
+          console.log("Starting loadAnalytics...");
+          console.log("API Base URL:", window.API_BASE_URL);
 
           // Initialize all UI elements with loading state
           document.getElementById("total-revenue").textContent = "Loading...";
@@ -371,7 +371,7 @@
           // Fetch orders
           try {
             console.log(
-              "📦 Fetching orders from:",
+              "Fetching orders from:",
               `${window.API_BASE_URL}/orders`
             );
             const ordersRes = await fetch(`${window.API_BASE_URL}/orders`);
@@ -381,19 +381,19 @@
             }
 
             const ordersData = await ordersRes.json();
-            console.log("✅ Orders response:", ordersData);
+            console.log("Orders response:", ordersData);
 
             orders = ordersData && ordersData.data ? ordersData.data : [];
-            console.log(`✅ Found ${orders.length} orders`);
+            console.log(`Found ${orders.length} orders`);
           } catch (error) {
-            console.error("❌ Error fetching orders:", error);
+            console.error("Error fetching orders:", error);
             orders = [];
           }
 
           // Fetch users
           try {
             console.log(
-              "👥 Fetching users from:",
+              "Fetching users from:",
               `${window.API_BASE_URL}/users`
             );
             const usersRes = await fetch(`${window.API_BASE_URL}/users`);
@@ -403,19 +403,19 @@
             }
 
             const usersData = await usersRes.json();
-            console.log("✅ Users response:", usersData);
+            console.log("Users response:", usersData);
 
             users = usersData && usersData.data ? usersData.data : [];
-            console.log(`✅ Found ${users.length} users`);
+            console.log(`Found ${users.length} users`);
           } catch (error) {
-            console.error("❌ Error fetching users:", error);
+            console.error("Error fetching users:", error);
             users = [];
           }
 
           // Fetch events
           try {
             console.log(
-              "📅 Fetching events from:",
+              "Fetching events from:",
               `${window.API_BASE_URL}/events`
             );
             const eventsRes = await fetch(`${window.API_BASE_URL}/events`);
@@ -425,12 +425,12 @@
             }
 
             const eventsData = await eventsRes.json();
-            console.log("✅ Events response:", eventsData);
+            console.log("Events response:", eventsData);
 
             events = eventsData && eventsData.data ? eventsData.data : [];
-            console.log(`✅ Found ${events.length} events`);
+            console.log(`Found ${events.length} events`);
           } catch (error) {
-            console.error("❌ Error fetching events:", error);
+            console.error("Error fetching events:", error);
             events = [];
           }
 
@@ -439,7 +439,7 @@
             .filter((o) => o.status === "PAID")
             .reduce((sum, o) => sum + (o.totalHarga || 0), 0);
 
-          console.log("💰 Total Revenue:", totalRevenue);
+          console.log("Total Revenue:", totalRevenue);
           console.log("Analytics Summary:", {
             totalRevenue,
             totalOrders: orders.length,
@@ -454,12 +454,12 @@
           document.getElementById("total-users").textContent = users.length;
           document.getElementById("total-events").textContent = events.length;
 
-          console.log("✅ Analytics data loaded successfully!");
+          console.log("Analytics data loaded successfully!");
 
           // Charts
           initCharts(orders);
         } catch (error) {
-          console.error("❌ Critical error loading analytics:", error);
+          console.error("Critical error loading analytics:", error);
           console.error("Stack trace:", error.stack);
           alert(
             "Error loading analytics data. Please check console for details."
@@ -504,7 +504,7 @@
         new Chart(ctxOrd, {
           type: "doughnut",
           data: {
-            labels: ["✓ Paid", "⏳ Pending", "✕ Cancelled", "⚠ Failed"],
+            labels: ["✓ Paid", "Pending", "✕ Cancelled", "⚠ Failed"],
             datasets: [
               {
                 data: Object.values(statusCounts),

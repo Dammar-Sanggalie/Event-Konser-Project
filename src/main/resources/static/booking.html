@@ -67,9 +67,9 @@
                             <div class="flex-1">
                                 <h2 id="event-name" class="text-2xl font-bold text-gray-900 mb-2">Loading...</h2>
                                 <div class="space-y-2 text-sm text-gray-600">
-                                    <p id="event-date">📅 Loading...</p>
-                                    <p id="event-venue">📍 Loading...</p>
-                                    <p id="event-organizer">👤 Loading...</p>
+                                    <p id="event-date">Loading...</p>
+                                    <p id="event-venue">Loading...</p>
+                                    <p id="event-organizer">Loading...</p>
                                 </div>
                             </div>
                         </div>
@@ -206,9 +206,9 @@
         function renderEventInfo() {
             document.getElementById('event-name').textContent = eventData.namaEvent;
             document.getElementById('event-poster').src = eventData.posterUrl || eventData.bannerUrl || '/assets/images/placeholder-event.jpg';
-            document.getElementById('event-date').textContent = `📅 ${formatDate(eventData.tanggalMulai)} - ${formatDate(eventData.tanggalSelesai)}`;
-            document.getElementById('event-venue').textContent = `📍 ${eventData.venue?.namaVenue || 'TBA'}, ${eventData.venue?.kota || ''}`;
-            document.getElementById('event-organizer').textContent = `👤 ${eventData.penyelenggara || 'Event Organizer'}`;
+            document.getElementById('event-date').textContent = `${formatDate(eventData.tanggalMulai)} - ${formatDate(eventData.tanggalSelesai)}`;
+            document.getElementById('event-venue').textContent = `${eventData.venue?.namaVenue || 'TBA'}, ${eventData.venue?.kota || ''}`;
+            document.getElementById('event-organizer').textContent = `${eventData.penyelenggara || 'Event Organizer'}`;
         }
         
         function renderTickets(tickets) {

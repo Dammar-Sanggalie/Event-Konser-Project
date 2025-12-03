@@ -43,9 +43,9 @@
         <div class="p-6 border-b border-gray-800">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent rounded-xl flex items-center justify-center text-xl font-bold"
+             
             >
-              ⚡
+              
             </div>
             <div>
               <h1 class="text-lg font-bold">EventKonser</h1>
@@ -63,12 +63,12 @@
             <a
               href="/admin-dashboard.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📊</span> Dashboard</a
+              ><span></span> Dashboard</a
             >
             <a
               href="/analytics.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📈</span> Analytics</a
+              ><span></span> Analytics</a
             >
           </div>
           <div>
@@ -80,17 +80,17 @@
             <a
               href="/event-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📅</span> Events</a
+              ><span></span> Events</a
             >
             <a
               href="/schedule-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🕒</span> Schedules</a
+              ><span></span> Schedules</a
             >
             <a
               href="/ticket-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🎟️</span> Tickets</a
+              ><span></span> Tickets</a
             >
           </div>
           <div>
@@ -102,17 +102,17 @@
             <a
               href="/order-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🛒</span> Orders</a
+              ><span></span> Orders</a
             >
             <a
               href="/payment-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>💳</span> Payments</a
+              ><span></span> Payments</a
             >
             <a
               href="/promo-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🏷️</span> Promos</a
+              ><span></span> Promos</a
             >
           </div>
           <div>
@@ -124,27 +124,27 @@
             <a
               href="/user-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>👥</span> Users</a
+              ><span></span> Users</a
             >
             <a
               href="/category-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📂</span> Categories</a
+              ><span></span> Categories</a
             >
             <a
               href="/artist-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>🎤</span> Artists</a
+              ><span></span> Artists</a
             >
             <a
               href="/venue-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              ><span>📍</span> Venues</a
+              ><span></span> Venues</a
             >
             <a
               href="/sponsor-management.html"
               class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-600 text-white font-medium"
-              ><span>🤝</span> Sponsors</a
+              ><span></span> Sponsors</a
             >
           </div>
         </nav>
@@ -153,7 +153,7 @@
             onclick="handleLogout()"
             class="w-full px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition font-medium"
           >
-            🚪 Logout
+            Logout
           </button>
         </div>
       </aside>
@@ -406,7 +406,7 @@
       async function loadEvents() {
         try {
           console.log(
-            "🔄 Loading events from:",
+            "Loading events from:",
             `${window.API_BASE_URL}/events`
           );
           const response = await fetch(`${window.API_BASE_URL}/events`);
@@ -416,11 +416,11 @@
           }
 
           const result = await response.json();
-          console.log("📨 Events response:", result);
+          console.log("Events response:", result);
 
           if (result.success && result.data && result.data.length > 0) {
             eventsData = result.data;
-            console.log("✅ Events loaded:", eventsData.length, "events");
+            console.log("Events loaded:", eventsData.length, "events");
 
             const eventSelect = document.getElementById("idEvent");
             eventSelect.innerHTML = '<option value="">Select Event</option>';
@@ -449,10 +449,10 @@
               });
             }
           } else {
-            console.warn("⚠️ No events data in response");
+            console.warn("No events data in response");
           }
         } catch (error) {
-          console.error("❌ Error loading events:", error);
+          console.error(" Error loading events:", error);
         }
       }
 
@@ -475,7 +475,7 @@
         }
 
         console.log(
-          "🔍 getEventName - searching for eventId:",
+          "getEventName - searching for eventId:",
           eventId,
           "in",
           eventsData.length,
@@ -503,7 +503,7 @@
             throw new Error(`HTTP error! status: ${response.status}`);
 
           const result = await response.json();
-          console.log("📨 Sponsors response:", result);
+          console.log("Sponsors response:", result);
 
           if (result.success && result.data) {
             sponsorsData = result.data;
@@ -511,7 +511,7 @@
 
             // Debug: Log first sponsor structure
             if (sponsorsData.length > 0) {
-              console.log("📋 First sponsor structure:", sponsorsData[0]);
+              console.log("First sponsor structure:", sponsorsData[0]);
               console.log("  - idEvent:", sponsorsData[0].idEvent);
               console.log("  - event object:", sponsorsData[0].event);
             }
@@ -621,7 +621,7 @@
         const eventSelect = document.getElementById("idEvent");
         if (eventSelect.options.length <= 1) {
           alert(
-            "❌ Events not loaded yet. Please wait a moment and try again."
+            "Events not loaded yet. Please wait a moment and try again."
           );
           return;
         }
@@ -672,14 +672,14 @@
           );
 
           if (response.ok) {
-            alert("✅ Deleted successfully");
+            alert("Deleted successfully");
             loadSponsors();
           } else {
-            alert("❌ Failed to delete");
+            alert("Failed to delete");
           }
         } catch (error) {
           console.error("Error deleting sponsor:", error);
-          alert("❌ Error: " + error.message);
+          alert("Error: " + error.message);
         }
       }
 
@@ -690,7 +690,7 @@
         const namaSponsorEl = document.getElementById("namaSponsor");
         const jenisSponsorEl = document.getElementById("jenisSponsor");
 
-        console.log("📋 Form values:");
+        console.log(" Form values:");
         console.log("  - idEvent element:", idEventEl);
         console.log("  - idEvent value:", idEventEl.value);
         console.log("  - namaSponsor:", namaSponsorEl.value);
@@ -698,14 +698,14 @@
 
         const idEvent = idEventEl.value;
         if (!idEvent || idEvent === "") {
-          alert("❌ Please select an event first");
+          alert("ease select an event first");
           return;
         }
 
         const namaSponsor = namaSponsorEl.value;
         const jenisSponsor = jenisSponsorEl.value;
         if (!namaSponsor || !jenisSponsor) {
-          alert("❌ Nama Sponsor and Jenis Sponsor are required");
+          alert("Nama Sponsor and Jenis Sponsor are required");
           return;
         }
 
@@ -729,8 +729,8 @@
           const method = editingId ? "PUT" : "POST";
           const token = localStorage.getItem("authToken");
 
-          console.log("🚀 Submitting:", method, url);
-          console.log("📦 Request body:", JSON.stringify(data));
+          console.log("Submitting:", method, url);
+          console.log("Request body:", JSON.stringify(data));
 
           const response = await fetch(url, {
             method: method,
@@ -741,23 +741,23 @@
             body: JSON.stringify(data),
           });
 
-          console.log("✅ Response status:", response.status);
+          console.log("Response status:", response.status);
           const responseData = await response.json();
-          console.log("📨 Response data:", responseData);
+          console.log("Response data:", responseData);
 
           if (response.ok) {
-            alert("✅ Saved successfully");
+            alert("Saved successfully");
             hideModal();
             await loadSponsors();
           } else {
-            console.error("❌ Save error:", responseData);
+            console.error("Save error:", responseData);
             alert(
-              "❌ Failed to save: " + (responseData.message || "Unknown error")
+              "Failed to save: " + (responseData.message || "Unknown error")
             );
           }
         } catch (error) {
-          console.error("❌ Error saving sponsor:", error);
-          alert("❌ Error: " + error.message);
+          console.error("Error saving sponsor:", error);
+          alert("Error: " + error.message);
         }
       }
     </script>
