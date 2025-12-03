@@ -67,8 +67,8 @@
                             <option value="fixed">Fixed Amount</option>
                         </select>
                     </div>
-                    <button onclick="applyFilters()" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium">
-                        Search
+                    <button onclick="clearFilters()" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition font-medium">
+                        Clear Filters
                     </button>
                 </div>
             </div>
@@ -104,7 +104,31 @@
         
         document.addEventListener('DOMContentLoaded', async () => {
             await loadPromos();
+            setupFilters();
         });
+        
+        function setupFilters() {
+            const searchInput = document.getElementById('search-promo');
+            const filterCategory = document.getElementById('filter-category');
+            
+            // Debounce search for better performance
+            let searchTimeout;
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        applyFilters();
+                    }, 300);
+                });
+            }
+            
+            // Filter category change - immediate
+            if (filterCategory) {
+                filterCategory.addEventListener('change', () => {
+                    applyFilters();
+                });
+            }
+        }
         
         async function loadPromos() {
             try {
@@ -128,10 +152,12 @@
             const emptyState = document.getElementById('empty-state');
             
             if (promos.length === 0) {
-                showEmpty();
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
                 return;
             }
             
+            container.classList.remove('hidden');
             emptyState.classList.add('hidden');
             
             container.innerHTML = promos.map(promo => {
@@ -215,8 +241,8 @@
                     (promo.deskripsi && promo.deskripsi.toLowerCase().includes(search));
                     
                 const matchCategory = !category || 
-                    (category === 'percentage' && promo.tipe === 'PERCENTAGE') ||
-                    (category === 'fixed' && promo.tipe === 'FIXED');
+                    (category === 'percentage' && promo.jenisDiskon === 'PERCENTAGE') ||
+                    (category === 'fixed' && promo.jenisDiskon === 'FIXED');
                 
                 return matchSearch && matchCategory;
             });
@@ -226,6 +252,12 @@
             } else {
                 renderPromos(filtered);
             }
+        }
+        
+        function clearFilters() {
+            document.getElementById('search-promo').value = '';
+            document.getElementById('filter-category').value = '';
+            renderPromos(allPromos);
         }
         
         function copyCode(code) {
