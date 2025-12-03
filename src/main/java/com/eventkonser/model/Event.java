@@ -64,7 +64,7 @@ public class Event {
     private Venue venue;
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Fetch(FetchMode.SUBSELECT)
     private List<Ticket> tickets = new ArrayList<>();
     
