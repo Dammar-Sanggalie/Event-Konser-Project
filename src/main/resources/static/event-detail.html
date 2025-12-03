@@ -135,7 +135,7 @@
             
             container.innerHTML = `
                 <div class="relative h-64 sm:h-80 lg:h-96 bg-gray-900">
-                    <img src="${eventData.posterUrl || eventData.bannerUrl || '/assets/images/placeholder-event.jpg'}" 
+                    <img src="${eventData.bannerUrl || '/assets/images/placeholder-event.jpg'}" 
                          alt="${eventData.namaEvent}" 
                          class="w-full h-full object-cover opacity-80"
                          onerror="this.src='/assets/images/placeholder-event.jpg'">
