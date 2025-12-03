@@ -65,6 +65,7 @@
     
     <script>
         let eventData = null;
+        let availableTickets = [];
         let isInWishlist = false;
         
         document.addEventListener('DOMContentLoaded', async () => {
@@ -95,6 +96,9 @@
                     eventData = result.data;
                     console.log('Event data loaded:', eventData);
                     
+                    // Load available tickets
+                    await loadAvailableTickets(eventId);
+                    
                     // Check wishlist status if user is logged in
                     if (window.auth.isAuthenticated()) {
                         await checkWishlistStatus(eventId);
@@ -108,6 +112,31 @@
             } catch (error) {
                 console.error('Error loading event:', error);
                 showError('Failed to load event details. Error: ' + error.message);
+            }
+        }
+        
+        async function loadAvailableTickets(eventId) {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/tickets/event/${eventId}/available`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    availableTickets = result.data.map(t => ({
+                        id: t.idTiket || t.id,
+                        jenisTiket: t.jenisTiket,
+                        harga: parseFloat(t.harga || 0),
+                        stok: t.stok || 0,
+                        deskripsi: t.deskripsi,
+                        maxPembelian: t.maxPembelian || 5
+                    }));
+                    console.log('Available tickets loaded:', availableTickets);
+                } else {
+                    availableTickets = [];
+                    console.log('No tickets available');
+                }
+            } catch (error) {
+                console.error('Error loading available tickets:', error);
+                availableTickets = [];
             }
         }
         
@@ -278,7 +307,7 @@
                                     <p class="text-3xl font-bold text-primary-600">${startingPrice > 0 ? `Rp ${startingPrice.toLocaleString('id-ID')}` : 'Free'}</p>
                                 </div>
                                 
-                                ${eventData.tickets && eventData.tickets.length > 0 ? `
+                                ${availableTickets && availableTickets.length > 0 ? `
                                 <div class="space-y-3 mb-6">
                                     <h3 class="text-sm font-semibold text-gray-900 flex items-center space-x-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -287,11 +316,11 @@
                                         <span>Available Tickets</span>
                                     </h3>
                                     <div class="space-y-2">
-                                        ${eventData.tickets.map(ticket => `
+                                        ${availableTickets.map(ticket => `
                                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                 <div class="flex-1">
                                                     <p class="text-sm font-medium text-gray-900">${ticket.jenisTiket}</p>
-                                                    <p class="text-xs text-gray-500">${ticket.stok || 0} available</p>
+                                                    <p class="text-xs text-gray-500">${ticket.stok} available</p>
                                                 </div>
                                                 <p class="text-sm font-semibold text-primary-600">${formatCurrency(ticket.harga || 0)}</p>
                                             </div>
