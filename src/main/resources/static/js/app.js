@@ -330,12 +330,15 @@ async function initializeEventsPage() {
         startDate: urlParams.get('startDate') || '',
         endDate: urlParams.get('endDate') || '',
     };
+    console.log('URL Params read:', window.currentFilters);
+    
     // Set nilai awal di form filter
     document.getElementById('search-input').value = window.currentFilters.search;
     document.getElementById('filter-category').value = window.currentFilters.categoryId;
     document.getElementById('filter-city').value = window.currentFilters.city;
     document.getElementById('filter-start-date').value = window.currentFilters.startDate;
     document.getElementById('filter-end-date').value = window.currentFilters.endDate;
+    console.log('Form values set to:', window.currentFilters);
 
     await fetchAndRenderEvents();
 
@@ -443,6 +446,8 @@ async function fetchAndRenderEvents() {
         let endpoint = '/events/upcoming'; // Default
         const params = new URLSearchParams();
         
+        console.log('Current filters before check:', window.currentFilters);
+        
         if (window.currentFilters.search) {
              endpoint = '/events/search';
              params.set('q', window.currentFilters.search);
@@ -453,6 +458,9 @@ async function fetchAndRenderEvents() {
              if (window.currentFilters.startDate) params.set('startDate', window.currentFilters.startDate);
              if (window.currentFilters.endDate) params.set('endDate', window.currentFilters.endDate);
         }
+        
+        console.log('Using endpoint:', endpoint);
+        console.log('URL params:', params.toString());
         
         // Ambil data event
         let fetchedData = [];

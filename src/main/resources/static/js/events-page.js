@@ -38,16 +38,44 @@ async function initializeEventsPage() {
         // Setup event listeners
         setupEventListeners();
         
-        // Check for search parameter in URL and apply it
+        // Check for URL parameters and apply filters
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search');
+        const categoryIdParam = urlParams.get('categoryId');
+        const cityParam = urlParams.get('city');
+        const startDateParam = urlParams.get('startDate');
+        const endDateParam = urlParams.get('endDate');
+        
+        // Update currentFilters from URL
         if (searchParam) {
+            window.currentFilters.searchQuery = searchParam;
             const searchInput = document.getElementById('search-input');
-            if (searchInput) {
-                searchInput.value = searchParam;
-                // Apply the search filter
-                await applyFiltersAndSearch();
-            }
+            if (searchInput) searchInput.value = searchParam;
+        }
+        if (categoryIdParam) {
+            window.currentFilters.categoryId = categoryIdParam;
+            const categorySelect = document.getElementById('filter-category');
+            if (categorySelect) categorySelect.value = categoryIdParam;
+        }
+        if (cityParam) {
+            window.currentFilters.city = cityParam;
+            const citySelect = document.getElementById('filter-city');
+            if (citySelect) citySelect.value = cityParam;
+        }
+        if (startDateParam) {
+            window.currentFilters.startDate = startDateParam;
+            const startDateInput = document.getElementById('filter-start-date');
+            if (startDateInput) startDateInput.value = startDateParam;
+        }
+        if (endDateParam) {
+            window.currentFilters.endDate = endDateParam;
+            const endDateInput = document.getElementById('filter-end-date');
+            if (endDateInput) endDateInput.value = endDateParam;
+        }
+        
+        // Apply filters if any URL parameters exist
+        if (searchParam || categoryIdParam || cityParam || startDateParam || endDateParam) {
+            await applyFiltersAndSearch();
         }
         
     } catch (error) {
